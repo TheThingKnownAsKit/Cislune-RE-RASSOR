@@ -1,0 +1,7 @@
+<library path="libmy_rover_hardware.so">
+  <class name="rover_control/RERASSORHardwareInterface"
+         type="rover_control::RERASSORHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>Placeholder</description>
+  </class>
+</library>

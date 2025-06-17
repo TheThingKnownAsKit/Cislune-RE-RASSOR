@@ -1,0 +1,26 @@
+[0.031s] Invoking command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description -- -j16 -l16
+[0.154s] Invoked command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description -- -j16 -l16
+[0.155s] Invoking command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description
+[0.184s] -- Install configuration: ""
+[0.184s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/urdf
+[0.185s] -- Installing: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/urdf/rover.urdf.xacro
+[0.185s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/launch
+[0.185s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/launch/display.launch.py
+[0.185s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/rviz
+[0.186s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/rviz/display.rviz
+[0.186s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/ament_index/resource_index/package_run_dependencies/rover_description
+[0.186s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/ament_index/resource_index/parent_prefix_path/rover_description
+[0.187s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/environment/ament_prefix_path.sh
+[0.187s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/environment/ament_prefix_path.dsv
+[0.187s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/environment/path.sh
+[0.187s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/environment/path.dsv
+[0.188s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/local_setup.bash
+[0.188s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/local_setup.sh
+[0.189s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/local_setup.zsh
+[0.189s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/local_setup.dsv
+[0.189s] -- Installing: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/package.dsv
+[0.190s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/ament_index/resource_index/packages/rover_description
+[0.190s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/cmake/rover_descriptionConfig.cmake
+[0.190s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/cmake/rover_descriptionConfig-version.cmake
+[0.193s] -- Up-to-date: /home/moody/Cislune/Cislune-RE-RASSOR/install/rover_description/share/rover_description/package.xml
+[0.267s] Invoked command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_description
