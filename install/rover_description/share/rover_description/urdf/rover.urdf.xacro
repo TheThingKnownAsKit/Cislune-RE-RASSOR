@@ -1,3 +1,5 @@
+<!-- PLEASE NOTE THAT THIS IS JUST COBBLED TOGETHER, I NEED THE ACTUAL URDF FROM JOSE SOMETIME -->
+
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="my_rover">
 
   <!-- Base link -->
