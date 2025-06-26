@@ -24,3 +24,14 @@ services:
       - 'c 188:* rmw'
       - 'c 81:* rmw'      # all V4L2 cameras
       - 'c 189:* rmw'     # Generic USB
+
+docker_git:
+    image: alpine/git:latest      # Small image with git
+    container_name: articubot_git
+    volumes:
+      - ~/.ssh:/root/.ssh:ro      # Mount host SSH keys (read-only)
+      - ~/.gitconfig:/root/.gitconfig:ro  # Mount host Git config (read-only)
+    network_mode: host            # share network (optional; not strictly needed for git)
+    entrypoint: "/bin/sh"
+    # This container is used on-demand for Git operations, e.g.:
+    # `docker-compose run docker_git git push`
