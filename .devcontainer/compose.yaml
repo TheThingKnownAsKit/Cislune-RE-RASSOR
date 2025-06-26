@@ -1,10 +1,10 @@
 services:
   dev:
-    platform: linux/arm64
+    platform: linux/amd64
     build:
       context: ..                 # build context is the root workspace directory
       dockerfile: .devcontainer/Dockerfile
-    container_name: articubot_dev
+    container_name: rerassor_dev
     # Mount the workspace into the container (for live development)
     volumes:
       - ../..:/workspace:rw    # Mount the project root (parent of .devcontainer) to /workspace in container
@@ -24,7 +24,7 @@ services:
 
   docker_git:
     image: alpine/git:latest         # Small image with git
-    container_name: articubot_git
+    container_name: rerassor_dev
     volumes:
       - ~/.ssh:/root/.ssh:ro      # Mount host SSH keys (read-only)
       - ~/.gitconfig:/root/.gitconfig:ro  # Mount host Git config (read-only)
