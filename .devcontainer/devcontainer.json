@@ -4,8 +4,7 @@
        "context": "..",
        "dockerfile": "Dockerfile",
        "args": { 
-            "HOST_UID": "${localEnv:UID}",
-            "HOST_GID": "${localEnv:GID}"
+            
        }
     },
     "runArgs": [
