@@ -30,7 +30,7 @@
     <xacro:property name="chassis_height" value="0.11"/>
     <xacro:property name="chassis_mass" value="0.1"/>
 
-    <xacro:property name="chassis_origin" value="${chassis_origin}"/>
+    <xacro:property name="chassis_origin" value="0.15 0 0.075"/>
     <xacro:property name="fr_wheel_origin" value="0 0 0"/>
     <xacro:property name="fl_wheel_origin" value="0 0 0"/>
     <xacro:property name="br_wheel_origin" value="0 0 0"/>
