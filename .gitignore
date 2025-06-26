@@ -2,3 +2,9 @@
 /build/
 /install/
 /log/
+
+# ignore vscode settings
+.vscode/
+
+# ignore local environments
+.devcontainer/.env
