@@ -15,18 +15,23 @@ RUN apt-get update && rm -rf /var/lib/apt/lists/*
 ARG TARGETARCH
 FROM $TARGETARCH AS final
 
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
 # ----- create user that owns host files -----
-ARG HOST_UID=1000
-ARG HOST_GID=${HOST_UID}
+# Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
+# Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
 ARG USERNAME=ros2dev
-
-RUN groupadd -g ${HOST_GID} ${USERNAME} \
- && useradd -m -u ${HOST_UID} -g ${HOST_GID} -s /bin/bash ${USERNAME} \
- && apt-get update && apt-get install -y sudo \
- && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
- && chmod 0440 /etc/sudoers.d/${USERNAME} \
- && sudo usermod -aG video,dialout ${USERNAME}
-
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+RUN if ! id -u $USER_UID >/dev/null 2>&1; then \
+        groupadd --gid $USER_GID $USERNAME && \
+        useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME; \
+    fi
+# Add sudo support for the non-root user
+RUN apt-get update && \
+    apt-get install -y sudo && \
+    echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME
 USER ${USERNAME}
 
 WORKDIR /workspaces/Cislune-RE-RASSOR

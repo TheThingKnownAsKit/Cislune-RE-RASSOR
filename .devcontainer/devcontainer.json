@@ -9,7 +9,5 @@
     },
     "runArgs": [
         
-    ],
-    "remoteUser": "ros2dev",
-    "updateRemoteUserUID": false
+    ]
 }
