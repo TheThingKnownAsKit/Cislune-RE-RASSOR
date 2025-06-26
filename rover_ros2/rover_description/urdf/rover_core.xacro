@@ -21,7 +21,14 @@
     <!-- BASE -->
     <link name="base_link"/>
 
-    <!-- CHASSIS (including wheel tubes) -->
+    <!-- CHASSIS -->
+    <joint name="chassis_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis_link"/>
+        <origin xyz="0 0 0"/>
+    </joint>
+
+    <!-- WHEEL TUBES -->
 
     <!-- WHEELS -->
 
