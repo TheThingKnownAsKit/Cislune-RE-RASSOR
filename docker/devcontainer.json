@@ -1,0 +1,23 @@
+{
+  "name": "ROS2 Dev",
+  "dockerComposeFile": [
+    "docker-compose.yaml"
+  ],
+  "service": "dev",
+  "workspaceFolder": "/workspace/${localWorkspaceFolderBasename}",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+            "ms-vscode.cpptools",
+            "ms-python.python",
+            "github.vscode-pull-request-github",
+            "smilerobotics.urdf",
+            "morningfrog.urdf-visualizer",
+            "ms-vscode.cmake-tools"
+        ]
+    }
+  },
+  "runArgs": ["--gpus", "all"],
+  "remoteUser": "ubuntu",
+  "updateRemoteUserUID": false
+}

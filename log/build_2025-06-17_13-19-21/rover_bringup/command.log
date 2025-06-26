@@ -1,1 +1,0 @@
-Invoking command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/moody/Cislune/Cislune-RE-RASSOR/src/rover_bringup -DCMAKE_INSTALL_PREFIX=/home/moody/Cislune/Cislune-RE-RASSOR/install/rover_bringup

@@ -1,46 +1,55 @@
-# ──────────────────────────────────────────────────────
-# Base: Official ROS 2 Jazzy with Gazebo
-# ──────────────────────────────────────────────────────
-FROM ros:jazzy-ros-base
+FROM osrf/ros:jazzy-desktop
 
-# Locale config
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ──────────────────────────────────────────────────────
-# Install system & ROS tools
-# ──────────────────────────────────────────────────────
-RUN apt update && apt install -y \
-    python3-colcon-common-extensions \
-    ros-jazzy-navigation2 \
-    ros-jazzy-nav2-bringup \
-    ros-jazzy-ros2-control \
-    ros-jazzy-ros2-controllers \
-    ros-jazzy-ros-gz \
-    ros-jazzy-gz-ros2-control \
-    ros-jazzy-gz-ros2-control-demos \
-    git wget nano vim sudo lsb-release locales \
-    && rm -rf /var/lib/apt/lists/*
+# Install required packages as root
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # ROS 2 control stack
+    ros-${ROS_DISTRO}-ros2-control \
+    ros-${ROS_DISTRO}-ros2-controllers \
+    ros-${ROS_DISTRO}-rplidar-ros \
+    # ROS–Gazebo integration
+    ros-${ROS_DISTRO}-ros-gz \
+    ros-${ROS_DISTRO}-gz-ros2-control \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# ──────────────────────────────────────────────────────
-# Create workspace and copy source
-# ──────────────────────────────────────────────────────
-WORKDIR /workspace
-COPY ../src/ src/
+# (Optional) Install additional tools: build essentials, Python3 pip, etc.
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential python3-pip
 
-# ──────────────────────────────────────────────────────
-# Build workspace
-# ──────────────────────────────────────────────────────
-SHELL ["/bin/bash", "-c"]
-RUN source /opt/ros/jazzy/setup.sh && \
-    rosdep update && \
-    rosdep install --from-paths src --ignore-src -r -y && \
-    colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
-# ──────────────────────────────────────────────────────
-# Source environment
-# ──────────────────────────────────────────────────────
-SHELL ["/bin/bash", "-c"]
-RUN echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc && \
-    echo "source /workspace/install/setup.bash" >> ~/.bashrc
+# Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
+# Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
+ARG USERNAME=ubuntu
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+RUN if ! id -u $USER_UID >/dev/null 2>&1; then \
+        groupadd --gid $USER_GID $USERNAME && \
+        useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME; \
+    fi
+# Add sudo support for the non-root user
+RUN apt-get update && \
+    apt-get install -y sudo && \
+    echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME
 
-ENTRYPOINT ["bash"]
+# Switch from root to user
+USER $USERNAME
+
+# Add user to video group to allow access to webcam
+RUN sudo usermod --append --groups video $USERNAME
+
+# Update all packages
+RUN sudo apt update && sudo apt upgrade -y
+
+# Install Git
+RUN sudo apt install -y git
+
+# Rosdep update
+RUN rosdep update
+
+# Source the ROS setup file
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
+RUN echo "source install/setup.bash" >> ~/.bashrc
+# Note that sourcing install will fail the first time if the package was not built, this is fine

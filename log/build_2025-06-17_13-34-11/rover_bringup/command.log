@@ -1,4 +1,0 @@
-Invoking command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup -- -j16 -l16
-Invoked command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup -- -j16 -l16
-Invoking command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup
-Invoked command in '/home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/moody/Cislune/Cislune-RE-RASSOR/build/rover_bringup
