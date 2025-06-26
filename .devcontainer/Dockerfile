@@ -3,8 +3,6 @@ ARG UBUNTU_VER=24.04
 
 ####################  BUILD STAGE  ####################
 
-# NOTE: You have to run build_multiarch_container.bash beforehand
-
 # ---------- amd64 ----------
 FROM --platform=linux/amd64 ros:${ROS_DISTRO}-ros-base AS amd64
 
@@ -17,7 +15,18 @@ RUN apt-get update && rm -rf /var/lib/apt/lists/*
 ARG TARGETARCH
 FROM $TARGETARCH AS final
 
-# Set user and permissions
-RUN useradd -m ros2dev && usermod -aG dialout,video ros2dev
-USER ros2dev
-WORKDIR /workspaces/rover_ros2
+# ----- create user that owns host files -----
+ARG HOST_UID=1000
+ARG HOST_GID=${HOST_UID}
+ARG USERNAME=ros2dev
+
+RUN groupadd -g ${HOST_GID} ${USERNAME} \
+ && useradd -m -u ${HOST_UID} -g ${HOST_GID} -s /bin/bash ${USERNAME} \
+ && apt-get update && apt-get install -y sudo \
+ && echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
+ && chmod 0440 /etc/sudoers.d/${USERNAME} \
+ && sudo usermod -aG video,dialout ${USERNAME}
+
+USER ${USERNAME}
+
+WORKDIR /workspaces/Cislune-RE-RASSOR

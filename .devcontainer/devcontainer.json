@@ -4,12 +4,13 @@
        "context": "..",
        "dockerfile": "Dockerfile",
        "args": { 
-           // any build args if needed, e.g. TARGETARCH if used
+            "HOST_UID": "${localEnv:UID}",
+            "HOST_GID": "${localEnv:GID}"
        }
     },
     "runArgs": [
-       "${localWorkspaceFolder}/scripts/devcontainer_init_devices.sh"
+        
     ],
-    "workspaceFolder": "/workspaces/Cislune-RE-RASSOR",
-    "remoteUser": "ros2dev"
+    "remoteUser": "ros2dev",
+    "updateRemoteUserUID": false
 }
