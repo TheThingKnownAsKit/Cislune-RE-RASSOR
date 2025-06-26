@@ -34,7 +34,7 @@ services:
 
   docker_git:
     image: alpine/git:latest         # Small image with git
-    container_name: rerassor_dev
+    container_name: rerassor_dev_git
     volumes:
       - ~/.ssh:/root/.ssh:ro      # Mount host SSH keys (read-only)
       - ~/.gitconfig:/root/.gitconfig:ro  # Mount host Git config (read-only)
