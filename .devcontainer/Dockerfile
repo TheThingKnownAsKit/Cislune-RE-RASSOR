@@ -9,8 +9,6 @@ FROM --platform=linux/amd64 ros:${ROS_DISTRO}-ros-base AS amd64
 # ---------- jetson arm64 ----------
 FROM --platform=linux/arm64 ros:${ROS_DISTRO}-ros-base AS arm64
 
-RUN usermod -aG video,dialout vscode
-
 RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
 ####################  LOAD CORRECT IMAGE ####################
@@ -23,13 +21,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ARG RUNTIME=notnvidia
 
-RUN apt-get update && apt-get -y upgrade \
-    && rm -rf /var/lib/apt/lists/*
-
 USER ${USERNAME}
-
-# Source the ROS setup file
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
 WORKDIR /workspaces/Cislune-RE-RASSOR
 
@@ -80,3 +72,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-nav2-bringup \
     ros-${ROS_DISTRO}-slam-toolbox \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Source the ROS setup file
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc

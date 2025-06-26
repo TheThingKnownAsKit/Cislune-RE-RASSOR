@@ -7,8 +7,21 @@
             
        }
     },
+    "customizations": {
+    "vscode": {
+      "extensions": [
+            "ms-vscode.cpptools",
+            "ms-python.python",
+            "github.vscode-pull-request-github",
+            "smilerobotics.urdf",
+            "morningfrog.urdf-visualizer",
+            "ms-vscode.cmake-tools"
+            ]
+        }
+    },  
     "runArgs": [
         
     ],
-    "remoteUser": "vscode"
+    "remoteUser": "ubuntu",
+    "updateRemoteUserUID": true
 }
