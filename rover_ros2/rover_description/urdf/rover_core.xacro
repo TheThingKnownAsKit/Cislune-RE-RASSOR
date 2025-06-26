@@ -14,12 +14,38 @@
         <color rgba="0.0 0.0 0.0 1.0"/>
     </material>
 
+
+
     <!-- PROPERTIES -->
-    <xacro:property name="wheel_radius" value=""/>
-    <xacro:property name="wheel_length" value=""/>
+    <xacro:property name="wheel_length" value="0.098"/>
+    <xacro:property name="wheel_radius" value="0.115"/>
+    <xacro:property name="wheel_mass" value="0.1"/>
+
+    <xacro:property name="tube_length" value="0.1"/>
+    <xacro:property name="tube_radius" value="0.065"/>
+    <xacro:property name="tube_mass" value="0.1"/>
+
+    <xacro:property name="chassis_width" value="0.19"/>
+    <xacro:property name="chassis_length" value="0.37"/>
+    <xacro:property name="chassis_height" value="0.11"/>
+    <xacro:property name="chassis_mass" value="0.1"/>
+
+    <xacro:property name="chassis_origin" value="${chassis_origin}"/>
+    <xacro:property name="fr_wheel_origin" value="0 0 0"/>
+    <xacro:property name="fl_wheel_origin" value="0 0 0"/>
+    <xacro:property name="br_wheel_origin" value="0 0 0"/>
+    <xacro:property name="bl_wheel_origin" value="0 0 0"/>
+    <xacro:property name="fr_tube_origin" value="0 0 0"/>
+    <xacro:property name="fl_tube_origin" value="0 0 0"/>
+    <xacro:property name="br_tube_origin" value="0 0 0"/>
+    <xacro:property name="bl_tube_origin" value="0 0 0"/>
+
+
 
     <!-- BASE -->
     <link name="base_link"/>
+
+
 
     <!-- CHASSIS -->
     <joint name="chassis_joint" type="fixed">
@@ -27,6 +53,29 @@
         <child link="chassis_link"/>
         <origin xyz="0 0 0"/>
     </joint>
+
+    <link name="chassis_link">
+        <visual>
+            <origin xyz="${chassis_origin}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${chassis_width} ${chassis_length} ${chassis_height}"/>
+            </geometry>
+            <material name="gray"/>
+        </visual>
+        <collision>
+            <origin xyz="${chassis_origin}" rpy="0 0 0"/>
+            <geometry>
+                <box size="${chassis_width} ${chassis_length} ${chassis_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${chassis_mass}" x="${chassis_width}" y="${chassis_length}" z="${chassis_height}">
+            <origin xyz="${chassis_origin}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <gazebo reference="chassis_link">
+        <material>Gazebo/Gray</material>
+    </gazebo>
 
     <!-- WHEEL TUBES -->
 
