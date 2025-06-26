@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Basically this file is only here to store things like materials
+         and properties so they don't clutter up the actual xacros and
+         are easily accessible to change things in one place            -->
+
+
+    <!-- MATERIALS -->
+    <material name="gray">
+        <color rgba="${192/255} ${192/255} ${192/255} 1.0"/>
+    </material>
+
+    <material name="slate_gray">
+        <color rgba="${112/255} ${128/255} ${144/255} 1.0"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+    </material>
+
+
+
+    <!-- PROPERTIES -->
+    <xacro:property name="wheel_length" value="0.098"/>
+    <xacro:property name="wheel_radius" value="0.115"/>
+    <xacro:property name="wheel_mass" value="0.1"/>
+
+    <xacro:property name="tube_length" value="0.1"/>
+    <xacro:property name="tube_radius" value="0.065"/>
+    <xacro:property name="tube_mass" value="0.1"/>
+
+    <xacro:property name="chassis_width" value="0.19"/>
+    <xacro:property name="chassis_length" value="0.37"/>
+    <xacro:property name="chassis_height" value="0.11"/>
+    <xacro:property name="chassis_mass" value="0.1"/>
+
+    <xacro:property name="chassis_origin" value="0.15 0 0.075"/>
+    <xacro:property name="fr_wheel_origin" value="0 0 0"/>
+    <xacro:property name="fl_wheel_origin" value="0 0 0"/>
+    <xacro:property name="br_wheel_origin" value="0 0 0"/>
+    <xacro:property name="bl_wheel_origin" value="0 0 0"/>
+    <xacro:property name="fr_tube_origin" value="0 0 0"/>
+    <xacro:property name="fl_tube_origin" value="0 0 0"/>
+    <xacro:property name="br_tube_origin" value="0 0 0"/>
+    <xacro:property name="bl_tube_origin" value="0 0 0"/>
+
+</robot>
