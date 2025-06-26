@@ -8,16 +8,7 @@
        }
     },
     "runArgs": [
-       "--network=host",
-       "--cap-add=SYS_NICE",
-       "--env", "DISPLAY=${localEnv:DISPLAY}",
-       "--env", "NVIDIA_DRIVER_CAPABILITIES=all",
-       "--volume", "/tmp/.X11-unix:/tmp/.X11-unix",
-       "--device", "/dev/ttyUSB0:/dev/ttyUSB0",
-       "--device", "/dev/ttyACM0:/dev/ttyACM0",
-       "--device", "/dev/video0:/dev/video0",
-       "--device", "/dev/dri:/dev/dri",
-       "--gpus", "all"
+       "${localWorkspaceFolder}/scripts/devcontainer_init_devices.sh"
     ],
     "workspaceFolder": "/workspaces/Cislune-RE-RASSOR",
     "remoteUser": "ros2dev"
