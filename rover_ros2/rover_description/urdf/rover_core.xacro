@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+    <!-- MATERIALS -->
+    <material name="gray">
+        <color rgba="${192/255} ${192/255} ${192/255} 1.0"/>
+    </material>
+
+    <material name="slate_gray">
+        <color rgba="${112/255} ${128/255} ${144/255} 1.0"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+    </material>
+
+    <!-- PROPERTIES -->
+    <xacro:property name="wheel_radius" value=""/>
+    <xacro:property name="wheel_length" value=""/>
+
+    <!-- BASE -->
+    <link name="base_link"/>
+
+    <!-- CHASSIS (including wheel tubes) -->
+
+    <!-- WHEELS -->
+
+</robot>
