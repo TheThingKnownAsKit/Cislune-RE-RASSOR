@@ -1,0 +1,26 @@
+services:
+  rosdev:
+    build: .
+    container_name: ros2_dev
+    network_mode: "host"
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1        # (optional, avoids some shared memory issues)
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/ttyACM0:/dev/ttyACM0"
+      - "/dev/video0:/dev/video0"
+      - "/dev/input/js0:/dev/input/js0"
+      - "/dev/dri:/dev/dri"             # if using non-NVIDIA GPU (Intel/AMD)
+    volumes:
+      - .:/workspaces/Cislune-RE-RASSOR:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1        # or "all"
+              capabilities: [gpu]
+    cap_add:
+      - SYS_NICE               # For real-time scheduling

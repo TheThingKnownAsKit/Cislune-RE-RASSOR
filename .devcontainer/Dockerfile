@@ -1,55 +1,27 @@
-FROM osrf/ros:jazzy-desktop
+ARG ROS_DISTRO=jazzy
+ARG UBUNTU_VER=24.04
+ARG RUNTIME=
+ARG TARGETARCH=
+ARG CUDA_VARIANT=off
 
-ENV DEBIAN_FRONTEND=noninteractive
+####################  SELECT BASE BY ARCH  ####################
+FROM ${CUDA_VARIANT}-selector as choose
 
-# Install required packages as root
-USER root
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    # ROS 2 control stack
-    ros-${ROS_DISTRO}-ros2-control \
-    ros-${ROS_DISTRO}-ros2-controllers \
-    ros-${ROS_DISTRO}-rplidar-ros \
-    # ROS–Gazebo integration
-    ros-${ROS_DISTRO}-ros-gz \
-    ros-${ROS_DISTRO}-gz-ros2-control \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# ---------- amd64 ----------
+FROM --platform=linux/amd64 ros:${ROS_DISTRO}-ros-base AS amd64
 
-# (Optional) Install additional tools: build essentials, Python3 pip, etc.
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential python3-pip
+# ---------- jetson arm64 ----------
+FROM --platform=linux/arm64 ros:${ROS_DISTRO}-ros-base AS jetson
 
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+# Build and push both arch variants with the below command
+# docker buildx build \
+#   --push \
+#   --platform linux/amd64,linux/arm64 \
+#   -t ghcr.io/yourorg/ros2:jazzy-dev .
 
-# Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
-# Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
-ARG USERNAME=ubuntu
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-RUN if ! id -u $USER_UID >/dev/null 2>&1; then \
-        groupadd --gid $USER_GID $USERNAME && \
-        useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME; \
-    fi
-# Add sudo support for the non-root user
-RUN apt-get update && \
-    apt-get install -y sudo && \
-    echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
-    chmod 0440 /etc/sudoers.d/$USERNAME
-
-# Switch from root to user
-USER $USERNAME
-
-# Add user to video group to allow access to webcam
-RUN sudo usermod --append --groups video $USERNAME
-
-# Update all packages
-RUN sudo apt update && sudo apt upgrade -y
-
-# Install Git
-RUN sudo apt install -y git
-
-# Rosdep update
-RUN rosdep update
-
-# Source the ROS setup file
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
-RUN echo "source install/setup.bash" >> ~/.bashrc
-# Note that sourcing install will fail the first time if the package was not built, this is fine
+####################  RUNTIME STAGE  ####################
+FROM ${TARGETARCH} AS final            # BuildKit selects amd64/arm64 stage
+COPY --from=${TARGETARCH} / /          # copy rootfs
+RUN useradd -m ros2dev && usermod -aG dialout,video vscode
+USER ros2dev                           # good practice for devcontainer
+WORKDIR /workspaces/rover_ros2 # might need to change this

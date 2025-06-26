@@ -3,7 +3,7 @@ services:
     platform: linux/amd64
     build:
       context: ..                 # build context is the root workspace directory
-      dockerfile: Dockerfile
+      dockerfile: .devcontainer/Dockerfile
     working_dir: /workspace   # Set working directory inside the container
     image: rerassor_dev:latest  # Name of the built image
     container_name: rerassor_dev

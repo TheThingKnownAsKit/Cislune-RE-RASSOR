@@ -1,22 +1,24 @@
 {
-  "name": "ROS2 Dev",
-  "dockerComposeFile": [
-    "compose.yaml"
-  ],
-  "service": "dev",
-  "workspaceFolder": "/workspace/${localWorkspaceFolderBasename}",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-            "ms-vscode.cpptools",
-            "ms-python.python",
-            "github.vscode-pull-request-github",
-            "smilerobotics.urdf",
-            "morningfrog.urdf-visualizer",
-            "ms-vscode.cmake-tools"
-        ]
-    }
-  },
-  "remoteUser": "ubuntu",
-  "updateRemoteUserUID": false
+    "name": "ROS2 Dev Container",
+    "build": {
+       "context": "..",
+       "dockerfile": "Dockerfile",
+       "args": { 
+           // any build args if needed, e.g. TARGETARCH if used
+       }
+    },
+    "runArgs": [
+       "--network=host",
+       "--cap-add=SYS_NICE",
+       "--env", "DISPLAY=${localEnv:DISPLAY}",
+       "--env", "NVIDIA_DRIVER_CAPABILITIES=all",
+       "--volume", "/tmp/.X11-unix:/tmp/.X11-unix",
+       "--device", "/dev/ttyUSB0:/dev/ttyUSB0",
+       "--device", "/dev/ttyACM0:/dev/ttyACM0",
+       "--device", "/dev/video0:/dev/video0",
+       "--device", "/dev/dri:/dev/dri",
+       "--gpus", "all"
+    ],
+    "workspaceFolder": "/workspaces/Cislune-RE-RASSOR",
+    "remoteUser": "ros2dev"
 }
