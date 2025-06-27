@@ -22,6 +22,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG RUNTIME=notnvidia
 
 USER ${USERNAME}
+# RUN sudo echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
+#     chmod 0440 /etc/sudoers.d/$USERNAME
 
 WORKDIR /workspaces/Cislune-RE-RASSOR
 
@@ -67,6 +69,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # ROS–Gazebo integration
     ros-${ROS_DISTRO}-ros-gz \
     ros-${ROS_DISTRO}-gz-ros2-control \
+    ros-${ROS_DISTRO}-xacro \
+    ros-${ROS_DISTRO}-joint-state-publisher-gui \
+    ros-${ROS_DISTRO}-robot-state-publisher \
     # Navigation stack
     ros-${ROS_DISTRO}-navigation2 \
     ros-${ROS_DISTRO}-nav2-bringup \

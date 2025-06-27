@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="re-rassor">
+
+  <!-- Properties and materials -->
+  <xacro:include filename="config.xacro"/>
+
+  
+
+  <!-- Templates -->
+  <xacro:include filename="inertial_macros.xacro"/>
+  <xacro:include filename="cylinder_macro.xacro"/>
+
+
+
+  <!-- Parts -->
+  <xacro:include filename="rover_core.xacro"/>
+  <xacro:include filename="camera.xacro"/>
+  <xacro:include filename="ros2_control.xacro"/>
+
+</robot>
