@@ -36,7 +36,7 @@
     <xacro:property name="chassis_mass" value="0.1"/>
 
     <xacro:property name="chassis_origin" value="0 0 0.055"/>
-    <xacro:property name="fr_wheel_origin" value="0 0 0"/>
+    <xacro:property name="fr_wheel_origin" value="0 ${tube_length/2} 0"/>
     <xacro:property name="fl_wheel_origin" value="0 0 0"/>
     <xacro:property name="br_wheel_origin" value="0 0 0"/>
     <xacro:property name="bl_wheel_origin" value="0 0 0"/>

@@ -36,3 +36,7 @@ bl tube to chassis
     x: -(half of chassis length - radius round down)
     y: -i have no idea
     z: tube radius
+any wheel to any tube:
+    x: 0
+    y: half of tube length (some will be negative)
+    z: 0
