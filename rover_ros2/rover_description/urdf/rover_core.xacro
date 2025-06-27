@@ -28,7 +28,7 @@
             </geometry>
         </collision>
         <xacro:inertial_box mass="${chassis_mass}" x="${chassis_width}" y="${chassis_length}" z="${chassis_height}">
-            <origin xyz="${chassis_origin}" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
 
@@ -36,7 +36,67 @@
         <material>Gazebo/Gray</material>
     </gazebo>
 
+
+
     <!-- WHEEL TUBES -->
+    <joint name="fr_tube_joint" type="fixed">
+        <parent link="chassis_link"/>
+        <child link="fr_tube_link"/>
+        <origin xyz="${fr_tube_origin}" rpy="${pi/2} 0 0"/>
+    </joint>
+
+    <link name="fr_tube_link">
+        <xacro:cylinder_macro
+            mass="${tube_mass}" radius="${tube_radius}"
+            length="${tube_length}" material="slate_gray">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:cylinder_macro>
+    </link>
+
+
+    <joint name="fl_tube_joint" type="fixed">
+        <parent link="chassis_link"/>
+        <child link="fl_tube_link"/>
+        <origin xyz="${fl_tube_origin}" rpy="${pi/2} 0 0"/>
+    </joint>
+
+    <link name="fl_tube_link">
+        <xacro:cylinder_macro
+            mass="${tube_mass}" radius="${tube_radius}"
+            length="${tube_length}" material="slate_gray">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:cylinder_macro>
+    </link>
+
+    <joint name="br_tube_joint" type="fixed">
+        <parent link="chassis_link"/>
+        <child link="br_tube_link"/>
+        <origin xyz="${br_tube_origin}" rpy="${pi/2} 0 0"/>
+    </joint>
+
+    <link name="br_tube_link">
+        <xacro:cylinder_macro
+            mass="${tube_mass}" radius="${tube_radius}"
+            length="${tube_length}" material="slate_gray">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:cylinder_macro>
+    </link>
+
+    <joint name="bl_tube_joint" type="fixed">
+        <parent link="chassis_link"/>
+        <child link="bl_tube_link"/>
+        <origin xyz="${bl_tube_origin}" rpy="${pi/2} 0 0"/>
+    </joint>
+
+    <link name="bl_tube_link">
+        <xacro:cylinder_macro
+            mass="${tube_mass}" radius="${tube_radius}"
+            length="${tube_length}" material="slate_gray">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:cylinder_macro>
+    </link>
+    
+    
 
     <!-- WHEELS -->
 

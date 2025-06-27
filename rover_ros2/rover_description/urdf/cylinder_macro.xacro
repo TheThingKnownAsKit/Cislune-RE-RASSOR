@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <xacro:macro name="wheel" params="mass radius length material *origin">
+    <xacro:macro name="cylinder_macro" params="mass radius length material *origin">
         <visual>
             <geometry>
                 <cylinder radius="${radius}" length="${length}"/>    

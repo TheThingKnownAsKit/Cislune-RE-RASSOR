@@ -8,6 +8,7 @@
 
   <!-- Templates -->
   <xacro:include filename="inertial_macros.xacro"/>
+  <xacro:include filename="cylinder_macro.xacro"/>
 
 
 
