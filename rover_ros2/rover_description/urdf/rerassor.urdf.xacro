@@ -46,7 +46,7 @@
     </link>
 
     <!-- Base link is root of the robot -->
-    <joint name="base_link_fixed" type="fixed">
+    <joint name="base_link" type="fixed">
         <parent link="world"/>
         <child link="base_link"/>
     </joint>

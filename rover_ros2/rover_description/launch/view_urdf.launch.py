@@ -7,10 +7,10 @@ import os, xacro
 
 def generate_launch_description():
     pkg_share = os.path.join('/', get_package_share_directory('rover_description'))
-    xacro_path = PathJoinSubstitution([pkg_share, 'urdf', 'rerassor.urdf.xacro'])
+    xacro_file = PathJoinSubstitution([pkg_share, 'urdf', 'rerassor.urdf.xacro'])
 
     robot_description_content = Command(
-        ['xacro', '--inorder', xacro_file])
+        ['xacro ', xacro_file])
     robot_description = ParameterValue(
         robot_description_content, value_type=str)
     
