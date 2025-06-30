@@ -66,6 +66,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-slam-toolbox \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /workspaces/Cislune-RE-RASSOR
-
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh

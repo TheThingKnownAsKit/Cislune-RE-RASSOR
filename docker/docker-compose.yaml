@@ -1,7 +1,9 @@
 # This is the base compose file. GPU specifications will be overriden by others
 services:
   rosdev:
-    build: ..
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     container_name: ros2_dev
     network_mode: host
     environment:
@@ -9,7 +11,7 @@ services:
       - QT_X11_NO_MITSHM=1        # (optional, avoids some shared memory issues)
       - XDG_RUNTIME_DIR=/tmp/runtime-ubuntu
     volumes:
-      - ../../workspaces/Cislune-RE-RASSOR:rw
+      - ../..:/workspaces:rw
     cap_add:
       - SYS_NICE               # For real-time scheduling
     device_cgroup_rules:
@@ -42,4 +44,4 @@ volumes:
 # docker compose -f docker-compose.yaml -f docker-compose.amd.yaml up -d
 #
 # Only do one of the above then run docker compose exec rosdev /bin/bash
-# Then use vscode remote explorer->right click on ros2_dev->attach in current window
+# Then use vscode containers->right click on ros2_dev->attach in current window
