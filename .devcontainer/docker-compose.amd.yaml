@@ -1,0 +1,7 @@
+services:
+  rosdev:
+    # Using AMD GPU – either via AMD runtime or device mapping
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    environment:
+      - ROC_ENABLE_PRE_VEGA=1   # (example env if needed for older AMD GPUs)

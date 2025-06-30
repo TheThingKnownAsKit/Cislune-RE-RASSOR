@@ -1,21 +1,15 @@
+# This is the base compose file. GPU specifications will be overriden by others
+version: "2.3"
 services:
   rosdev:
     build: .
     container_name: ros2_dev
-    network_mode: "host"
+    network_mode: host
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1        # (optional, avoids some shared memory issues)
     volumes:
       - .:/workspaces/Cislune-RE-RASSOR:rw
-      - /tmp/.X11-unix:/tmp/.X11-unix
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1        # or "all"
-              capabilities: [gpu]
     cap_add:
       - SYS_NICE               # For real-time scheduling
     device_cgroup_rules:
@@ -24,14 +18,21 @@ services:
       - 'c 188:* rmw'
       - 'c 81:* rmw'      # all V4L2 cameras
       - 'c 189:* rmw'     # Generic USB
+    tty: true
+    stdin_open: true
 
-docker_git:
-    image: alpine/git:latest      # Small image with git
-    container_name: articubot_git
-    volumes:
-      - ~/.ssh:/root/.ssh:ro      # Mount host SSH keys (read-only)
-      - ~/.gitconfig:/root/.gitconfig:ro  # Mount host Git config (read-only)
-    network_mode: host            # share network (optional; not strictly needed for git)
-    entrypoint: "/bin/sh"
-    # This container is used on-demand for Git operations, e.g.:
-    # `docker-compose run docker_git git push`
+
+  docker_git:
+      image: alpine/git:latest      # Small image with git
+      container_name: articubot_git
+      volumes:
+        - ~/.ssh:/root/.ssh:ro      # Mount host SSH keys (read-only)
+        - ~/.gitconfig:/root/.gitconfig:ro  # Mount host Git config (read-only)
+      network_mode: host            # share network (optional; not strictly needed for git)
+      entrypoint: "/bin/sh"
+      # This container is used on-demand for Git operations, e.g.:
+      # `docker-compose run docker_git git push`
+
+# Bring vscode extensions with you into the docker environment
+volumes:
+  vscode_cache:
