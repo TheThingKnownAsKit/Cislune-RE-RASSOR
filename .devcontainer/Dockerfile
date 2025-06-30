@@ -21,12 +21,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 ARG RUNTIME=notnvidia
 
-USER ${USERNAME}
-# RUN sudo echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
-#     chmod 0440 /etc/sudoers.d/$USERNAME
-
-WORKDIR /workspaces/Cislune-RE-RASSOR
-
 # ----- install dependencies -----
 # Install common programs
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -78,5 +72,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-slam-toolbox \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Source the ROS setup file
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
+WORKDIR /workspaces/Cislune-RE-RASSOR
+
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh
