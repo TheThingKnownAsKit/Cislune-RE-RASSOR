@@ -1,43 +1,39 @@
 <?xml version='1.0'?>
-
 <robot name="paver" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
-  <xacro:property name="paverSize" value="0.01"/>
-  <xacro:property name="paverMass" value="1"/>
-
-  <link name="paver_link">
-    <visual name="paver_visual">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="file://meshes/paver.dae" scale="0.01 0.01 0.01"/>
-      </geometry>
-    </visual>
-    <collision name="paver_collision">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="file://meshes/paver.dae" scale="0.01 0.01 0.01"/>
-      </geometry>
-      <surface>
-        <friction>
-          <mu>0.5</mu>
-          <mu2>0.5</mu2>
-        </friction>
-      </surface>
-    </collision>
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="${paverMass}"/>
-      <inertia ixx="0.329" ixy="0" ixz="0" iyy="0.329" iyz="0" izz="0.625"/>
-    </inertial>
-  </link>
-
-  <gazebo reference="paver_link">
-    <selfCollide>1</selfCollide>
-    <mu1 value="0.5"/>
-    <mu2 value="0.5"/>
-    <kp value="10000000.0" />
-    <kd value="1.0" />
-    <fdir1 value="1 0 0"/>
-  </gazebo>
-
+    <xacro:property name="paverSize" value="0.01"/>
+    <xacro:property name="paverMass" value="1"/>
+    <link name="paver_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <xacro:call macro="cylinder_inertia" m="${paverMass}" r="0.955" h="0.275"/>
+        </inertial>
+        <visual name="paver_visual">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.955" length="0.275"/>
+            </geometry>
+        </visual>
+        <collision name="paver_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.955" length="0.275"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <mu>0.5</mu>
+                    <mu2>0.5</mu2>
+                </friction>
+            </surface>
+        </collision>
+    </link>
+    <!-- Paver is attached via a hinge to the base_link in the main URDF -->
+    <xacro:macro name="paver" params="">
+        <joint name="paver_hinge_joint" type="revolute">
+            <origin xyz="0 1.2 0" rpy="0 0 0"/>
+            <parent link="base_link"/>
+            <child link="paver_link"/>
+            <axis xyz="1 0 0"/>
+            <limit lower="0" upper="1.57" effort="50" velocity="1.0"/>
+        </joint>
+    </xacro:macro>
 </robot>

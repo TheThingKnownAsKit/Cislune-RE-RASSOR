@@ -1,64 +1,42 @@
 <?xml version='1.0'?>
-
-<robot name="rerassor"
-    xmlns:xacro="http://www.ros.org/wiki/xacro">
-    
+<robot name="ezrassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Macro defining the wheel geometry (cylinder) -->
     <xacro:macro name="wheel_mesh">
-        <mesh filename="file://$(find rerassor_sim_description)/meshes/wheel.dae" scale="0.35 0.35 0.35"></mesh>
+        <cylinder radius="0.18" length="0.2"/>
     </xacro:macro>
 
-    <!--This xacro block sets a new driving wheel for the robot. 
-    
-        Inputs:
-            wheel_prefix: the name that will be used to reference this wheel
-            yaw: the yaw value that will be used for the wheel link
-            joint_origin: an origin tag representing the xyz,rpy for the wheel joint
-    -->
-    <xacro:macro name="rerassor_wheel" params="wheel_prefix yaw *joint_origin">
-
+    <!-- The wheel module macro (if it were used) -->
+    <xacro:macro name="ezrassor_wheel" params="wheel_prefix parent xyz rpy yaw">
         <link name="${wheel_prefix}">
             <inertial>
-                <origin xyz="0 0 0" rpy="0 0 ${yaw}" />
-                <mass value="5"/>
-                <xacro:cylinder_inertia m="5" r="0.18" h="0.2"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <xacro:call macro="cylinder_inertia" m="5" r="0.18" h="0.2"/>
             </inertial>
             <visual name="${wheel_prefix}_visual">
                 <origin xyz="0 0 0" rpy="0 0 ${yaw}"/>
                 <geometry>
-                    <xacro:wheel_mesh />
+                    <xacro:wheel_mesh/>
                 </geometry>
             </visual>
-            <collision name="collision">
+            <collision name="${wheel_prefix}_collision">
                 <origin xyz="0 0 0" rpy="0 0 ${yaw}"/>
                 <geometry>
-                    <xacro:wheel_mesh />
+                    <xacro:wheel_mesh/>
                 </geometry>
                 <surface>
                     <friction>
-                        <mu> 1.5 </mu>
-                        <mu2> 1.5 </mu2>
+                        <mu>1.5</mu>
+                        <mu2>1.5</mu2>
                     </friction>
                 </surface>
             </collision>
         </link>
-
-        <gazebo reference="${wheel_prefix}">
-            <selfCollide>1</selfCollide>
-            <mu1 value="1.5"/>
-            <mu2 value="1.5"/>
-            <kp value="10000000.0" />
-            <kd value="1.0" />
-            <fdir1 value="1 0 0"/>
-        </gazebo>
-
         <joint name="${wheel_prefix}_joint" type="continuous">
-            <xacro:insert_block name="joint_origin"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${parent}"/>
             <child link="${wheel_prefix}"/>
-            <parent link="base_link"/>
-            <axis xyz="0 1 0" rpy="0 0 0"/>
-            <dynamics damping="0.2"/>
+            <axis xyz="0 1 0"/>
+            <limit effort="1000" velocity="5"/>
         </joint>
-
     </xacro:macro>
-
 </robot>
