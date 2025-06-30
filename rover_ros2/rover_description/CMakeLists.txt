@@ -8,8 +8,9 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(xacro REQUIRED)
+find_program(GZ_EXECUTABLE gz)
 
-install(DIRECTORY urdf rviz urdf/meshes launch
+install(DIRECTORY urdf rviz launch
   DESTINATION share/${PROJECT_NAME}
 )
 

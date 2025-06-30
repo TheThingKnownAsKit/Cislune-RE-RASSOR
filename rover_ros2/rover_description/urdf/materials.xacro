@@ -33,4 +33,11 @@
     <material name="white">
         <color rgba="1.0 1.0 1.0 1.0"/>
     </material>
+
+    <material name="chassis_color">
+        <color rgba="0.6 0.6 0.6 1.0"/>  <!-- gray -->
+    </material>
+    <material name="wheel_color">
+        <color rgba="0.0 0.0 0.0 1.0"/>  <!-- black -->
+    </material>
 </robot>
