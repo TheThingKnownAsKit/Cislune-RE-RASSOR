@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
-<robot name="ezrassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- Macro to add a depth camera to a given parent link -->
-    <xacro:macro name="ezrassor_camera" params="camera_prefix parent x y z">
+    <xacro:macro name="rerassor_camera" params="camera_prefix parent x y z">
         <!-- Camera link and fixed optical frame -->
         <link name="${camera_prefix}_link">
             <inertial>

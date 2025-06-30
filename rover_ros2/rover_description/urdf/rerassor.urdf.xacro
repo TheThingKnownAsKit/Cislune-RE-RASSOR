@@ -1,11 +1,11 @@
 <?xml version='1.0'?>
-<robot name="ezrassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:property name="cameraSize" value="0.01"/>
     <xacro:property name="cameraMass" value="0.1"/>
-    <xacro:include filename="$(find ezrassor_sim_description)/urdf/macros.xacro" />
-    <xacro:include filename="$(find ezrassor_sim_description)/urdf/materials.xacro" />
-    <xacro:include filename="$(find ezrassor_sim_description)/urdf/imu.xacro" />
+    <xacro:include filename="$(find rerassor_sim_description)/urdf/macros.xacro" />
+    <xacro:include filename="$(find rerassor_sim_description)/urdf/materials.xacro" />
+    <xacro:include filename="$(find rerassor_sim_description)/urdf/imu.xacro" />
     
     <!-- Camera position guesstimated to align with the mast -->
     <xacro:property name="camera_x" value="0.0"/>
@@ -185,17 +185,17 @@
     </joint>
 
     <!-- Paver attachment (compactor plate) -->
-    <xacro:include filename="$(find ezrassor_sim_description)/urdf/paver.xacro" />
+    <xacro:include filename="$(find rerassor_sim_description)/urdf/paver.xacro" />
     <xacro:paver/>
 
     <!-- Depth camera attachment -->
-    <xacro:include filename="$(find ezrassor_sim_description)/urdf/camera.xacro" />
-    <xacro:ezrassor_camera camera_prefix="depth_camera" parent="base_link"
+    <xacro:include filename="$(find rerassor_sim_description)/urdf/camera.xacro" />
+    <xacro:rerassor_camera camera_prefix="depth_camera" parent="base_link"
                            x="${camera_x}" y="${camera_y}" z="${camera_z}" />
 
     <!-- IMU attachment -->
-    <xacro:include filename="$(find ezrassor_sim_description)/urdf/imu.xacro" />
-    <xacro:ezrassor_imu imu_prefix="imu_link" parent="base_link"
+    <xacro:include filename="$(find rerassor_sim_description)/urdf/imu.xacro" />
+    <xacro:rerassor_imu imu_prefix="imu_link" parent="base_link"
                         xyz="0 0 0.2" rpy="0 0 0" />
 
     <!-- Depth camera sensor (Gazebo Sim format) -->

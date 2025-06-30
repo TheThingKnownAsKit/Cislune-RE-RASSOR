@@ -1,12 +1,12 @@
 <?xml version='1.0'?>
-<robot name="ezrassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <!-- Macro defining the wheel geometry (cylinder) -->
     <xacro:macro name="wheel_mesh">
         <cylinder radius="0.18" length="0.2"/>
     </xacro:macro>
 
     <!-- The wheel module macro (if it were used) -->
-    <xacro:macro name="ezrassor_wheel" params="wheel_prefix parent xyz rpy yaw">
+    <xacro:macro name="rerassor_wheel" params="wheel_prefix parent xyz rpy yaw">
         <link name="${wheel_prefix}">
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
