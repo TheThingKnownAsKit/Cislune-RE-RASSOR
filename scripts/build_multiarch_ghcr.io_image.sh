@@ -1,5 +1,4 @@
 #----- THIS FILE ONLY NEEDS TO RUN WHEN UPDATING THE PUBLIC MULTI-ARCH IMAGE IN GHCR.IO -----
-# Otherwise use the build in Dev Container: Rebuild and Reopen in Container command
 
 #!/usr/bin/env bash
 set -euo pipefail
