@@ -8,6 +8,7 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1        # (optional, avoids some shared memory issues)
+      - XDG_RUNTIME_DIR=/tmp/runtime-ubuntu
     volumes:
       - .:/workspaces/Cislune-RE-RASSOR:rw
     cap_add:
@@ -38,5 +39,5 @@ volumes:
   vscode_cache:
 
 # Commands for composing:
-# docker-compose -f docker-compose.yml -f docker-compose.nvidia.yml up
-# docker-compose -f docker-compose.yml -f docker-compose.amd.yml up
+# docker compose -f docker-compose.yaml -f docker-compose.nvidia.yaml up
+# docker compose -f docker-compose.yaml -f docker-compose.amd.yaml up
