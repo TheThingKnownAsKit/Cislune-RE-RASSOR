@@ -1,5 +1,4 @@
 # This is the base compose file. GPU specifications will be overriden by others
-version: "2.3"
 services:
   rosdev:
     build: .
@@ -39,5 +38,8 @@ volumes:
   vscode_cache:
 
 # Commands for composing:
-# docker compose -f docker-compose.yaml -f docker-compose.nvidia.yaml up
-# docker compose -f docker-compose.yaml -f docker-compose.amd.yaml up
+# docker compose -f docker-compose.yaml -f docker-compose.nvidia.yaml up -d
+# docker compose -f docker-compose.yaml -f docker-compose.amd.yaml up -d
+#
+# Only do one of the above then run docker compose exec rosdev /bin/bash
+# Then use vscode containers->right click on moby->attach vscode

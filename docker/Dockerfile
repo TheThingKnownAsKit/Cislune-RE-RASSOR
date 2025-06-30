@@ -3,23 +3,17 @@ ARG UBUNTU_VER=24.04
 
 ####################  BUILD STAGE  ####################
 
-# ---------- amd64 ----------
-FROM --platform=linux/amd64 ros:${ROS_DISTRO}-ros-base AS amd64
-
-# ---------- jetson arm64 ----------
-FROM --platform=linux/arm64 ros:${ROS_DISTRO}-ros-base AS arm64
-
-RUN apt-get update && rm -rf /var/lib/apt/lists/*
-
-####################  LOAD CORRECT IMAGE ####################
 ARG TARGETARCH
-FROM $TARGETARCH AS final
+
+FROM --platform=${TARGETARCH} ros:${ROS_DISTRO}-ros-base
 
 ####################  RUNTIME STAGE ####################
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG RUNTIME=notnvidia
+
+RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
 # ----- install dependencies -----
 # Install common programs
