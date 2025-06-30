@@ -36,3 +36,7 @@ services:
 # Bring vscode extensions with you into the docker environment
 volumes:
   vscode_cache:
+
+# Commands for composing:
+# docker-compose -f docker-compose.yml -f docker-compose.nvidia.yml up
+# docker-compose -f docker-compose.yml -f docker-compose.amd.yml up
