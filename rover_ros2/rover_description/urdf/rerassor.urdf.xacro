@@ -60,15 +60,14 @@
 		<collision name='collision'>
 			<origin xyz="0 0 0" rpy=" 0 0 0"/>
 			<geometry>
-				<box size="0.4 0.3 0.2"/>
+       			<mesh filename="file://meshes/base_unit.dae" scale="0.01 0.01 0.01"></mesh>
 			</geometry>
 		</collision>
 		<visual name='base_link_visual'>
 			<origin xyz="0 0 0" rpy=" 0 0 0"/>
 			<geometry>
-				<box size="0.4 0.3 0.2"/>
+        		<mesh filename="file://meshes/base_unit.dae" scale="0.01 0.01 0.01"></mesh>
 			</geometry>
-			<material name="chassis_color"/>
 		</visual>
 	</link>
     
@@ -92,14 +91,13 @@
 		<visual name="left_wheel_front_visual">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>  <!-- Wheel approx: 20cm diameter, 5cm thick -->
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
-			<material name="wheel_color"/>
 		</visual>
 		<collision name="collision">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
 			<surface>
 				<friction>
@@ -137,14 +135,13 @@
 		<visual name="right_wheel_front_visual">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
-			<material name="wheel_color"/>
 		</visual>
 		<collision name="collision">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
 			<surface>
 				<friction>
@@ -182,14 +179,13 @@
 		<visual name="right_back_front_visual">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
-			<material name="wheel_color"/>
 		</visual>
 		<collision name="collision">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
 			<surface>
 				<friction>
@@ -227,14 +223,13 @@
 		<visual name="left_back_front_visual">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
-			<material name="wheel_color"/>
 		</visual>
 		<collision name="collision">
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<cylinder radius="0.1" length="0.05"/>
+				<mesh filename="file://meshes/wheel.dae" scale="0.01 0.01 0.01"/>
 			</geometry>
 			<surface>
 				<friction>
