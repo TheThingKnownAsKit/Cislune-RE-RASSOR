@@ -12,14 +12,16 @@
     <xacro:property name="camera_y" value="0.3"/>
     <xacro:property name="camera_z" value="1.5"/>
 
+	<link name="base_link"></link>
+
     <!-- Base link (main body) -->
-    <link name="base_link">
+    <link name="chassis_link">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <!-- Using box inertia approximation for main body -->
             <xacro:call macro="box_inertia" m="50" x="1.0" y="1.5" z="0.3"/>
         </inertial>
-        <collision name='base_link_collision'>
+        <collision name='chassis_link_collision'>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
                 <box size="2.058 4.327 2.917"/>
@@ -36,7 +38,7 @@
                 </contact>
             </surface>
         </collision>
-        <visual name='base_link_visual'>
+        <visual name='chassis_link_visual'>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
                 <box size="2.058 4.327 2.917"/>
@@ -46,12 +48,12 @@
     </link>
 
     <!-- Base link is root of the robot -->
-    <joint name="base_link" type="fixed">
-        <parent link="world"/>
-        <child link="base_link"/>
+    <joint name="chassis_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis_link"/>
     </joint>
 
-    <!-- Four Wheels attached to base_link -->
+    <!-- Four Wheels attached to chassis_link -->
     <!-- Left Front Wheel -->
     <link name="left_wheel_front_link">
         <inertial>
@@ -190,12 +192,12 @@
 
     <!-- Depth camera attachment -->
     <xacro:include filename="$(find rover_description)/urdf/camera.xacro" />
-    <xacro:rerassor_camera camera_prefix="depth_camera" parent="base_link"
+    <xacro:rerassor_camera camera_prefix="depth_camera" parent="chassis_link"
                            x="${camera_x}" y="${camera_y}" z="${camera_z}" />
 
     <!-- IMU attachment -->
     <xacro:include filename="$(find rover_description)/urdf/imu.xacro" />
-    <xacro:rerassor_imu imu_prefix="imu_link" parent="base_link"
+    <xacro:rerassor_imu imu_prefix="imu_link" parent="chassis_link"
                         imu_size="${cameraSize}" xyz="0 0 0.2" rpy="0 0 0" />
 
     <!-- Depth camera sensor (Gazebo Sim format) -->
