@@ -11,12 +11,13 @@ def generate_launch_description():
     robot_description_content = Command(['xacro ', xacro_file])
     robot_description = ParameterValue(robot_description_content, value_type=str)
 
-    return LaunchDescription([
-        # publishes TF and robot_description
-        Node(package='robot_state_publisher',
+    rsp = Node(package='robot_state_publisher',
              executable='robot_state_publisher',
              parameters=[{
                 'robot_description': robot_description
              }],
              output='screen')
+
+    return LaunchDescription([
+        rsp
     ])

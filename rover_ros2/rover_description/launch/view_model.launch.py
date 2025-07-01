@@ -13,7 +13,7 @@ def generate_launch_description():
 
     # Call the separate robot state publisher launcher
     rsp = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(pkg_share), 'launch', 'robot_state_publisher.launch.py']),
+        PythonLaunchDescriptionSource([PathJoinSubstitution([(pkg_share), 'launch', 'robot_state_publisher.launch.py'])]),
         launch_arguments={'use_sim_time': 'true'}.items()
     )
 
