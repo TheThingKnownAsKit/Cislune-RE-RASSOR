@@ -47,6 +47,7 @@
             <sensor name="${camera_prefix}_sensor" type="depth">
                 <always_on>0</always_on>
                 <update_rate>1</update_rate>
+                <topic>camera</topic>
                 <camera name="${camera_prefix}_depth_camera">
                     <horizontal_fov>1.29154</horizontal_fov>
                     <image>
@@ -66,18 +67,6 @@
                         <center>0.5 0.5</center>
                     </distortion>
                 </camera>
-                <plugin name="${camera_prefix}_controller" filename="libgazebo_ros_camera.so">
-                    <ros>
-                        <remapping>custom_camera/image_raw:=color/image_raw</remapping>
-                        <remapping>custom_camera/image_depth:=depth/image_raw</remapping>
-                        <remapping>custom_camera/camera_info_depth:=depth/camera_info</remapping>
-                        <remapping>custom_camera/points:=depth/points</remapping>
-                    </ros>
-                    <camera_name>front_camera</camera_name>
-                    <frame_name>depth_camera_front</frame_name>
-                    <hack_baseline>0.07</hack_baseline>
-                    <min_depth>0.001</min_depth>
-                </plugin>
             </sensor>
         </gazebo>
 

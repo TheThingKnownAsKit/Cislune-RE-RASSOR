@@ -1,53 +1,79 @@
-import os, xacro, tempfile
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
+import os, xacro, tempfile
 
 def generate_launch_description():
 
     # ----- Directories
     pkg_description = get_package_share_directory('rover_description')
     pkg_sim = get_package_share_directory('rover_sim')
-    pkg_rosgz = get_package_share_directory('rosgz')
+    pkg_rosgz = get_package_share_directory('ros_gz_sim')
     pkg_bridge = get_package_share_directory('ros_gz_bridge')
 
     world_path = PathJoinSubstitution([pkg_sim, 'worlds', LaunchConfiguration('world')])
+    bridge_config_path = PathJoinSubstitution([pkg_sim, 'config', 'rosgz_bridge.yaml'])
+
+    # expand Xacro → URDF *once* and write to a temp file
+    #   (literally the only reason we need to do this is because RosGzBridge is bugged)
+    xacro_file = os.path.join(pkg_description, 'urdf', 'rerassor.xacro.urdf')
+    urdf_xml   = xacro.process_file(xacro_file).toxml()
+    tmp_urdf   = tempfile.NamedTemporaryFile(delete=False,
+                                             suffix='.urdf',
+                                             prefix='articubot_')
+    tmp_urdf.write(urdf_xml.encode())
+    tmp_urdf.close()                       # keep the file on disk
+    urdf_path = tmp_urdf.name              # path we’ll hand to the spawner
 
     # ----- Create nodes
     rsp = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([PathJoinSubstitution([(pkg_description), 'launch', 'robot_state_publisher.launch.py'])]),
-        launch_arguments={
-            'use_sim_time': 'true'
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_description, 'launch', 'robot_state_publisher.launch.py'])
+            ]),
+            launch_arguments={
+                'use_sim_time': 'true',
+                'use_ros2_control': 'false'
             }.items())
 
-    # Use Gazebo's pre-built sim launching node
+    # # Use Gazebo's pre-built sim launching node
     gz_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution([pkg_rosgz, 'launch', 'gz_sim.launch.py'])),
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_rosgz, 'launch', 'gz_sim.launch.py'])
+            ]),
             launch_arguments={
                 'gz_args': ['-r ', world_path]
             }.items())
-    
-    # Use Gazebo's pre-built ros bridge node
-    rosgz_bridge = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution([pkg_bridge, 'launch', 'ros_gz_bridge.launch.py'])
-        ))
 
+    # Create a node for the rosgz bridge (there is an object named RosGzBridge that does this but it's bugged)
+    rosgz_bridge = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_bridge, 'launch', 'ros_gz_bridge.launch.py'])
+        ]),
+        launch_arguments={
+            'bridge_name': 'ros_gz_bridge',
+            'config_file': bridge_config_path
+        }.items())
+    
     # Use Gazebo's pre-built robot spawner
     spawn_rover = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution(pkg_rosgz, 'launch', 'gz_spawn_model.launch.py')
-        ))
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_rosgz, 'launch', 'gz_spawn_model.launch.py'])
+            ]),
+            launch_arguments={
+                'world': LaunchConfiguration('world'),
+                'file': urdf_path,
+                'entity_name': 'rerassor'
+            }.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('world', default_value='empty_plane.world'),
+
         rsp,
         gz_sim,
-        rosgz_bridge,
-        spawn_rover
+        spawn_rover,
+        rosgz_bridge
     ])
 
