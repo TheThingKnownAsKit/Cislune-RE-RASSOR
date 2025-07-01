@@ -3,13 +3,9 @@ from launch_ros.actions import Node
 from launch.substitutions import Command, PathJoinSubstitution, LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.parameter_descriptions import ParameterValue
+from launch.actions import DeclareLaunchArgument
 
 def generate_launch_description():
-
-    # ----- Launch configurations
-    use_sim_time = LaunchConfiguration('use_sim_time')
-    use_ros2_control = LaunchConfiguration('use_ros2_control')
-
 
     # ----- Directories
     pkg_share = get_package_share_directory('rover_description')
@@ -22,8 +18,8 @@ def generate_launch_description():
     # ----- Declare common params
     params = [{
         'robot_description': robot_description,
-        'use_sim_time': use_sim_time,
-        'use_ros2_control': use_ros2_control
+        'use_sim_time': LaunchConfiguration('use_sim_time'),
+        'use_ros2_control': LaunchConfiguration('use_ros2_control')
     }]
 
     
@@ -44,6 +40,9 @@ def generate_launch_description():
                 )
 
     return LaunchDescription([
+        DeclareLaunchArgument('use_sim_time', default_value='false'),
+        DeclareLaunchArgument('use_ros2_control', default_value='false'),
+
         rs_pub,
         rjs_gui_pub
     ])
