@@ -8,9 +8,6 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    # ----- Launch configurations
-
-
     # ----- Directories
     pkg_description = get_package_share_directory('rover_description')
     pkg_sim = get_package_share_directory('rover_sim')

@@ -35,9 +35,9 @@ def generate_launch_description():
                 parameters=params
                 )
     
-    rjs_pub = Node(
-                package='joint_state_publisher',
-                executable='joint_state_publisher',
+    rjs_gui_pub = Node(
+                package='joint_state_publisher_gui',
+                executable='joint_state_publisher_gui',
                 name='joint_state_publisher',
                 output='screen',
                 parameters=params
@@ -45,5 +45,5 @@ def generate_launch_description():
 
     return LaunchDescription([
         rs_pub,
-        rjs_pub
+        rjs_gui_pub
     ])
