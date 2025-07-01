@@ -4,8 +4,8 @@
 
 	<xacro:property name="cameraSize" value="0.01"/>
 	<xacro:property name="cameraMass" value="0.1"/>
-    <xacro:include filename="$(find rover_description)/urdf/macros.xacro" />
-	<xacro:include filename="$(find rover_description)/urdf/materials.xacro" />
+    <xacro:include filename="$(find rover_description)/urdf/macros.xacro"/>
+	<xacro:include filename="$(find rover_description)/urdf/materials.xacro"/>
 
 	<!--Camera x y z values guesstimated to align with the mast-->
 	 <joint name="camera_optical_joint" type="fixed">
