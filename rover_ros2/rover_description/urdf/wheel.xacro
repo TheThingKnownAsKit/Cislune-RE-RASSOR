@@ -1,42 +1,33 @@
 <?xml version='1.0'?>
 <robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <!-- Macro defining the wheel geometry (cylinder) -->
-    <xacro:macro name="wheel_mesh">
-        <cylinder radius="0.18" length="0.2"/>
-    </xacro:macro>
-
-    <!-- The wheel module macro (if it were used) -->
-    <xacro:macro name="rerassor_wheel" params="wheel_prefix parent xyz rpy yaw">
-        <link name="${wheel_prefix}">
+    
+    <!-- wheel.xacro -->
+    <xacro:macro name="wheel" params="wheel_name parent_link radius width mass origin_xyz origin_rpy">
+        <link name="${wheel_name}_link">
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
-                <xacro:call macro="cylinder_inertia" m="5" r="0.18" h="0.2"/>
+                <mass value="${mass}"/>
+                <xacro:cylinder_inertia m="${mass}" r="${radius}" h="${width}"/>
             </inertial>
-            <visual name="${wheel_prefix}_visual">
-                <origin xyz="0 0 0" rpy="0 0 ${yaw}"/>
-                <geometry>
-                    <xacro:wheel_mesh/>
-                </geometry>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry><cylinder radius="${radius}" length="${width}"/></geometry>
+                <material name="Grey"/>
             </visual>
-            <collision name="${wheel_prefix}_collision">
-                <origin xyz="0 0 0" rpy="0 0 ${yaw}"/>
-                <geometry>
-                    <xacro:wheel_mesh/>
-                </geometry>
-                <surface>
-                    <friction>
-                        <mu>1.5</mu>
-                        <mu2>1.5</mu2>
-                    </friction>
-                </surface>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry><cylinder radius="${radius}" length="${width}"/></geometry>
+                <surface><friction><mu>1.5</mu><mu2>1.5</mu2></friction></surface>
             </collision>
         </link>
-        <joint name="${wheel_prefix}_joint" type="continuous">
-            <origin xyz="${xyz}" rpy="${rpy}"/>
-            <parent link="${parent}"/>
-            <child link="${wheel_prefix}"/>
-            <axis xyz="0 1 0"/>
-            <limit effort="1000" velocity="5"/>
+        
+        <joint name="${wheel_name}_joint" type="continuous">
+            <parent link="${parent_link}"/>
+            <child link="${wheel_name}_link"/>
+            <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
+            <axis xyz="0 1 0"/>  <!-- assuming wheel rotates about the Y-axis of arm frame -->
+            <dynamics damping="0.2"/>
         </joint>
     </xacro:macro>
+
 </robot>

@@ -1,0 +1,18 @@
+diff_drive_controller:
+  ros__parameters:
+    type: diff_drive_controller/DiffDriveController
+    left_wheel_names: ["fl_wheel_joint", "rl_wheel_joint"]
+    right_wheel_names: ["fr_wheel_joint", "rr_wheel_joint"]
+    wheel_separation: 2.4      # meters (distance between left and right wheel planes)
+    wheel_radius: 0.3          # meters
+    base_frame_id: base_link
+    odom_frame_id: odom
+    publish_rate: 50.0         # Hz for odometry
+    use_stamped_vel: false
+    open_loop: true            # (if no encoder feedback, use commands for odom)
+    enable_odom_tf: true
+    pose_covariance_diagonal: [0.001, 0, 0, 0, 0, 0.001]
+    twist_covariance_diagonal: [0.001, 0, 0, 0, 0, 0.001]
+joint_state_broadcaster:
+  ros__parameters:
+    type: joint_state_broadcaster/JointStateBroadcaster
