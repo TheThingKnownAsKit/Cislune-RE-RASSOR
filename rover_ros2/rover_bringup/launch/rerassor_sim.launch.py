@@ -7,22 +7,32 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # ----- Package paths
+
+    # ----- Launch configurations
+
+
+    # ----- Directories
     pkg_description = get_package_share_directory('rover_description')
     pkg_sim = get_package_share_directory('rover_sim')
     pkg_rosgz = get_package_share_directory('rosgz')
     pkg_bridge = get_package_share_directory('ros_gz_bridge')
 
+    world_path = PathJoinSubstitution([pkg_sim, 'worlds', LaunchConfiguration('world')])
+
     # ----- Create nodes
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([(pkg_description), 'launch', 'robot_state_publisher.launch.py'])]),
-        launch_arguments={'use_sim_time': 'true'}.items())
+        launch_arguments={
+            'use_sim_time': 'true'
+            }.items())
 
     # Use Gazebo's pre-built sim launching node
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            PathJoinSubstitution([pkg_rosgz, 'launch', 'gz_sim.launch.py'])
-        ))
+            PathJoinSubstitution([pkg_rosgz, 'launch', 'gz_sim.launch.py'])),
+            launch_arguments={
+                'gz_args': ['-r ', world_path]
+            }.items())
     
     # Use Gazebo's pre-built ros bridge node
     rosgz_bridge = IncludeLaunchDescription(
@@ -37,6 +47,7 @@ def generate_launch_description():
         ))
 
     return LaunchDescription([
+        DeclareLaunchArgument('world', default_value='empty_plane.world'),
         rsp,
         gz_sim,
         rosgz_bridge,
