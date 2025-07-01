@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <world name="empty_plane">
+
+    <plugin filename="gz-sim-physics-system"
+            name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-scene-broadcaster-system"
+            name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system"
+            name="gz::sim::systems::Sensors"/>
+
+    <!--  **Add the plugin here, not inside Sensors**  -->
+    <plugin filename="gz-sim-user-commands-system"
+            name="gz::sim::systems::UserCommands"/>
+
+    <include><uri>model://Sun</uri></include>
+    <include><uri>model://Ground_Plane</uri></include>
+
+  </world>
+</sdf>

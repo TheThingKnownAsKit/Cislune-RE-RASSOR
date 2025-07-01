@@ -8,7 +8,7 @@ import os, xacro
 def generate_launch_description():
     pkg_share = get_package_share_directory('rover_description')
     xacro_file = PathJoinSubstitution([pkg_share, 'urdf', 'rerassor.xacro.urdf'])
-    rviz_config_file = PathJoinSubstitution([pkg_share, 'rviz2', 'view_model_config.rviz'])
+    rviz_config_file = PathJoinSubstitution([pkg_share, 'rviz', 'view_model_config.rviz'])
 
     robot_description_content = Command(
         ['xacro ', xacro_file])
