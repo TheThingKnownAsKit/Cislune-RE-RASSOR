@@ -27,7 +27,6 @@ def generate_launch_description():
                 package='rviz2',
                 executable='rviz2',
                 output='screen',
-                name='view_model_rviz',
                 arguments=['-d', rviz_config_file]
                 )
 
