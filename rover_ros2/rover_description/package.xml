@@ -7,14 +7,20 @@
   <maintainer email="moodyellam@gmail.com">moody</maintainer>
   <license>TODO: License declaration</license>
 
+  <!-- Build dependencies -->
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <!-- Mixed dependencies -->
   <depend>launch</depend>
   <depend>urdf</depend>
   <depend>ros_gz_sim</depend>
   <depend>ros_gz_bridge</depend>
   <depend>ros_gz_image</depend>
+  <depend>gz_ros2_control</depend>
+  <depend>ros2_control</depend>
+  <depend>ros2_controllers</depend>
 
+  <!-- Runtime dependencies -->
   <exec_depend>rviz2</exec_depend>
   <exec_depend>xacro</exec_depend>
 
