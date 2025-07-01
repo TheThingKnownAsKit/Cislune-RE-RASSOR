@@ -18,7 +18,7 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([PathJoinSubstitution([(pkg_description), 'launch', 'robot_state_publisher.launch.py'])]),
         launch_arguments={
-            'use_sim_time': 'true',
+            'use_sim_time': 'false',
             'use_ros2_control': 'false'
             }.items()
     )
