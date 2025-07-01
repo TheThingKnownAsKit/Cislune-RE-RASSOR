@@ -13,35 +13,33 @@ def generate_launch_description():
 
     robot_description_content = Command(['xacro ', xacro_file])
     robot_description = ParameterValue(robot_description_content, value_type=str)
-
-
-    # ----- Declare common params
-    params = [{
-        'robot_description': robot_description,
-        'use_sim_time': LaunchConfiguration('use_sim_time'),
-        'use_ros2_control': LaunchConfiguration('use_ros2_control')
-    }]
-
     
     # ----- Nodes
     rs_pub = Node(
                 package='robot_state_publisher',
                 executable='robot_state_publisher',
                 output='screen',
-                parameters=params
-                )
+                parameters= [{
+                    'robot_description': robot_description,
+                    'use_sim_time': LaunchConfiguration('use_sim_time'),
+                    'use_ros2_control': LaunchConfiguration('use_ros2_control')
+                }])
     
     rjs_gui_pub = Node(
                 package='joint_state_publisher_gui',
                 executable='joint_state_publisher_gui',
                 output='screen',
-                parameters=params
-                )
+                parameters= [{
+                    'use_sim_time': LaunchConfiguration('use_sim_time')
+                }],
+                arguments=[
+                    xacro_file
+                ])
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('use_ros2_control', default_value='false'),
 
-        rs_pub,
-        rjs_gui_pub
+        rjs_gui_pub,
+        rs_pub
     ])
