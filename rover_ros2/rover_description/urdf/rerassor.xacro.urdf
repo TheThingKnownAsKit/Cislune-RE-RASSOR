@@ -22,12 +22,13 @@
 			<always_on>true</always_on>
             <update_rate>30</update_rate>
             <visualize>true</visualize>
+			<topic>camera</topic>
             <camera name="cam">
                 <horizontal_fov>1.29154</horizontal_fov>
                 <image>
 					<width>640</width>
 					<height>480</height>
-                    <format>R8B8G8</format>
+                    <format>R8G8B8</format>
                 </image>
 				<clip>
 					<near>0.105</near>
@@ -304,8 +305,8 @@
 	</ros2_control>
 
 	<gazebo>
-		<plugin filename="libgazebo_ros2_control.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-			<parameters>$(find rover_control)/controllers/sim_controllers.yaml</parameters>
+		<plugin filename="libgz_ros2_control-system.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+			<parameters>$(find rover_control)/controllers/sim_controller.yaml</parameters>
 		</plugin>
 	</gazebo>
 </robot>

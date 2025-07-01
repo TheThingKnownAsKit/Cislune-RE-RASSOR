@@ -1,7 +1,7 @@
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command, TextSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command, TextSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.actions import Node
@@ -16,7 +16,8 @@ def generate_launch_description():
     pkg_rosgz = get_package_share_directory('ros_gz_sim')
     pkg_bridge = get_package_share_directory('ros_gz_bridge')
 
-    world_path = PathJoinSubstitution([pkg_sim, 'worlds', LaunchConfiguration('world')])
+    world_file = PythonExpression(["'", LaunchConfiguration('world'), ".world'"])
+    world_path = PathJoinSubstitution([pkg_sim, 'worlds', world_file])
     bridge_config_path = PathJoinSubstitution([pkg_sim, 'config', 'rosgz_bridge.yaml'])
 
     # expand Xacro → URDF *once* and write to a temp file
@@ -69,7 +70,7 @@ def generate_launch_description():
             }.items())
 
     return LaunchDescription([
-        DeclareLaunchArgument('world', default_value='empty_plane.world'),
+        DeclareLaunchArgument('world', default_value='empty_plane'),
 
         rsp,
         gz_sim,
