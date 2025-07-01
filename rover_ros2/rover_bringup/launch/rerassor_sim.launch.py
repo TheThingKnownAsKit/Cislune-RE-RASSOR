@@ -16,6 +16,8 @@ def generate_launch_description():
     pkg_rosgz = get_package_share_directory('ros_gz_sim')
     pkg_bridge = get_package_share_directory('ros_gz_bridge')
 
+
+    # ----- Files
     world_file = PythonExpression(["'", LaunchConfiguration('world'), ".world'"])
     world_path = PathJoinSubstitution([pkg_sim, 'worlds', world_file])
     bridge_config_path = PathJoinSubstitution([pkg_sim, 'config', 'rosgz_bridge.yaml'])
@@ -30,6 +32,7 @@ def generate_launch_description():
     tmp_urdf.write(urdf_xml.encode())
     tmp_urdf.close()                       # keep the file on disk
     urdf_path = tmp_urdf.name              # path we’ll hand to the spawner
+
 
     # ----- Create nodes
     rsp = IncludeLaunchDescription(
@@ -69,12 +72,26 @@ def generate_launch_description():
                 'entity_name': 'rerassor'
             }.items())
 
+    joint_broad_node = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'joint_state_broadcaster', '-c', '/controller_manager'
+    ])
+    diff_cont_node = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_drive_controller', '-c', '/controller_manager'
+    ])
+
     return LaunchDescription([
         DeclareLaunchArgument('world', default_value='empty_plane'),
 
         rsp,
         gz_sim,
         spawn_rover,
-        rosgz_bridge
+        rosgz_bridge,
+        joint_broad_node,
+        diff_cont_node
     ])
 
