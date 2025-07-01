@@ -6,7 +6,6 @@
 	<xacro:property name="cameraMass" value="0.1"/>
     <xacro:include filename="$(find rover_description)/urdf/macros.xacro" />
 	<xacro:include filename="$(find rover_description)/urdf/materials.xacro" />
-	<xacro:include filename="$(find rover_description)/urdf/imu.xacro" />
 
 	<!--Camera x y z values guesstimated to align with the mast-->
 	 <joint name="camera_optical_joint" type="fixed">
@@ -17,10 +16,11 @@
 
     <link name="camera_link_optical"></link>
 	
+	<!-- TODO: FIX THIS FOR ZED MINI SPECS -->
 	<gazebo reference="camera_link_optical">
-        <sensor type="camera" name="my_camera">
-			<always_on>0</always_on>
-            <update_rate>1</update_rate>
+        <sensor type="depth" name="rgbd_camera">
+			<always_on>true</always_on>
+            <update_rate>30</update_rate>
             <visualize>true</visualize>
             <camera name="cam">
                 <horizontal_fov>1.29154</horizontal_fov>
@@ -33,13 +33,7 @@
 					<near>0.105</near>
 					<far>100</far>
 				</clip>
-
             </camera>
-            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-                <frame_name>camera_link_optical</frame_name>
-                <hack_baseline>0.07</hack_baseline>
-                <min_depth>0.001</min_depth>
-            </plugin>
         </sensor>
     </gazebo>
 
@@ -263,18 +257,12 @@
 	</gazebo>
 
 
-
 	<!-- Similar expansions for left_wheel_back and right_wheel_back -->
-
-	<!-- IMU -->
-	<xacro:imu imu_prefix="imu" camera_size="${cameraSize}" camera_mass="${cameraMass}">
-		<origin xyz="0 0 0" rpy="0 0 0"/>
-	</xacro:imu>
 
 	<!-- ROS2 Control -->
 	<ros2_control name="GazeboSystem" type="system">
 		<hardware>
-			<plugin>gazebo_ros2_control/GazeboSystem</plugin>
+			<plugin>gz_ros2_control/GazeboSimSystem</plugin>
 		</hardware>
 
 		<joint name="left_wheel_front_joint">
@@ -316,8 +304,8 @@
 	</ros2_control>
 
 	<gazebo>
-		<plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-			<parameters>$(find rover_description)/config/controllers.yaml</parameters>
+		<plugin filename="libgazebo_ros2_control.so" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+			<parameters>$(find rover_control)/controllers/sim_controllers.yaml</parameters>
 		</plugin>
 	</gazebo>
 </robot>

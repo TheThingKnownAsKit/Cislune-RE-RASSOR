@@ -79,11 +79,6 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        imu:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         left_wheel_back_link:
           Alpha: 1
           Show Axes: false

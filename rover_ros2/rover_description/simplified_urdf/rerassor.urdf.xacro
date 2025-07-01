@@ -198,11 +198,6 @@
     <xacro:rerassor_camera camera_prefix="depth_camera" parent="chassis_link"
                            x="${camera_x}" y="${camera_y}" z="${camera_z}" />
 
-    <!-- IMU attachment -->
-    <xacro:include filename="$(find rover_description)/urdf/imu.xacro" />
-    <xacro:rerassor_imu imu_prefix="imu_link" parent="chassis_link"
-                        imu_size="${cameraSize}" xyz="0 0 0.2" rpy="0 0 0" />
-
     <!-- Depth camera sensor (Gazebo Sim format) -->
     <gazebo reference="depth_camera_optical">
         <sensor name="depth_camera_sensor" type="depth">
