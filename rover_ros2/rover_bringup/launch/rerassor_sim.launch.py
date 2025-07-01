@@ -1,10 +1,12 @@
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command, TextSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.parameter_descriptions import ParameterValue
+from launch_ros.actions import Node
 import os, xacro, tempfile
+from launch.actions import ExecuteProcess
 
 def generate_launch_description():
 
@@ -47,15 +49,13 @@ def generate_launch_description():
                 'gz_args': ['-r ', world_path]
             }.items())
 
-    # Create a node for the rosgz bridge (there is an object named RosGzBridge that does this but it's bugged)
-    rosgz_bridge = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([pkg_bridge, 'launch', 'ros_gz_bridge.launch.py'])
-        ]),
-        launch_arguments={
-            'bridge_name': 'ros_gz_bridge',
-            'config_file': bridge_config_path
-        }.items())
+    # Create a node for the rosgz bridge (there is an object named RosGzBridge that does this but it's bugged)  
+    rosgz_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        parameters=[{'config_file': bridge_config_path}],
+        output='screen'
+    )
     
     # Use Gazebo's pre-built robot spawner
     spawn_rover = IncludeLaunchDescription(
