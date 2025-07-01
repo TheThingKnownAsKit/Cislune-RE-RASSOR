@@ -1,0 +1,227 @@
+<?xml version='1.0'?>
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find rover_description)/urdf/inertial_macros.xacro"/>
+    <xacro:include filename="$(find rover_description)/urdf/properties.xacro"/>
+    <xacro:include filename="$(find rover_description)/urdf/wheel.xacro"/>
+    <xacro:include filename="$(find rover_description)/urdf/wheel_arm.xacro"/>
+
+	<link name="base_link"></link>
+
+    <!-- Base link (main body) -->
+    <link name="chassis_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <!-- Using box inertia approximation for main body -->
+            <xacro:call macro="box_inertia" m="50" x="1.0" y="1.5" z="0.3"/>
+        </inertial>
+        <collision name='chassis_link_collision'>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="2.058 4.327 2.917"/>
+            </geometry>
+            <!-- Surface properties -->
+            <surface>
+                <friction>
+                    <mu>0.5</mu>
+                    <mu2>0.5</mu2>
+                </friction>
+                <contact>
+                    <kp>100000.0</kp>
+                    <kd>1.0</kd>
+                </contact>
+            </surface>
+        </collision>
+        <visual name='chassis_link_visual'>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="2.058 4.327 2.917"/>
+            </geometry>
+            <material name="yellow"><color rgba="0.973 0.953 0.208 1"/></material>
+        </visual>
+    </link>
+
+    <!-- Base link is root of the robot -->
+    <joint name="chassis_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis_link"/>
+    </joint>
+
+    <!-- Wheel arms -->
+    <xacro:wheel_arm arm_name="fl_wheel_arm" parent_link="chassis_link"
+                length="1.0" radius="0.1" mass="5.0"
+                origin_xyz="1.5 1.2 0.0" origin_rpy="0 ${pi/2} 0"/>
+
+    <!-- Wheels -->
+    <xacro:wheel wheel_name="fl_wheel" parent_link="fl_wheel_arm_link"
+             radius="0.3" width="0.2" mass="5.0"
+             origin_xyz="0 0 ${-0.5}" origin_rpy="0 0 0"/>
+
+
+    <link name="left_wheel_front_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <xacro:call macro="cylinder_inertia" m="5" r="0.18" h="0.2"/>
+        </inertial>
+        <collision name="left_wheel_front_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <mu>1.5</mu>
+                    <mu2>1.5</mu2>
+                </friction>
+            </surface>
+        </collision>
+        <visual name="left_wheel_front_visual">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+        </visual>
+    </link>
+    <joint name="left_wheel_front_joint" type="continuous">
+        <origin xyz="-0.9 1.0 -0.2" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="left_wheel_front_link"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000.0" velocity="5.0"/>
+    </joint>
+
+    <!-- Right Front Wheel -->
+    <link name="right_wheel_front_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <xacro:call macro="cylinder_inertia" m="5" r="0.18" h="0.2"/>
+        </inertial>
+        <collision name="right_wheel_front_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <mu>1.5</mu>
+                    <mu2>1.5</mu2>
+                </friction>
+            </surface>
+        </collision>
+        <visual name="right_wheel_front_visual">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+        </visual>
+    </link>
+    <joint name="right_wheel_front_joint" type="continuous">
+        <origin xyz="0.9 1.0 -0.2" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="right_wheel_front_link"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000.0" velocity="5.0"/>
+    </joint>
+
+    <!-- Left Back Wheel -->
+    <link name="left_wheel_back_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <xacro:call macro="cylinder_inertia" m="5" r="0.18" h="0.2"/>
+        </inertial>
+        <collision name="left_wheel_back_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <mu>1.5</mu>
+                    <mu2>1.5</mu2>
+                </friction>
+            </surface>
+        </collision>
+        <visual name="left_wheel_back_visual">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+        </visual>
+    </link>
+    <joint name="left_wheel_back_joint" type="continuous">
+        <origin xyz="-0.9 -1.0 -0.2" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="left_wheel_back_link"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000.0" velocity="5.0"/>
+    </joint>
+
+    <!-- Right Back Wheel -->
+    <link name="right_wheel_back_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <xacro:call macro="cylinder_inertia" m="5" r="0.18" h="0.2"/>
+        </inertial>
+        <collision name="right_wheel_back_collision">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+            <surface>
+                <friction>
+                    <mu>1.5</mu>
+                    <mu2>1.5</mu2>
+                </friction>
+            </surface>
+        </collision>
+        <visual name="right_wheel_back_visual">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <cylinder radius="0.18" length="0.2"/>
+            </geometry>
+        </visual>
+    </link>
+    <joint name="right_wheel_back_joint" type="continuous">
+        <origin xyz="0.9 -1.0 -0.2" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="right_wheel_back_link"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="1000.0" velocity="5.0"/>
+    </joint>
+
+    <!-- Paver attachment (compactor plate) -->
+    <xacro:include filename="$(find rover_description)/urdf/paver.xacro" />
+    <xacro:paver/>
+
+    <!-- Depth camera attachment -->
+    <xacro:include filename="$(find rover_description)/urdf/camera.xacro" />
+    <xacro:rerassor_camera camera_prefix="depth_camera" parent="chassis_link"
+                           x="${camera_x}" y="${camera_y}" z="${camera_z}" />
+
+    <!-- IMU attachment -->
+    <xacro:include filename="$(find rover_description)/urdf/imu.xacro" />
+    <xacro:rerassor_imu imu_prefix="imu_link" parent="chassis_link"
+                        imu_size="${cameraSize}" xyz="0 0 0.2" rpy="0 0 0" />
+
+    <!-- Depth camera sensor (Gazebo Sim format) -->
+    <gazebo reference="depth_camera_optical">
+        <sensor name="depth_camera_sensor" type="depth">
+            <always_on>0</always_on>
+            <update_rate>1</update_rate>
+            <camera name="depth_camera">
+                <horizontal_fov>1.29154</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>100.0</far>
+                </clip>
+            </camera>
+            <visualize>true</visualize>
+        </sensor>
+    </gazebo>
+
+</robot>

@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- wheel_arm.xacro -->
+    <xacro:macro name="wheel_arm" params="arm_name parent_link length radius mass origin_xyz origin_rpy">
+        <!-- Link representing the wheel arm -->
+        <link name="${arm_name}_link">
+            <inertial>
+                <origin xyz="0 0 ${length/2}" rpy="0 0 0"/>  <!-- center inertial in middle of arm -->
+                <mass value="${mass}"/>
+                <xacro:cylinder_inertia m="${mass}" r="${radius}" h="${length}"/>
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry><cylinder radius="${radius}" length="${length}"/></geometry>
+                <material name="Grey"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry><cylinder radius="${radius}" length="${length}"/></geometry>
+            </collision>
+        </link>
+
+        <!-- Fixed joint connecting arm to chassis -->
+        <joint name="${arm_name}_joint" type="fixed">
+            <parent link="${parent_link}"/>
+            <child link="${arm_name}_link"/>
+            <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
+        </joint>
+        
+    </xacro:macro>
+
+</robot>

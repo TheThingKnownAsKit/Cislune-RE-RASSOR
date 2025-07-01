@@ -6,8 +6,9 @@ from launch_ros.parameter_descriptions import ParameterValue
 import os, xacro
 
 def generate_launch_description():
-    pkg_share = os.path.join('/', get_package_share_directory('rover_description'))
-    xacro_file = PathJoinSubstitution([pkg_share, 'urdf', 'rerassor.urdf.xacro'])
+    pkg_share = get_package_share_directory('rover_description')
+    xacro_file = PathJoinSubstitution([pkg_share, 'urdf', 'rerassor.xacro.urdf'])
+    rviz_config_file = PathJoinSubstitution([pkg_share, 'rviz2', 'view_model_config.rviz'])
 
     robot_description_content = Command(
         ['xacro ', xacro_file])
@@ -32,5 +33,7 @@ def generate_launch_description():
         # Open RViz
         Node(package='rviz2',
              executable='rviz2',
-             output='screen')
+             output='screen',
+             name='view_model_rviz',
+             arguments=['-d', rviz_config_file])
     ])

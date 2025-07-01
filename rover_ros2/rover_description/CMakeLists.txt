@@ -9,7 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(xacro REQUIRED)
 
-install(DIRECTORY urdf rviz launch
+install(DIRECTORY urdf launch meshes rviz2
   DESTINATION share/${PROJECT_NAME}
 )
 

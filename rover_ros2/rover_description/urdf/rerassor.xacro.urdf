@@ -1,0 +1,323 @@
+<?xml version='1.0'?>
+
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:property name="cameraSize" value="0.01"/>
+	<xacro:property name="cameraMass" value="0.1"/>
+    <xacro:include filename="$(find rover_description)/urdf/macros.xacro" />
+	<xacro:include filename="$(find rover_description)/urdf/materials.xacro" />
+	<xacro:include filename="$(find rover_description)/urdf/imu.xacro" />
+
+	<!--Camera x y z values guesstimated to align with the mast-->
+	 <joint name="camera_optical_joint" type="fixed">
+		<origin xyz="1.8 0 3.7" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="camera_link_optical" />
+    </joint>
+
+    <link name="camera_link_optical"></link>
+	
+	<gazebo reference="camera_link_optical">
+        <sensor type="camera" name="my_camera">
+			<always_on>0</always_on>
+            <update_rate>1</update_rate>
+            <visualize>true</visualize>
+            <camera name="cam">
+                <horizontal_fov>1.29154</horizontal_fov>
+                <image>
+					<width>640</width>
+					<height>480</height>
+                    <format>R8B8G8</format>
+                </image>
+				<clip>
+					<near>0.105</near>
+					<far>100</far>
+				</clip>
+
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <frame_name>camera_link_optical</frame_name>
+                <hack_baseline>0.07</hack_baseline>
+                <min_depth>0.001</min_depth>
+            </plugin>
+        </sensor>
+    </gazebo>
+
+	<!-- End camera -->
+
+	<!--Tags below represent robot links and joints only-->
+	<link name='base_link'>
+		<pose>0 0 0 0 0 0</pose>
+	</link>
+
+	<link name='body'>
+		<pose>0 0 0 0 0 0</pose>
+		<inertial>
+			<mass value="15.0"/>
+			<origin xyz="0 0 0" rpy=" 0 0 0"/>
+			<inertia ixx="16.67" ixy="0" ixz="0" iyy="16.67" iyz="0" izz="16.67" />
+		</inertial>
+		<collision name='collision'>
+			<origin xyz="0 0 0" rpy=" 0 0 0"/>
+			<geometry>
+       			<mesh filename="file://$(find rover_description)/meshes/base_unit.dae" scale="0.01 0.01 0.01"></mesh>
+			</geometry>
+		</collision>
+		<visual name='base_link_visual'>
+			<origin xyz="0 0 0" rpy=" 0 0 0"/>
+			<geometry>
+        		<mesh filename="file://$(find rover_description)/meshes/base_unit.dae" scale="0.01 0.01 0.01"></mesh>
+			</geometry>
+		</visual>
+	</link>
+    
+    <gazebo reference="base_link">
+		<material>Gazebo/ZincYellow</material>        
+		<selfCollide>0</selfCollide>
+    </gazebo>
+	
+    <joint name="body_joint" type="fixed">
+		<axis xyz="0 0 0"/>
+		<origin xyz="0 0 1.0" rpy="0 0 0"/>
+		<parent link="base_link"/>
+		<child link="body"/>
+	</joint>
+
+
+	<!-- Define wheels directly (formerly macros) -->
+	<!-- Left Front Wheel -->
+    <!---->
+	<link name="left_wheel_front_link">
+		<visual name="left_wheel_front_visual">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+		</visual>
+		<collision name="collision">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+			<surface>
+				<friction>
+					<mu>0.5</mu>
+					<mu2>0.5</mu2>
+				</friction>
+			</surface>
+		</collision>
+		 <inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<mass value="5"/>
+			<inertia ixx="0.329" ixy="0" ixz="0" iyy="0.329" iyz="0" izz="0.625"/>
+		</inertial>
+	</link>
+
+	<joint name="left_wheel_front_joint" type="continuous">
+		<origin xyz="1.5 1.2 0.2" rpy="${pi/2} 0 0"/>
+		<child link="left_wheel_front_link"/>
+		<parent link="body"/>
+		<axis xyz="0 0 -1"/>
+		<dynamics damping="0.5"/>
+	</joint>
+
+	<gazebo reference="left_wheel_front_link">
+		<selfCollide>1</selfCollide>
+		<mu1 value="0.5"/>
+		<mu2 value="0.5"/>
+		<kp value="10000000.0" />
+		<kd value="1.0" />
+		<fdir1 value="1 0 0"/>
+	</gazebo>
+
+
+	<link name="right_wheel_front_link">
+		<visual name="right_wheel_front_visual">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+		</visual>
+		<collision name="collision">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+			<surface>
+				<friction>
+					<mu>0.5</mu>
+					<mu2>0.5</mu2>
+				</friction>
+			</surface>
+		</collision>
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<mass value="5"/>
+			<inertia ixx="0.329" ixy="0" ixz="0" iyy="0.329" iyz="0" izz="0.625"/>
+		</inertial>
+	</link>
+
+	<joint name="right_wheel_front_joint" type="continuous">
+		<origin xyz="1.5 -1.2 0.2" rpy="${3 * pi / 2} 0 0"/>
+		<child link="right_wheel_front_link"/>
+		<parent link="body"/>
+		<axis xyz="0 0 1"/>
+		<dynamics damping="0.5"/>
+	</joint>
+
+	<gazebo reference="right_wheel_front_link">
+		<selfCollide>1</selfCollide>
+		<mu1 value="0.5"/>
+		<mu2 value="0.5"/>
+		<kp value="10000000.0" />
+		<kd value="1.0" />
+		<fdir1 value="1 0 0"/>
+	</gazebo>
+
+
+	<link name="right_wheel_back_link">
+		<visual name="right_back_front_visual">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+		</visual>
+		<collision name="collision">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+			<surface>
+				<friction>
+					<mu>0.5</mu>
+					<mu2>0.5</mu2>
+				</friction>
+			</surface>
+		</collision>
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<mass value="5"/>
+			<inertia ixx="0.329" ixy="0" ixz="0" iyy="0.329" iyz="0" izz="0.625"/>
+		</inertial>
+	</link>
+
+	<joint name="right_wheel_back_joint" type="continuous">
+		<origin xyz="-1.5 -1.2 0.2" rpy="${3 * pi / 2} 0 0"/>
+		<child link="right_wheel_back_link"/>
+		<parent link="body"/>
+		<axis xyz="0 0 1"/>
+		<dynamics damping="0.5"/>
+	</joint>
+
+	<gazebo reference="right_wheel_back_link">
+		<selfCollide>1</selfCollide>
+		<mu1 value="0.5"/>
+		<mu2 value="0.5"/>
+		<kp value="10000000.0" />
+		<kd value="1.0" />
+		<fdir1 value="1 0 0"/>
+	</gazebo>
+
+
+	<link name="left_wheel_back_link">
+		<visual name="left_back_front_visual">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+		</visual>
+		<collision name="collision">
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="file://$(find rover_description)/meshes/wheel.dae" scale="0.01 0.01 0.01"/>
+			</geometry>
+			<surface>
+				<friction>
+					<mu>0.5</mu>
+					<mu2>0.5</mu2>
+				</friction>
+			</surface>
+		</collision>
+		<inertial>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<mass value="5"/>
+			<inertia ixx="0.329" ixy="0" ixz="0" iyy="0.329" iyz="0" izz="0.625"/>
+		</inertial>
+	</link>
+
+	<joint name="left_wheel_back_joint" type="continuous">
+		<origin xyz="-1.5 1.2 0.2" rpy="${pi/2} 0 0"/>
+		<child link="left_wheel_back_link"/>
+		<parent link="body"/>
+		<axis xyz="0 0 -1"/>
+		<dynamics damping="0.5"/>
+	</joint>
+
+	<gazebo reference="left_wheel_back_link">
+		<selfCollide>1</selfCollide>
+		<mu1 value="0.5"/>
+		<mu2 value="0.5"/>
+		<kp value="10000000.0" />
+		<kd value="1.0" />
+		<fdir1 value="1 0 0"/>
+	</gazebo>
+
+
+
+	<!-- Similar expansions for left_wheel_back and right_wheel_back -->
+
+	<!-- IMU -->
+	<xacro:imu imu_prefix="imu" camera_size="${cameraSize}" camera_mass="${cameraMass}">
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+	</xacro:imu>
+
+	<!-- ROS2 Control -->
+	<ros2_control name="GazeboSystem" type="system">
+		<hardware>
+			<plugin>gazebo_ros2_control/GazeboSystem</plugin>
+		</hardware>
+
+		<joint name="left_wheel_front_joint">
+			<command_interface name="velocity">
+				<param name="min">-10</param>
+				<param name="max">10</param>
+			</command_interface>
+			<state_interface name="position"/>
+			<state_interface name="velocity"/>
+		</joint>
+
+		<joint name="right_wheel_front_joint">
+			<command_interface name="velocity">
+				<param name="min">-10</param>
+				<param name="max">10</param>
+			</command_interface>
+			<state_interface name="position"/>
+			<state_interface name="velocity"/>
+		</joint>
+
+		<joint name="right_wheel_back_joint">
+			<command_interface name="velocity">
+				<param name="min">-10</param>
+				<param name="max">10</param>
+			</command_interface>
+			<state_interface name="position"/>
+			<state_interface name="velocity"/>
+		</joint>
+
+		<joint name="left_wheel_back_joint">
+			<command_interface name="velocity">
+				<param name="min">-10</param>
+				<param name="max">10</param>
+			</command_interface>
+			<state_interface name="position"/>
+			<state_interface name="velocity"/>
+		</joint>
+		<!-- Similar entries for the other wheel joints -->
+	</ros2_control>
+
+	<gazebo>
+		<plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+			<parameters>$(find rover_description)/config/controllers.yaml</parameters>
+		</plugin>
+	</gazebo>
+</robot>

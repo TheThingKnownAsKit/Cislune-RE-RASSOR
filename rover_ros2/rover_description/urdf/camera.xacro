@@ -1,20 +1,25 @@
 <?xml version='1.0'?>
-<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <!-- Macro to add a depth camera to a given parent link -->
-    <xacro:macro name="rerassor_camera" params="camera_prefix parent x y z">
-        <!-- Camera link and fixed optical frame -->
-        <link name="${camera_prefix}_link">
-            <inertial>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
-                <mass value="${cameraMass}"/>
-                <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
-            </inertial>
+
+<robot name="rerassor"
+    xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!--This xacro block sets and loads the depth camera for the robot. 
+        Multiple cameras can be placed under the drum arms to assist with digging operations. -->
+        <!-- This doesn't end up being the camera spawned in the simulation, i never got it to work, 
+            the camera shown is in the rerassor.xacro.urdf file  -->
+    <xacro:macro name="rerassor_camera" params="camera_prefix">
+
+        <xacro:property name="cameraSize" value="0.01"/>
+        <xacro:property name="cameraMass" value="0.1"/>
+
+        <link name="${camera_prefix}">
             <collision>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
                     <box size="${cameraSize} ${cameraSize} ${cameraSize}"/>
                 </geometry>
             </collision>
+
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
@@ -22,21 +27,67 @@
                 </geometry>
                 <material name="green"/>
             </visual>
+
+            <inertial>
+                <mass value="${cameraMass}" />
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <xacro:box_inertia m="${cameraMass}" x="${cameraSize}" y="${cameraSize}" z="${cameraSize}" />
+                <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+            </inertial>
         </link>
-        <link name="${camera_prefix}_optical">
-            <!-- no inertial, collision or visual: purely optical frame -->
-        </link>
+
         <joint name="${camera_prefix}_joint" type="fixed">
-            <parent link="${parent}"/>
-            <child link="${camera_prefix}_link"/>
-            <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+            <origin xyz=".3 0 -.1" rpy="0 0 0"/>
+            <axis xyz="0 1 0" />
+            <parent link="base_link"/>
+            <child link="depth_camera_front"/>
         </joint>
-        <joint name="${camera_prefix}_optical_joint" type="fixed">
-            <parent link="${camera_prefix}_link"/>
-            <child link="${camera_prefix}_optical"/>
-            <!-- Rotate optical frame: +Z forward, +X right, +Y down -->
-            <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708"/>
+
+        <gazebo reference="${camera_prefix}">
+            <sensor name="${camera_prefix}_sensor" type="depth">
+                <always_on>0</always_on>
+                <update_rate>1</update_rate>
+                <camera name="${camera_prefix}_depth_camera">
+                    <horizontal_fov>1.29154</horizontal_fov>
+                    <image>
+                        <width>640</width>
+                        <height>480</height>
+                    </image>
+                    <clip>
+                        <near>0.105</near>
+                        <far>10</far>
+                    </clip>
+                    <distortion>
+                        <k1>0.1</k1>
+                        <k2>0.2</k2>
+                        <k3>0.3</k3>
+                        <p1>0.4</p1>
+                        <p2>0.5</p2>
+                        <center>0.5 0.5</center>
+                    </distortion>
+                </camera>
+                <plugin name="${camera_prefix}_controller" filename="libgazebo_ros_camera.so">
+                    <ros>
+                        <remapping>custom_camera/image_raw:=color/image_raw</remapping>
+                        <remapping>custom_camera/image_depth:=depth/image_raw</remapping>
+                        <remapping>custom_camera/camera_info_depth:=depth/camera_info</remapping>
+                        <remapping>custom_camera/points:=depth/points</remapping>
+                    </ros>
+                    <camera_name>front_camera</camera_name>
+                    <frame_name>depth_camera_front</frame_name>
+                    <hack_baseline>0.07</hack_baseline>
+                    <min_depth>0.001</min_depth>
+                </plugin>
+            </sensor>
+        </gazebo>
+
+        <joint name="depth_camera_optical_joint" type="fixed">
+            <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+            <parent link="depth_camera_front"/>
+            <child link="depth_camera_optical_frame"/>
         </joint>
-        <!-- Gazebo sensor is defined in the main URDF to ensure it attaches to the optical link -->
+        <link name="depth_camera_optical_frame"/>
+
     </xacro:macro>
+
 </robot>
