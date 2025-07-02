@@ -1,8 +1,0 @@
-#TODO: UPDATE THIS WITH THE REAL CONTROLS
-joy_node:
-  ros__parameters:
-    axis_linear: 1        # left stick vertical for linear X
-    axis_angular: 0       # left stick horizontal for angular Z
-    scale_linear: 1.0     # max linear speed 1 m/s
-    scale_angular: 1.0    # max angular speed 1 rad/s
-    enable_button: 4      # e.g., a button index to enable motion
