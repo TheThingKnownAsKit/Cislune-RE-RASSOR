@@ -13,6 +13,7 @@ def generate_launch_description():
     # ----- Directories
     pkg_description = get_package_share_directory('rover_description')
     pkg_sim = get_package_share_directory('rover_sim')
+    pkg_control = get_package_share_directory('rover_control')
     pkg_rosgz = get_package_share_directory('ros_gz_sim')
     pkg_bridge = get_package_share_directory('ros_gz_bridge')
 
@@ -41,7 +42,7 @@ def generate_launch_description():
             ]),
             launch_arguments={
                 'use_sim_time': 'true',
-                'use_ros2_control': 'false'
+                'use_ros2_control': 'true'
             }.items())
 
     # # Use Gazebo's pre-built sim launching node
@@ -72,6 +73,15 @@ def generate_launch_description():
                 'entity_name': 'rerassor'
             }.items())
 
+    # Create teleop control node for joystick
+    gamepad = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_control, 'launch', 'joy.launch.py'])
+        ]),
+        launch_arguments={'use_sim_time': 'true'}.items()
+    )
+
+    # Create controller manager nodes
     joint_broad_node = Node(
         package='controller_manager',
         executable='spawner',
@@ -81,7 +91,7 @@ def generate_launch_description():
     diff_cont_node = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['diff_drive_controller', '-c', '/controller_manager'
+        arguments=['diff_cont', '-c', '/controller_manager'
     ])
 
     return LaunchDescription([
@@ -92,6 +102,7 @@ def generate_launch_description():
         spawn_rover,
         rosgz_bridge,
         joint_broad_node,
-        diff_cont_node
+        diff_cont_node,
+        gamepad
     ])
 

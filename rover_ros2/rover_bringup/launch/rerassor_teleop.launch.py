@@ -21,7 +21,7 @@ def generate_launch_description():
     controller_yaml = os.path.join(
         get_package_share_directory('rover_bringup'),
         'config',
-        'diff_drive_controllers.yaml'
+        'diff_conts.yaml'
     )
 
     # Robot State Publisher
@@ -46,14 +46,14 @@ def generate_launch_description():
     joy_teleop_cfg = os.path.join(get_package_share_directory('rover_bringup'), 'config', 'joy_teleop.yaml')
     teleop = Node(package='teleop_twist_joy', executable='teleop_node', output='screen',
               parameters=[joy_teleop_cfg],
-              remappings=[('/cmd_vel', '/diff_drive_controller/cmd_vel_unstamped')])
+              remappings=[('/cmd_vel', '/diff_cont/cmd_vel_unstamped')])
 
 
-    # Spawner for diff_drive_controller
+    # Spawner for diff_cont
     diff_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['diff_drive_controller'],
+        arguments=['diff_cont'],
         output='screen'
     )
 

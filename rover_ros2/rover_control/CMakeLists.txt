@@ -8,7 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY controllers hardware_plugins
+install(DIRECTORY controllers hardware_plugins launch
   DESTINATION share/${PROJECT_NAME}
 )
 

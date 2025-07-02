@@ -48,7 +48,7 @@
 	<gazebo>
         <plugin filename="libgz_ros2_control-system.so"
                 name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters>$(find Cislune-RE-RASSOR)/config/sim_controllers.yaml</parameters>
+        <parameters>$(find rover_control)/controllers/diff_cont.yaml</parameters>
         </plugin>
     </gazebo>
 
