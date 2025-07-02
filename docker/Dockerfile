@@ -29,7 +29,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libglu1-mesa-dev \
         libxv1 \
         libxtst6 \
-    && rm -rf /var/lib/apt/lists/*
+        usbutils
+
+# Install needed elements from Ubuntu Universe
+RUN  add-apt-repository -y universe && \
+     apt-get update && \
+     apt-get install -y --no-install-recommends usbutils joystick evtest && \
+     rm -rf /var/lib/apt/lists/*
 
 # Install core python tools
 RUN apt install -y build-essential \ 

@@ -11,15 +11,31 @@ services:
       - QT_X11_NO_MITSHM=1        # (optional, avoids some shared memory issues)
       - XDG_RUNTIME_DIR=/tmp/runtime-ubuntu
     volumes:
-      - ../..:/workspaces:rw
+      - type: bind
+        source: /dev/input
+        target: /dev/input
+        read_only: true
+        bind:
+          propagation: rshared     # lets hot-plugged jsX/eventX devices flow in
+      - type: bind                 # udev database
+        source: /run/udev
+        target: /run/udev
+        read_only: true
+        bind:
+          propagation: rshared
+      - ../..:/workspaces:rw        # Current workspace read/write
     cap_add:
       - SYS_NICE               # For real-time scheduling
+    devices:
+      - /dev/input:/dev/input:ro # All input devices read only
     device_cgroup_rules:
       - 'c 4:* rmw'       # serial UARTS
       - 'c 166:* rmw'     # USB CDC & USB-Serial adapters
       - 'c 188:* rmw'
       - 'c 81:* rmw'      # all V4L2 cameras
       - 'c 189:* rmw'     # Generic USB
+      - 'c 13:* rmw'      # Entire input system
+      - 'c 10:223 rmw'    #  uinput
     tty: true
     stdin_open: true
 
