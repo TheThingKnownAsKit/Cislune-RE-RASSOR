@@ -73,10 +73,18 @@ def generate_launch_description():
                 'entity_name': 'rerassor'
             }.items())
 
-    # Create teleop control node for joystick
-    gamepad = IncludeLaunchDescription(
+    # Create joy node for joystick input
+    joy = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([pkg_control, 'launch', 'joy.launch.py'])
+        ]),
+        launch_arguments={'use_sim_time': 'true'}.items()
+    )
+
+    # Create the teleop node to listen to joy
+    teleop = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_control, 'launch', 'teleop.launch.py'])
         ]),
         launch_arguments={'use_sim_time': 'true'}.items()
     )
@@ -108,6 +116,7 @@ def generate_launch_description():
         rosgz_bridge,
         joint_broad_node,
         diff_cont_node,
-        gamepad
+        joy,
+        teleop
     ])
 
