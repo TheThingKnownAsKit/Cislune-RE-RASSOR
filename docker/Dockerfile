@@ -16,6 +16,9 @@ ARG RUNTIME=notnvidia
 RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
 # ----- install dependencies -----
+# Install Python and Python interpreter
+RUN apt-get install python3
+
 # Install common programs
 RUN apt-get update && apt-get install -y --no-install-recommends \
         gnupg \
@@ -37,15 +40,15 @@ RUN  add-apt-repository -y universe && \
      rm -rf /var/lib/apt/lists/*
 
 # Install core python tools
-RUN apt install -y build-essential \ 
+RUN apt-get update && apt install -y build-essential \ 
     python3-venv \
     python3-colcon-common-extensions \
     python3-vcstool python3-rosdep \
     && apt-get install python-is-python3
 
 # Install PlatformIO
-RUN curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
-RUN python3 get-platformio.py
+# RUN curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
+# RUN python3 get-platformio.py
 
 # Install Nvidia specific dependencies (non-nvidia just uses mesa)
 RUN if [ "$RUNTIME" = "nvidia" ]; then \
