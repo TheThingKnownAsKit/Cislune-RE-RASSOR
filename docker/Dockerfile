@@ -28,8 +28,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libegl1-mesa-dev \
         libglu1-mesa-dev \
         libxv1 \
-        libxtst6 \
-        usbutils
+        libxtst6
 
 # Install needed elements from Ubuntu Universe
 RUN  add-apt-repository -y universe && \
@@ -39,8 +38,14 @@ RUN  add-apt-repository -y universe && \
 
 # Install core python tools
 RUN apt install -y build-essential \ 
+    python3 \
     python3-colcon-common-extensions \
-    python3-vcstool python3-rosdep
+    python3-vcstool python3-rosdep \
+    && apt-get install python-is-python3
+
+# Install PlatformIO
+RUN curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
+RUN python3 get-platformio.py
 
 # Install Nvidia specific dependencies (non-nvidia just uses mesa)
 RUN if [ "$RUNTIME" = "nvidia" ]; then \
