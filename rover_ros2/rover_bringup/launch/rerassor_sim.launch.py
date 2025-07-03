@@ -91,8 +91,13 @@ def generate_launch_description():
     diff_cont_node = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['diff_cont', '-c', '/controller_manager'
-    ])
+        arguments=['diff_cont', '-c', '/controller_manager',
+            '--param-file', PathJoinSubstitution([
+                pkg_control, 'controllers', 'diff_cont.yaml'
+            ]),
+            '--ros-args', '-p', 'use_sim_time:=true'
+        ]
+    )
 
     return LaunchDescription([
         DeclareLaunchArgument('world', default_value='empty_plane'),

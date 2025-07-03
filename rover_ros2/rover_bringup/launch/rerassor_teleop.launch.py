@@ -46,7 +46,7 @@ def generate_launch_description():
     joy_teleop_cfg = os.path.join(get_package_share_directory('rover_bringup'), 'config', 'joy_teleop.yaml')
     teleop = Node(package='teleop_twist_joy', executable='teleop_node', output='screen',
               parameters=[joy_teleop_cfg],
-              remappings=[('/cmd_vel', '/diff_cont/cmd_vel_unstamped')])
+              remappings=[('/cmd_vel', '/diff_cont/cmd_vel_stamped')])
 
 
     # Spawner for diff_cont

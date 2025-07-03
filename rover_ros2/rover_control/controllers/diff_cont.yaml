@@ -14,8 +14,8 @@ diff_cont:
     right_wheel_names: [ "right_wheel_front_joint", "right_wheel_back_joint" ]
 
     # Separation between a left and right wheels in meters
-    wheel_separation: 3.00
-    wheel_radius: 1.25
+    wheel_separation: 0.48
+    wheel_radius: 0.18
 
     wheel_separation_multiplier: 1.0
     left_wheel_radius_multiplier: 1.0
@@ -31,7 +31,7 @@ diff_cont:
     enable_odom_tf: true
 
     cmd_vel_timeout: 0.5
-    use_stamped_vel: false
+    use_stamped_vel: true
 
     # Preserve turning radius when limiting speed/acceleration/jerk
     preserve_turning_radius: true
