@@ -81,4 +81,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh
 
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g "${GID}" dev || true && \
+    useradd -m -u "${UID}" -g "${GID}" dev || true
+USER dev
+
 WORKDIR /workspaces/Cislune-RE-RASSOR/

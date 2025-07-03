@@ -6,6 +6,7 @@ services:
       dockerfile: docker/Dockerfile
     container_name: ros2_dev
     network_mode: host
+    privileged: true
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1        # (optional, avoids some shared memory issues)
@@ -24,19 +25,11 @@ services:
         bind:
           propagation: rshared
       - ../..:/workspaces:rw        # Current workspace read/write
+      - "/dev:/dev"                 # All devices
     cap_add:
       - SYS_NICE               # For real-time scheduling
     devices:
       - /dev/input:/dev/input:ro # All input devices read only
-      - /dev/ttyACM0:/dev/ttyACM0 # Teensy
-    device_cgroup_rules:
-      - 'c 4:* rmw'       # serial UARTS
-      - 'c 166:* rmw'     # USB CDC & USB-Serial adapters
-      - 'c 188:* rmw'
-      - 'c 81:* rmw'      # all V4L2 cameras
-      - 'c 189:* rmw'     # Generic USB
-      - 'c 13:* rmw'      # Entire input system
-      - 'c 10:223 rmw'    #  uinput
     tty: true
     stdin_open: true
 
