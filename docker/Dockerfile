@@ -38,7 +38,7 @@ RUN  add-apt-repository -y universe && \
 
 # Install core python tools
 RUN apt install -y build-essential \ 
-    python3 \
+    python3-venv \
     python3-colcon-common-extensions \
     python3-vcstool python3-rosdep \
     && apt-get install python-is-python3
