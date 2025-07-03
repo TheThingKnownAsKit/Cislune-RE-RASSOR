@@ -81,8 +81,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install micro-ROS
 RUN apt-get update && apt-get install --no-install-recommends \
     ros-${ROS_DISTRO}-rclc \
+    ros-${ROS_DISTRO}-micro-ros-msgs \
     ros-${ROS_DISTRO}-rclc-lifecycle \
     ros-${ROS_DISTRO}-rclc-parameter
+
+# Install the micro-ros agent the hard way because it isn't released inside Jazzy yet
+RUN /bin/bash -c " \
+  source /opt/ros/${ROS_DISTRO}/setup.bash && \
+  mkdir -p /agent_ws/src && \
+  cd /agent_ws/src && \
+  git clone -b jazzy https://github.com/micro-ROS/micro-ROS-Agent.git && \
+  cd /agent_ws && \
+  colcon build --packages-select micro_ros_agent && \
+  echo 'source /agent_ws/install/setup.bash' >> /etc/profile.d/micro_ros_agent.sh \
+"
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
