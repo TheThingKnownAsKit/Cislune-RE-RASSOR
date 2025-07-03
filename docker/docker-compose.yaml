@@ -28,6 +28,7 @@ services:
       - SYS_NICE               # For real-time scheduling
     devices:
       - /dev/input:/dev/input:ro # All input devices read only
+      - /dev/ttyACM0:/dev/ttyACM0 # Teensy
     device_cgroup_rules:
       - 'c 4:* rmw'       # serial UARTS
       - 'c 166:* rmw'     # USB CDC & USB-Serial adapters
