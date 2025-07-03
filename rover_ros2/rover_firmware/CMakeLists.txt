@@ -10,20 +10,18 @@ find_package(ament_cmake REQUIRED)
 find_package(rcl REQUIRED)
 find_package(rclc REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(rmw_microxrcedds REQUIRED)
 
 # Update this
-add_executable(${PROJECT_NAME} main.c)
+add_executable(${PROJECT_NAME} src/main.cpp)
 
 ament_target_dependencies(${PROJECT_NAME}
   rcl
   rclc
   std_msgs
   builtin_interfaces
-  rmw_microxrcedds
   )
 
-install(TARGETS src
+install(DIRECTORY src
   DESTINATION share/${PROJECT_NAME}
 )
 

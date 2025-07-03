@@ -76,8 +76,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Navigation stack
     ros-${ROS_DISTRO}-navigation2 \
     ros-${ROS_DISTRO}-nav2-bringup \
-    ros-${ROS_DISTRO}-slam-toolbox \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    ros-${ROS_DISTRO}-slam-toolbox
+
+# Install micro-ROS
+RUN apt-get update && apt-get install --no-install-recommends \
+    ros-${ROS_DISTRO}-rclc \
+    ros-${ROS_DISTRO}-rclc-lifecycle \
+    ros-${ROS_DISTRO}-rclc-parameter
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh
 
