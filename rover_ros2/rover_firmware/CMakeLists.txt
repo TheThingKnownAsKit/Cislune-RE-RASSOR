@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rcl REQUIRED)
 find_package(rclc REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(builtin_interfaces REQUIRED)
 
 # Update this
 add_executable(${PROJECT_NAME} src/main.cpp)
@@ -21,8 +22,7 @@ ament_target_dependencies(${PROJECT_NAME}
   builtin_interfaces
   )
 
-install(DIRECTORY src
-  DESTINATION share/${PROJECT_NAME}
-)
+install(TARGETS ${PROJECT_NAME}
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

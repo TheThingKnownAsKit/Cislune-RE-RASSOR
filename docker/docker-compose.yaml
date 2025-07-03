@@ -32,6 +32,8 @@ services:
       - /dev/input:/dev/input:ro # All input devices read only
     tty: true
     stdin_open: true
+    group_add:
+      - dialout
 
 
   docker_git:
