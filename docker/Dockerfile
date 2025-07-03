@@ -36,8 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install needed elements from Ubuntu Universe
 RUN  add-apt-repository -y universe && \
      apt-get update && \
-     apt-get install -y --no-install-recommends usbutils joystick evtest && \
-     rm -rf /var/lib/apt/lists/*
+     apt-get install -y --no-install-recommends usbutils joystick evtest
 
 # Install core python tools
 RUN apt-get update && apt install -y build-essential \ 
@@ -47,8 +46,9 @@ RUN apt-get update && apt install -y build-essential \
     && apt-get install python-is-python3
 
 # Install PlatformIO
-# RUN curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
-# RUN python3 get-platformio.py
+RUN apt-get update && apt-get install -y pipx \ 
+    && pipx install platformio \
+    && pipx ensurepath
 
 # Install Nvidia specific dependencies (non-nvidia just uses mesa)
 RUN if [ "$RUNTIME" = "nvidia" ]; then \
