@@ -8,6 +8,11 @@ from launch.conditions import IfCondition, UnlessCondition
 
 def generate_launch_description():
 
+    # ----- Launch arguments
+    use_sim_time      = LaunchConfiguration('use_sim_time')
+    use_ros2_control  = LaunchConfiguration('use_ros2_control')
+    use_gazebo        = LaunchConfiguration('use_gazebo')
+
     # ----- Directories
     pkg_share = get_package_share_directory('rover_description')
     xacro_file = PathJoinSubstitution([pkg_share, 'urdf', 'rerassor.xacro.urdf'])
@@ -27,7 +32,8 @@ def generate_launch_description():
         parameters= [{
             'robot_description': robot_description,
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'use_ros2_control': LaunchConfiguration('use_ros2_control')
+            'use_ros2_control': LaunchConfiguration('use_ros2_control'),
+            'use_gazebo': LaunchConfiguration('use_gazebo')
         }]
     )
     
@@ -54,7 +60,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('use_ros2_control', default_value='false'),
-        DeclareLaunchArgument('use_gazebo', default_value='false')
+        DeclareLaunchArgument('use_gazebo', default_value='false'),
 
         rs_pub,
         gui_js,

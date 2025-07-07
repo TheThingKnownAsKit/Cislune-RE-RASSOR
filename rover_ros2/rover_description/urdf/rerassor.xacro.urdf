@@ -19,16 +19,18 @@
   <xacro:include filename="chassis.xacro"/>
   <xacro:include filename="wheels.xacro"/>
   <xacro:include filename="camera.xacro"/>
+  <xacro:include filename="ros2_control.xacro"/>
+  <xacro:include filename="gazebo.xacro"/>
 
 
 
   <!-- PLUGINS -->
   <xacro:if value="$(arg use_ros2_control)">
-    <xacro:include filename="ros2_control.xacro"/>
+    <xacro:ros2_control/>
   </xacro:if>
 
   <xacro:if value="$(arg use_gazebo)">
-    <xacro:include filename="gazebo.xacro"/>
+    <xacro:gazebo/>
   </xacro:if>
 
 </robot>
