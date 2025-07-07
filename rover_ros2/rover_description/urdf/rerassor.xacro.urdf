@@ -2,10 +2,13 @@
 <!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
-<robot
-  name="RASSOR URDF WITH MESHES">
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <link name="base_link"/>
+
+
   <link
-    name="BASE">
+    name="CHASSIS">
     <inertial>
       <origin
         xyz="0.139553070566409 0.133880416260512 0.172838352866278"
@@ -26,7 +29,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/BASE.STL" />
+          filename="package://rover_description/meshes/BASE.STL" />
       </geometry>
       <material
         name="">
@@ -40,10 +43,18 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/BASE.STL" />
+          filename="package://rover_description/meshes/BASE.STL" />
       </geometry>
     </collision>
   </link>
+
+  <joint name="CHASSIS_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="CHASSIS"/>
+  </joint>
+
+
   <link
     name="B-W1">
     <inertial>
@@ -66,7 +77,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W1.STL" />
+          filename="package://rover_description/meshes/B-W1.STL" />
       </geometry>
       <material
         name="">
@@ -80,10 +91,11 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W1.STL" />
+          filename="package://rover_description/meshes/B-W1.STL" />
       </geometry>
     </collision>
   </link>
+
   <joint
     name="Wheel 1"
     type="revolute">
@@ -91,7 +103,7 @@
       xyz="0.2863 0 0.11332"
       rpy="1.5708 -0.036526 0" />
     <parent
-      link="BASE" />
+      link="CHASSIS" />
     <child
       link="B-W1" />
     <axis
@@ -102,6 +114,9 @@
       effort="0"
       velocity="0" />
   </joint>
+
+
+
   <link
     name="B-W2">
     <inertial>
@@ -124,7 +139,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W2.STL" />
+          filename="package://rover_description/meshes/B-W2.STL" />
       </geometry>
       <material
         name="">
@@ -138,10 +153,11 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W2.STL" />
+          filename="package://rover_description/meshes/B-W2.STL" />
       </geometry>
     </collision>
   </link>
+
   <joint
     name="Wheel 2"
     type="revolute">
@@ -149,7 +165,7 @@
       xyz="-0.0058772 0 0.11332"
       rpy="1.5708 -0.51093 0" />
     <parent
-      link="BASE" />
+      link="CHASSIS" />
     <child
       link="B-W2" />
     <axis
@@ -160,6 +176,9 @@
       effort="0"
       velocity="0" />
   </joint>
+
+
+
   <link
     name="B-W3">
     <inertial>
@@ -182,7 +201,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W3.STL" />
+          filename="package://rover_description/meshes/B-W3.STL" />
       </geometry>
       <material
         name="">
@@ -196,10 +215,11 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W3.STL" />
+          filename="package://rover_description/meshes/B-W3.STL" />
       </geometry>
     </collision>
   </link>
+
   <joint
     name="Wheel 3"
     type="revolute">
@@ -207,7 +227,7 @@
       xyz="-0.0058772 -0.30031 0.11332"
       rpy="1.5708 0.20867 -3.1416" />
     <parent
-      link="BASE" />
+      link="CHASSIS" />
     <child
       link="B-W3" />
     <axis
@@ -218,6 +238,9 @@
       effort="0"
       velocity="0" />
   </joint>
+
+
+
   <link
     name="B-W4">
     <inertial>
@@ -240,7 +263,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W4.STL" />
+          filename="package://rover_description/meshes/B-W4.STL" />
       </geometry>
       <material
         name="">
@@ -254,10 +277,11 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-W4.STL" />
+          filename="package://rover_description/meshes/B-W4.STL" />
       </geometry>
     </collision>
   </link>
+
   <joint
     name="Wheel 4"
     type="revolute">
@@ -265,7 +289,7 @@
       xyz="0.2863 -0.30031 0.11332"
       rpy="1.5708 0.19754 -3.1416" />
     <parent
-      link="BASE" />
+      link="CHASSIS" />
     <child
       link="B-W4" />
     <axis
@@ -276,6 +300,9 @@
       effort="0"
       velocity="0" />
   </joint>
+
+
+
   <link
     name="B-C">
     <inertial>
@@ -298,7 +325,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-C.STL" />
+          filename="package://rover_description/meshes/B-C.STL" />
       </geometry>
       <material
         name="">
@@ -312,10 +339,11 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://RASSOR URDF WITH MESHES/meshes/B-C.STL" />
+          filename="package://rover_description/meshes/B-C.STL" />
       </geometry>
     </collision>
   </link>
+
   <joint
     name="Camera"
     type="fixed">
@@ -323,7 +351,7 @@
       xyz="0.16608 -0.21323 0.30082"
       rpy="1.5708 0.2618 0" />
     <parent
-      link="BASE" />
+      link="CHASSIS" />
     <child
       link="B-C" />
     <axis
