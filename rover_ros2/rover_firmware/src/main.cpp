@@ -5,6 +5,9 @@
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
 #include <geometry_msgs/msg/twist.h>
+#include <std_srvs/srv/trigger.h>
+
+extern "C" void _reboot_Teensyduino_(void);
 
 // Motor control pin definitions (TODO ADJUST THESE)
 #define LEFT_DIR_FWD_PIN   2    // left motor forward direction pin
@@ -17,7 +20,8 @@
 // Declare functions
 void destroy_entities(void);
 bool create_entities(void);
-void cmdVelCallback(const void * msgin);
+void cmd_vel_callback(const void *msgin);
+void reboot_callback(const void *req, void *res);
 
 // Robot constants
 const float WHEEL_BASE = 0.30;     // distance between wheels in meters (example)
@@ -32,9 +36,13 @@ rclc_executor_t executor;
 rclc_support_t support;
 rcl_node_t node;
 rcl_allocator_t allocator;
+rcl_service_t reboot_srv;
+std_srvs__srv__Trigger_Request req;
+std_srvs__srv__Trigger_Response res;
 
 const int LED_PIN = 13;  // Teensy 4.1 on-board LED (pin 13)
 bool connected = false; // Is micro ros agent connected?
+static volatile bool reboot_requested = false;
 
 // Soft error checking: returns false if an error is detected. called in create_entities
 #define ROS_SOFTCHECK(fn)                    \
@@ -57,6 +65,7 @@ void destroy_entities(void) {
 
   // Clean up micro ros resources
   rclc_executor_fini(&executor);
+  rcl_service_fini(&reboot_srv, &node);
   rcl_subscription_fini(&cmd_vel_sub, &node);
   rcl_node_fini(&node);
   rclc_support_fini(&support);
@@ -77,17 +86,44 @@ bool create_entities() {
   ));
   
   // Create executor to handle the subscription callback
-  ROS_SOFTCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
+  const size_t NUM_HANDLES = 2;
+  ROS_SOFTCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
   // Note: ON_NEW_DATA executes callback only when new data arrives
-  ROS_SOFTCHECK(rclc_executor_add_subscription(&executor, &cmd_vel_sub, &cmd_vel_msg, &cmdVelCallback, ON_NEW_DATA));
+  ROS_SOFTCHECK(rclc_executor_add_subscription(&executor, &cmd_vel_sub, &cmd_vel_msg, &cmd_vel_callback, ON_NEW_DATA));
+
+  // Create ROS2 service via micro ros trigger for request reboot
+  std_srvs__srv__Trigger_Request__init(&req);
+  std_srvs__srv__Trigger_Response__init(&res);
+
+  ROS_SOFTCHECK(
+  rclc_service_init_default(
+     &reboot_srv,
+     &node,
+     ROSIDL_GET_SRV_TYPE_SUPPORT(std_srvs, srv, Trigger),
+     "reboot_teensy"               // service name
+  ));
+
+  ROS_SOFTCHECK(rclc_executor_add_service(&executor, &reboot_srv, &req, &res, reboot_callback));
 
   return true;
 }
 
+// Callback function to handle service requests to reboot Teensy
+void reboot_callback(const void *req, void *res) {
+  std_srvs__srv__Trigger_Response *rsp = (std_srvs__srv__Trigger_Response *) res;
+
+  rsp->success = true;
+  const char msg[] = "Reboot request accepted";
+  memcpy(rsp->message.data, msg, sizeof(msg));
+  rsp->message.size = sizeof(msg);
+
+  reboot_requested = true;                 // ask main loop to reboot
+}
+
 // Callback function to handle incoming Twist messages
-void cmdVelCallback(const void * msgin) {
+void cmd_vel_callback(const void *msgin) {
   // Cast the incoming ROS message to the Twist type
-  const geometry_msgs__msg__Twist * msg = (const geometry_msgs__msg__Twist *)msgin;
+  const geometry_msgs__msg__Twist *msg = (const geometry_msgs__msg__Twist *)msgin;
   float linear_x = msg->linear.x;
   float angular_z = msg->angular.z;
   
@@ -151,8 +187,14 @@ void setup() {
 }
 
 void loop() {
+
+  if (reboot_requested) {
+    delay(20);
+    _reboot_Teensyduino_();
+  }
+
     // Ping the micro-ROS agent with a short timeout
-    if (rmw_uros_ping_agent(50, 2) == RMW_RET_OK) {
+    if (rmw_uros_ping_agent(20, 2) == RMW_RET_OK) {
         if (!connected) {
             // Agent is up, but not connected yet – initialize ROS entities
             if (create_entities()) {
@@ -160,7 +202,7 @@ void loop() {
               digitalWrite(LED_PIN, HIGH);
               connected = true;
             } else {
-              // If creation failed (rare), you can retry next loop
+              // Creation failed
               connected = false;
             }
         } else {
