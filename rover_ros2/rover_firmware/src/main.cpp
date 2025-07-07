@@ -4,8 +4,8 @@
 #include <rcl/rcl.h>
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
-#include <geometry_msgs/msg/twist.h>
 #include <std_srvs/srv/trigger.h>
+#include <std_msgs/msg/float32_multi_array.h>
 
 extern "C" void _reboot_Teensyduino_(void);
 
@@ -20,7 +20,7 @@ extern "C" void _reboot_Teensyduino_(void);
 // Declare functions
 void destroy_entities(void);
 bool create_entities(void);
-void cmd_vel_callback(const void *msgin);
+void wheel_cmd_callback(const void *msgin);
 void reboot_callback(const void *req, void *res);
 
 // Robot constants
@@ -30,8 +30,8 @@ const int MAX_PWM = 255;
 const float PWM_PER_MPS = (MAX_PWM / MAX_LIN_SPEED);  // PWM increment per 1 m/s of speed
 
 // micro-ROS core structures
-rcl_subscription_t cmd_vel_sub;
-geometry_msgs__msg__Twist cmd_vel_msg;
+rcl_subscription_t wheel_sub;
+std_msgs__msg__Float32MultiArray wheel_msg;
 rclc_executor_t executor;
 rclc_support_t support;
 rcl_node_t node;
@@ -79,17 +79,17 @@ bool create_entities() {
   
   // Create a subscriber for the Twist message on /cmd_vel
   ROS_SOFTCHECK(rclc_subscription_init_default(
-    &cmd_vel_sub,
+    &wheel_sub,
     &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
-    "cmd_vel"
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32MultiArray),
+    "wheel_cmd"
   ));
   
   // Create executor to handle the subscription callback
   const size_t NUM_HANDLES = 2;
   ROS_SOFTCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
   // Note: ON_NEW_DATA executes callback only when new data arrives
-  ROS_SOFTCHECK(rclc_executor_add_subscription(&executor, &cmd_vel_sub, &cmd_vel_msg, &cmd_vel_callback, ON_NEW_DATA));
+  ROS_SOFTCHECK(rclc_executor_add_subscription(&executor, &wheel_sub, &wheel_msg, &wheel_cmd_callback, ON_NEW_DATA));
 
   // Create ROS2 service via micro ros trigger for request reboot
   std_srvs__srv__Trigger_Request__init(&req);
@@ -121,21 +121,16 @@ void reboot_callback(const void *req, void *res) {
 }
 
 // Callback function to handle incoming Twist messages
-void cmd_vel_callback(const void *msgin) {
-  // Cast the incoming ROS message to the Twist type
-  const geometry_msgs__msg__Twist *msg = (const geometry_msgs__msg__Twist *)msgin;
-  float linear_x = msg->linear.x;
-  float angular_z = msg->angular.z;
-  
-  // Compute individual wheel speeds (m/s)
-  float left_speed  = linear_x - (angular_z * WHEEL_BASE / 2.0f);
-  float right_speed = linear_x + (angular_z * WHEEL_BASE / 2.0f);
-  
-  // Convert speeds (m/s) to PWM values (0-255)
-  int left_pwm  = (int) (fabs(left_speed) * PWM_PER_MPS);
-  int right_pwm = (int) (fabs(right_speed) * PWM_PER_MPS);
-  if (left_pwm  > MAX_PWM) left_pwm  = MAX_PWM;
-  if (right_pwm > MAX_PWM) right_pwm = MAX_PWM;
+void wheel_cmd_callback(const void *msgin) {
+  const std_msgs__msg__Float32MultiArray * m =
+        (const std_msgs__msg__Float32MultiArray *) msgin;
+
+  float left_speed  = m->data.data[0];
+  float right_speed = m->data.data[1];
+
+  // convert rad/s → PWM (simple linear map or PID)
+  int left_speed_pwm  = (int)(fabs(left_speed)  * PWM_PER_RAD);
+  int right_pwm = (int)(fabs(right_speed) * PWM_PER_RAD);
   
   // Set motor directions
   if (left_speed >= 0.0f) {
