@@ -12,7 +12,11 @@ def generate_launch_description():
     pkg_share = get_package_share_directory('rover_description')
     xacro_file = PathJoinSubstitution([pkg_share, 'urdf', 'rerassor.xacro.urdf'])
 
-    robot_description_content = Command(['xacro ', xacro_file])
+    robot_description_content = Command([
+        'xacro ', xacro_file,
+        ' use_ros2_control:=', use_ros2_control,
+        ' use_gazebo:=', use_gazebo
+    ])
     robot_description = ParameterValue(robot_description_content, value_type=str)
     
     # ----- Nodes
@@ -50,6 +54,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('use_ros2_control', default_value='false'),
+        DeclareLaunchArgument('use_gazebo', default_value='false')
 
         rs_pub,
         gui_js,

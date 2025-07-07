@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <ros2_control name="DiffDriveSystem" type="system">
+        <hardware>
+            <plugin>teensy_diff_drive_hardware/TeensyDiffDriveHardware</plugin> <!-- TODO FIX THIS -->
+            <param name="left_front_wheel_name">front_left_wheel_joint</param>
+            <param name="left_rear_wheel_name">rear_left_wheel_joint</param>
+            <param name="right_front_wheel_name">front_right_wheel_joint</param>
+            <param name="right_rear_wheel_name">rear_right_wheel_joint</param>
+            <param name="device">/dev/ttyACM0</param>
+            <param name="baud_rate">115200</param>
+            <param name="timeout_ms">1000</param>
+            <param name="enc_counts_per_rev">1440</param>
+        </hardware>
+        <!-- joint interface definitions: each wheel joint has velocity command and position/velocity state -->
+        <joint name="front_left_wheel_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="rear_left_wheel_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="front_right_wheel_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="rear_right_wheel_joint">
+            <command_interface name="velocity"/>
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+    
+</robot>

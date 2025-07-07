@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- PHYSICAL CAMERA -->
+    <link name="camera_link">
+        <inertial>
+            <origin
+                xyz="0.008575 0.0176374999999988 -0.0397509900990099"
+                rpy="0 0 0" />
+            <mass value="0.0574670775000001" />
+            <inertia
+                ixx="7.88407118561126E-05"
+                ixy="3.3881317890172E-21"
+                ixz="2.02195574000089E-21"
+                iyy="7.68352664913641E-05"
+                iyz="-4.07867026920939E-21"
+                izz="4.82250544841407E-06" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://rover_description/meshes/B-C.STL" />
+            </geometry>
+            <material name="">
+                <color
+                    rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://rover_description/meshes/B-C.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="camera_joint" type="fixed">
+        <origin
+            xyz="0.16608 -0.21323 0.30082"
+            rpy="1.5708 0.2618 0" />
+        <parent link="chassis_link" />
+        <child link="camera_link" />
+        <axis xyz="0 0 0" />
+        <limit
+            lower="0"
+            upper="0"
+            effort="0"
+            velocity="0" />
+    </joint>
+
+
+
+    <!-- CAMERA OPTICAL -->
+    <link name="camera_optical_link"/>
+    
+    <joint name="camera_optical_joint" type="fixed">
+        <parent link="camera_link"/>
+        <child link="camera_optical_link"/>
+        <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+    </joint>
+
+</robot>

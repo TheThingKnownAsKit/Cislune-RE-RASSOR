@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="rerassor" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <link name="chassis_link">
+        <inertial>
+            <origin
+                xyz="0.139553070566409 0.133880416260512 0.172838352866278"
+                rpy="0 0 0" />
+            <mass value="6.04730235873931" />
+            <inertia
+                ixx="0.050667333746034"
+                ixy="-0.000129048017300388"
+                ixz="2.59990378944557E-08"
+                iyy="0.0501176099643124"
+                iyz="2.1051434180431E-08"
+                izz="0.011208434603957" />
+        </inertial>
+        <visual>
+            <origin
+                xyz="0 0 0"
+                rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://rover_description/meshes/chassis.STL" />
+            </geometry>
+            <material name="">
+                <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://rover_description/meshes/BASE.STL" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="chassis_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="base_link"/>
+        <child link="chassis_link"/>
+    </joint>
+
+</robot>
