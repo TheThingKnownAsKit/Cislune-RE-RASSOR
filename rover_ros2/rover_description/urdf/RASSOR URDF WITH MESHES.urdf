@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="RASSOR URDF WITH MESHES">
+  <link
+    name="BASE">
+    <inertial>
+      <origin
+        xyz="0.139553070566409 0.133880416260512 0.172838352866278"
+        rpy="0 0 0" />
+      <mass
+        value="6.04730235873931" />
+      <inertia
+        ixx="0.050667333746034"
+        ixy="-0.000129048017300388"
+        ixz="2.59990378944557E-08"
+        iyy="0.0501176099643124"
+        iyz="2.1051434180431E-08"
+        izz="0.011208434603957" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/BASE.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/BASE.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="B-W1">
+    <inertial>
+      <origin
+        xyz="0 -1.38777878078145E-17 -0.00226675278429586"
+        rpy="0 0 0" />
+      <mass
+        value="3.30391410914092" />
+      <inertia
+        ixx="0.014080784493695"
+        ixy="0"
+        ixz="-5.05077307590103E-20"
+        iyy="0.014080784493695"
+        iyz="7.67217406475748E-20"
+        izz="0.023364919828031" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel 1"
+    type="revolute">
+    <origin
+      xyz="0.2863 0 0.11332"
+      rpy="1.5708 -0.036526 0" />
+    <parent
+      link="BASE" />
+    <child
+      link="B-W1" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="B-W2">
+    <inertial>
+      <origin
+        xyz="-6.93889390390723E-18 -1.38777878078145E-17 -0.00226675278429585"
+        rpy="0 0 0" />
+      <mass
+        value="3.30391410914092" />
+      <inertia
+        ixx="0.014080784493695"
+        ixy="-1.30104260698261E-18"
+        ixz="-1.16018238621911E-19"
+        iyy="0.014080784493695"
+        iyz="1.4196513069374E-19"
+        izz="0.023364919828031" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel 2"
+    type="revolute">
+    <origin
+      xyz="-0.0058772 0 0.11332"
+      rpy="1.5708 -0.51093 0" />
+    <parent
+      link="BASE" />
+    <child
+      link="B-W2" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="B-W3">
+    <inertial>
+      <origin
+        xyz="3.46944695195361E-18 -2.77555756156289E-17 -0.0489261260975664"
+        rpy="0 0 0" />
+      <mass
+        value="3.30391410914092" />
+      <inertia
+        ixx="0.0140807844936951"
+        ixy="-2.16840434497101E-19"
+        ixz="-3.98163543484029E-19"
+        iyy="0.0140807844936951"
+        iyz="9.61227061651265E-19"
+        izz="0.023364919828031" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel 3"
+    type="revolute">
+    <origin
+      xyz="-0.0058772 -0.30031 0.11332"
+      rpy="1.5708 0.20867 -3.1416" />
+    <parent
+      link="BASE" />
+    <child
+      link="B-W3" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="B-W4">
+    <inertial>
+      <origin
+        xyz="0 0 -0.0489261260975665"
+        rpy="0 0 0" />
+      <mass
+        value="3.30391410914092" />
+      <inertia
+        ixx="0.0140807844936951"
+        ixy="-2.16840434497101E-19"
+        ixz="-2.14131782225971E-19"
+        iyy="0.0140807844936951"
+        iyz="9.51866693857056E-19"
+        izz="0.0233649198280311" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-W4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Wheel 4"
+    type="revolute">
+    <origin
+      xyz="0.2863 -0.30031 0.11332"
+      rpy="1.5708 0.19754 -3.1416" />
+    <parent
+      link="BASE" />
+    <child
+      link="B-W4" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="B-C">
+    <inertial>
+      <origin
+        xyz="0.008575 0.0176374999999988 -0.0397509900990099"
+        rpy="0 0 0" />
+      <mass
+        value="0.0574670775000001" />
+      <inertia
+        ixx="7.88407118561126E-05"
+        ixy="3.3881317890172E-21"
+        ixz="2.02195574000089E-21"
+        iyy="7.68352664913641E-05"
+        iyz="-4.07867026920939E-21"
+        izz="4.82250544841407E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-C.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://RASSOR URDF WITH MESHES/meshes/B-C.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Camera"
+    type="fixed">
+    <origin
+      xyz="0.16608 -0.21323 0.30082"
+      rpy="1.5708 0.2618 0" />
+    <parent
+      link="BASE" />
+    <child
+      link="B-C" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
