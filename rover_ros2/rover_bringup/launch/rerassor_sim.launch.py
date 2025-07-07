@@ -29,7 +29,7 @@ def generate_launch_description():
     urdf_xml   = xacro.process_file(xacro_file).toxml()
     tmp_urdf   = tempfile.NamedTemporaryFile(delete=False,
                                              suffix='.urdf',
-                                             prefix='articubot_')
+                                             prefix='rerassor_')
     tmp_urdf.write(urdf_xml.encode())
     tmp_urdf.close()                       # keep the file on disk
     urdf_path = tmp_urdf.name              # path we’ll hand to the spawner

@@ -1,91 +1,75 @@
-from launch import LaunchDescription
-from launch.actions import TimerAction, RegisterEventHandler
-from launch_ros.actions import Node
-from launch.event_handlers import OnProcessStart
-import os
-
 from ament_index_python.packages import get_package_share_directory
-import xacro
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command, TextSubstitution, PythonExpression
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.parameter_descriptions import ParameterValue
+from launch_ros.actions import Node
+import os, xacro, tempfile
+from launch.actions import ExecuteProcess
 
 def generate_launch_description():
-    # Load and process the Xacro file
-    xacro_file = os.path.join(
-        get_package_share_directory('rover_description'),
-        'urdf',
-        'rover.urdf.xacro'
-    )
-    robot_desc = xacro.process_file(xacro_file, mappings={'use_sim': 'false'})
-    robot_description = {'robot_description': robot_desc.toxml()}
 
-    # Load controller parameters
-    controller_yaml = os.path.join(
-        get_package_share_directory('rover_bringup'),
-        'config',
-        'diff_conts.yaml'
-    )
+    # ----- Directories
+    pkg_description = get_package_share_directory('rover_description')
+    pkg_control = get_package_share_directory('rover_control')
 
-    # Robot State Publisher
-    rsp = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        parameters=[robot_description],
-        output='screen'
-    )
+    # ----- Create nodes
+    rsp = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_description, 'launch', 'robot_state_publisher.launch.py'])
+            ]),
+            launch_arguments={
+                'use_sim_time': 'false',
+                'use_ros2_control': 'true'
+            }.items())
 
-    # ros2_control node
-    control_node = Node(
-        package='controller_manager',
-        executable='ros2_control_node',
-        parameters=[robot_description, controller_yaml],
-        output='screen'
+    # Create joy node for joystick input
+    joy = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_control, 'launch', 'joy.launch.py'])
+        ]),
+        launch_arguments={'use_sim_time': 'false'}.items()
     )
 
-    # Joystick nodes
-    joy = Node(package='joy', executable='joy_node', output='screen',
-          parameters=[{'dev': '/dev/input/js0', 'deadzone': 0.05}])
-    joy_teleop_cfg = os.path.join(get_package_share_directory('rover_bringup'), 'config', 'joy_teleop.yaml')
-    teleop = Node(package='teleop_twist_joy', executable='teleop_node', output='screen',
-              parameters=[joy_teleop_cfg],
-              remappings=[('/cmd_vel', '/diff_cont/cmd_vel_stamped')])
+    # Create the teleop node to listen to joy
+    teleop = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([pkg_control, 'launch', 'teleop.launch.py'])
+        ]),
+        launch_arguments={'use_sim_time': 'false'}.items()
+    )
 
-
-    # Spawner for diff_cont
-    diff_spawner = Node(
+    # Create controller manager nodes
+    joint_broad_node = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['diff_cont'],
-        output='screen'
-    )
-
-    # Spawner for joint_state_broadcaster
-    jsb_spawner = Node(
+        arguments=[
+            'joint_state_broadcaster', '-c', '/controller_manager'
+    ])
+    diff_cont_node = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['joint_state_broadcaster'],
+        arguments=['diff_cont', '-c', '/controller_manager',
+            '--param-file', PathJoinSubstitution([
+                pkg_control, 'controllers', 'diff_cont.yaml'
+            ]),
+            '--ros-args', '-p', 'use_sim_time:=false'
+        ]
+    )
+
+    spawn_micro_ros_agent = ExecuteProcess(
+        cmd=[
+            'ros2', 'run', 'micro_ros_agent', 'micro_ros_agent', 'serial', '--dev', '/dev/ttyACM0'
+        ],
         output='screen'
-    )
-
-    # Delay control startup
-    delayed_control = TimerAction(period=3.0, actions=[control_node])
-
-    # Ensure spawners wait for control node
-    diff_spawner_after = RegisterEventHandler(
-        event_handler=OnProcessStart(
-            target_action=control_node,
-            on_start=[diff_spawner]
-        )
-    )
-
-    jsb_spawner_after = RegisterEventHandler(
-        event_handler=OnProcessStart(
-            target_action=control_node,
-            on_start=[jsb_spawner]
-        )
     )
 
     return LaunchDescription([
         rsp,
-        delayed_control,
-        diff_spawner_after,
-        jsb_spawner_after
+        joint_broad_node,
+        diff_cont_node,
+        joy,
+        teleop,
+        spawn_micro_ros_agent
     ])
