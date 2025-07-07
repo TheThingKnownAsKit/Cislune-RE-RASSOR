@@ -123,6 +123,9 @@ void setup() {
   RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
   // Note: ON_NEW_DATA executes callback only when new data arrives
   RCCHECK(rclc_executor_add_subscription(&executor, &cmd_vel_sub, &cmd_vel_msg, &cmdVelCallback, ON_NEW_DATA));
+
+  // Setup is done, keep LED on to show normal functioning
+  digitalWrite(LED_PIN, LOW);
 }
 
 void loop() {

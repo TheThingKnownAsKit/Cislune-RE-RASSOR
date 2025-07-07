@@ -1,28 +1,25 @@
-cmake_minimum_required(VERSION 3.8)
-project(rover_firmware)
+cmake_minimum_required(VERSION 3.8)          # ≥ 3.8 required by ament_cmake
+project(rover_firmware NONE)                 # “NONE” → no languages / no build
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+find_package(ament_cmake REQUIRED)           # still needed for ament index
+
+find_program(PLATFORMIO_CMD platformio)
+if(PLATFORMIO_CMD)
+  add_custom_target(pio_build
+    COMMAND ${PLATFORMIO_CMD} run -e teensy41         # compile firmware
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Building Teensy firmware with PlatformIO"
+  )
+else()
+  message(WARNING "platformio not found – 'pio_build' target is disabled.")
 endif()
 
-# find dependencies
-find_package(ament_cmake REQUIRED)
-find_package(rcl REQUIRED)
-find_package(rclc REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
-
-# Update this
-add_executable(${PROJECT_NAME} src/main.cpp)
-
-ament_target_dependencies(${PROJECT_NAME}
-  rcl
-  rclc
-  std_msgs
-  builtin_interfaces
-  )
-
-install(TARGETS ${PROJECT_NAME}
-  DESTINATION lib/${PROJECT_NAME})
+install(
+  FILES
+    .pio/build/teensy41/firmware.hex            # path after a PlatformIO build
+  DESTINATION
+    share/${PROJECT_NAME}
+  OPTIONAL                                     # ignores if file is missing
+)
 
 ament_package()

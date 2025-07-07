@@ -1,3 +1,0 @@
-[submodule "rover_firmware/lib/micro_ros_platformio"]
-	path = rover_firmware/lib/micro_ros_platformio
-	url = https://github.com/micro-ROS/micro_ros_platformio.git
