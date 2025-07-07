@@ -14,6 +14,11 @@
 #define RIGHT_DIR_BCK_PIN  6    // right motor backward pin
 #define RIGHT_PWM_PIN      7    // right motor PWM pin
 
+// Declare functions
+void destroy_entities(void);
+bool create_entities(void);
+void cmdVelCallback(const void * msgin);
+
 // Robot constants
 const float WHEEL_BASE = 0.30;     // distance between wheels in meters (example)
 const float MAX_LIN_SPEED = 1.0;   // m/s corresponding to full speed
@@ -28,18 +33,55 @@ rclc_support_t support;
 rcl_node_t node;
 rcl_allocator_t allocator;
 
-// Simple error handler macro and LED for debug
-#define RCCHECK(fn)  { rcl_ret_t temp_rc = (fn); if ((temp_rc != RCL_RET_OK)) { errorLoop(); } }
-#define RCSOFTCHECK(fn)  { rcl_ret_t temp_rc = (fn); if ((temp_rc != RCL_RET_OK)) { /* non-fatal error */ } }
 const int LED_PIN = 13;  // Teensy 4.1 on-board LED (pin 13)
+bool connected = false; // Is micro ros agent connected?
 
-void errorLoop() {
-  // Indicate fatal error: blink LED rapidly
-  pinMode(LED_PIN, OUTPUT);
-  while (1) {
-    digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-    delay(100);
-  }
+// Soft error checking: returns false if an error is detected. called in create_entities
+#define ROS_SOFTCHECK(fn)                    \
+  do {                                       \
+    rcl_ret_t _rc = (fn);                    \
+    if (_rc != RCL_RET_OK) {                 \
+      return false;                          \
+    }                                        \
+  } while (0)
+
+void destroy_entities(void) {
+  // Stop all motors
+  analogWrite(LEFT_PWM_PIN,  0);
+  analogWrite(RIGHT_PWM_PIN, 0);
+
+  digitalWrite(LEFT_DIR_FWD_PIN,  LOW);
+  digitalWrite(LEFT_DIR_BCK_PIN,  LOW);
+  digitalWrite(RIGHT_DIR_FWD_PIN, LOW);
+  digitalWrite(RIGHT_DIR_BCK_PIN, LOW);
+
+  // Clean up micro ros resources
+  rclc_executor_fini(&executor);
+  rcl_subscription_fini(&cmd_vel_sub, &node);
+  rcl_node_fini(&node);
+  rclc_support_fini(&support);
+}
+
+bool create_entities() {
+  // Initialize micro-ROS support and node
+  allocator = rcl_get_default_allocator();
+  ROS_SOFTCHECK(rclc_support_init(&support, 0, NULL, &allocator));
+  ROS_SOFTCHECK(rclc_node_init_default(&node, "teensy41_cmdvel_node", "", &support));
+  
+  // Create a subscriber for the Twist message on /cmd_vel
+  ROS_SOFTCHECK(rclc_subscription_init_default(
+    &cmd_vel_sub,
+    &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
+    "cmd_vel"
+  ));
+  
+  // Create executor to handle the subscription callback
+  ROS_SOFTCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
+  // Note: ON_NEW_DATA executes callback only when new data arrives
+  ROS_SOFTCHECK(rclc_executor_add_subscription(&executor, &cmd_vel_sub, &cmd_vel_msg, &cmdVelCallback, ON_NEW_DATA));
+
+  return true;
 }
 
 // Callback function to handle incoming Twist messages
@@ -105,32 +147,42 @@ void setup() {
   analogWrite(RIGHT_PWM_PIN, 0);
   
   delay(200);  // small delay before micro-ROS init (optional)
-  
-  // Initialize micro-ROS support and node
-  allocator = rcl_get_default_allocator();
-  RCCHECK(rclc_support_init(&support, 0, NULL, &allocator));
-  RCCHECK(rclc_node_init_default(&node, "teensy41_cmdvel_node", "", &support));
-  
-  // Create a subscriber for the Twist message on /cmd_vel
-  RCCHECK(rclc_subscription_init_default(
-    &cmd_vel_sub,
-    &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(geometry_msgs, msg, Twist),
-    "cmd_vel"
-  ));
-  
-  // Create executor to handle the subscription callback
-  RCCHECK(rclc_executor_init(&executor, &support.context, 1, &allocator));
-  // Note: ON_NEW_DATA executes callback only when new data arrives
-  RCCHECK(rclc_executor_add_subscription(&executor, &cmd_vel_sub, &cmd_vel_msg, &cmdVelCallback, ON_NEW_DATA));
-
-  // Setup is done, keep LED on to show normal functioning
-  digitalWrite(LED_PIN, LOW);
+  create_entities();
 }
 
 void loop() {
-  // Spin executor to handle incoming messages
-  RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100)));
-  // Add a small delay to avoid tight looping
-  delay(10);
+    // Ping the micro-ROS agent with a short timeout
+    if (rmw_uros_ping_agent(50, 2) == RMW_RET_OK) {
+        if (!connected) {
+            // Agent is up, but not connected yet – initialize ROS entities
+            if (create_entities()) {
+              // Teensy is connected to micro ros agent, indicate with LED on
+              digitalWrite(LED_PIN, HIGH);
+              connected = true;
+            } else {
+              // If creation failed (rare), you can retry next loop
+              connected = false;
+            }
+        } else {
+          // Already connected and agent is up – process ROS callbacks
+          rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100));
+        }
+    } else {
+        // Agent not reachable
+        if (connected) {
+            // Clean up ROS nodes if previously connected
+            destroy_entities();  // (fini all ROS entities and context)
+            connected = false;
+        }
+        // Stop motors for safety since no control commands are coming
+        analogWrite(LEFT_PWM_PIN, 0);
+        analogWrite(RIGHT_PWM_PIN, 0);
+        digitalWrite(LEFT_DIR_FWD_PIN, LOW);
+        digitalWrite(LEFT_DIR_BCK_PIN, LOW);
+        digitalWrite(RIGHT_DIR_FWD_PIN, LOW);
+        digitalWrite(RIGHT_DIR_BCK_PIN, LOW);
+        // Blink an LED to indicate waiting for agent)
+        digitalWrite(LED_PIN, !digitalRead(LED_PIN));
+        delay(500);
+    }
 }
