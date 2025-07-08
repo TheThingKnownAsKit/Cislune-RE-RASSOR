@@ -9,7 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_program(GZ_EXECUTABLE gz)
 
-install(DIRECTORY config models worlds
+install(DIRECTORY config models worlds launch
   DESTINATION share/${PROJECT_NAME}
 )
 
