@@ -7,3 +7,4 @@ TODO:
 4. Make subpackage readme's
 5. Add support for remotely uploading to Teensy
 6. Support all needed commands in rover_bringup
+7. Fix the weird wheel drift
