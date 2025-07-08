@@ -45,8 +45,8 @@
 
 
 
-    <!-- FRONT RIGHT WHEEL -->
-    <link name="front_right_wheel_link">
+    <!-- REAR LEFT WHEEL -->
+    <link name="rear_left_wheel_link">
         <inertial>
             <origin
                 xyz="-6.93889390390723E-18 -1.38777878078145E-17 -0.00226675278429585"
@@ -78,19 +78,19 @@
         </collision>
     </link>
 
-    <joint name="front_right_wheel_joint" type="continuous">
+    <joint name="rear_left_wheel_joint" type="continuous">
         <origin
             xyz="-0.0058772 0 0.11332"
             rpy="1.5708 -0.51093 0" />
         <parent link="chassis_link" />
-        <child link="front_right_wheel_link" />
+        <child link="rear_left_wheel_link" />
         <axis xyz="0 0 -1" />
     </joint>
 
 
 
-    <!-- REAR LEFT WHEEL -->
-    <link name="rear_left_wheel_link">
+    <!-- REAR RIGHT WHEEL -->
+    <link name="rear_right_wheel_link">
         <inertial>
             <origin
                 xyz="3.46944695195361E-18 -2.77555756156289E-17 -0.0489261260975664"
@@ -122,19 +122,19 @@
         </collision>
     </link>
 
-    <joint name="rear_left_wheel_joint" type="continuous">
+    <joint name="rear_right_wheel_joint" type="continuous">
         <origin
             xyz="-0.0058772 -0.30031 0.11332"
             rpy="1.5708 0.20867 -3.1416" />
         <parent link="chassis_link" />
-        <child link="rear_left_wheel_link" />
+        <child link="rear_right_wheel_link" />
         <axis xyz="0 0 -1" />
     </joint>
 
 
 
-    <!-- REAR RIGHT WHEEL -->
-    <link name="rear_right_wheel_link">
+    <!-- FRONT RIGHT WHEEL -->
+    <link name="front_right_wheel_link">
         <inertial>
             <origin
             xyz="0 0 -0.0489261260975665"
@@ -166,12 +166,12 @@
         </collision>
     </link>
 
-    <joint name="rear_right_wheel_joint" type="continuous">
+    <joint name="front_right_wheel_joint" type="continuous">
         <origin
             xyz="0.2863 -0.30031 0.11332"
             rpy="1.5708 0.19754 -3.1416" />
         <parent link="chassis_link" />
-        <child link="rear_right_wheel_link" />
+        <child link="front_right_wheel_link" />
         <axis xyz="0 0 -1" />
     </joint>
 
