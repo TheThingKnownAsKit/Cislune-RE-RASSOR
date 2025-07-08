@@ -23,9 +23,11 @@
 
 
   <!-- PLUGINS -->
-  <xacro:if value="$(arg use_ros2_control)">
-    <xacro:include filename="ros2_control.xacro"/>
-  </xacro:if>
+  <xacro:unless value="$(arg use_gazebo)">          <!-- Only include pure ROS2 Control for real teleop/autonomy -->
+    <xacro:if value="$(arg use_ros2_control)">
+      <xacro:include filename="ros2_control.xacro"/>
+    </xacro:if>
+  </xacro:unless>
 
   <xacro:if value="$(arg use_gazebo)">
     <xacro:include filename="gazebo.xacro"/>
