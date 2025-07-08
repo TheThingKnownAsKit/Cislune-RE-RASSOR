@@ -47,7 +47,7 @@ def generate_launch_description():
             'robot_description': robot_description,
             'use_sim_time': LaunchConfiguration('use_sim_time')
         }],
-        condition=UnlessCondition(LaunchConfiguration('use_ros2_control'))
+        condition=UnlessCondition(LaunchConfiguration('use_gazebo'))
     )
 
     headless_js = Node(
@@ -55,7 +55,7 @@ def generate_launch_description():
             executable='joint_state_publisher',
             output='screen',
             parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
-            condition=IfCondition(LaunchConfiguration('use_ros2_control'))
+            condition=UnlessCondition(LaunchConfiguration('use_ros2_control'))
     )
 
 
