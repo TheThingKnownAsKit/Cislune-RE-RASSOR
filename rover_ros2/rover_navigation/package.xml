@@ -12,7 +12,15 @@
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
+  <build_depend>rclcpp</build_depend>
+  <build_depend>pluginlib</build_depend>
+
+   <exec_depend>nav2_core</exec_depend>   <!-- for waypoint task executor -->
+  <exec_depend>nav2_util</exec_depend>
+  <exec_depend>rclcpp</exec_depend>
+
   <export>
     <build_type>ament_cmake</build_type>
+    <!-- Will need to export the plugin for hardware and tasks execution here -->
   </export>
 </package>
