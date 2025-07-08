@@ -21,6 +21,10 @@ void setup() {
   lastCommandTime = millis();
 }
 
+void setMotorSpeeds(float leftCommand, float rightCommand) {
+  // put stuff here later TODO
+}
+
 void loop() {
   // 1. Receive and parse commands from serial (if available)
   if (Serial.available()) {
