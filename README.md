@@ -13,3 +13,35 @@ TODO:
 
 Lessons learned:
 1. Don't name every ros2 package prepended with rover_ because it makes autocomplete hate you
+2. I have no idea if it's best practice but I do really like separating the launch files into modules within
+    their respective ROS2 
+
+Okay actually pretty README starts now
+
+# Cislune RE-RASSOR
+![](Cislune_Logo.png)
+
+This repository contains the codebase for Cislune's version of the Florida Space Institute's RE-RASSOR project. The codebase is custom, as well as some of the 3D parts. Full credits will be listed in the credits section.
+
+Table of Contents:
+- [Getting Started](#getting-started)
+- [Installation and Setup](#installation-and-setup)
+- [Rover Bringup](#rover-bringup)
+- [Editing Guide](#editing-guide)
+- [About the Project](#about-the-project)
+- [Learning Outcomes](#learning-outcomes)
+- [Credits](#credits)
+
+## Getting Started
+
+## Installation and Setup
+
+## Rover Bringup
+
+## Editing Guide
+
+## About the Project
+
+## Learning Outcomes
+
+## Credits
