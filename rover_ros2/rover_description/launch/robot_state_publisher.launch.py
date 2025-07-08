@@ -43,8 +43,10 @@ def generate_launch_description():
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         output='screen',
-        parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
-        arguments=[xacro_file],
+        parameters=[{
+            'robot_description': robot_description,
+            'use_sim_time': LaunchConfiguration('use_sim_time')
+        }],
         condition=UnlessCondition(LaunchConfiguration('use_ros2_control'))
     )
 
