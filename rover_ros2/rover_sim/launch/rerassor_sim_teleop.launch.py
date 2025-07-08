@@ -1,12 +1,10 @@
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, Command, TextSubstitution, PythonExpression
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.parameter_descriptions import ParameterValue
 from launch_ros.actions import Node
 import os, xacro, tempfile
-from launch.actions import ExecuteProcess
 
 def generate_launch_description():
 
@@ -74,39 +72,14 @@ def generate_launch_description():
                 'entity_name': 'rerassor'
             }.items())
 
-    # Create joy node for joystick input
-    joy = IncludeLaunchDescription(
+    # Initialize controls with sim_time as true
+    controller_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            PathJoinSubstitution([pkg_control, 'launch', 'joy.launch.py'])
-        ]),
-        launch_arguments={'use_sim_time': 'true'}.items()
-    )
-
-    # Create the teleop node to listen to joy
-    teleop = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([pkg_control, 'launch', 'teleop.launch.py'])
-        ]),
-        launch_arguments={'use_sim_time': 'true'}.items()
-    )
-
-    # Create controller manager nodes
-    joint_broad_node = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=[
-            'joint_state_broadcaster', '-c', '/controller_manager'
-    ])
-    diff_cont_node = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=['diff_cont', '-c', '/controller_manager',
-            '--param-file', PathJoinSubstitution([
-                pkg_control, 'controllers', 'diff_cont.yaml'
+            PathJoinSubstitution([pkg_control, 'launch', 'controller.launch.py'])
             ]),
-            '--ros-args', '-p', 'use_sim_time:=true'
-        ]
-    )
+            launch_arguments={
+                'use_sim_time': 'true'
+            }.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('world', default_value='empty_plane'),
@@ -115,9 +88,6 @@ def generate_launch_description():
         gz_sim,
         spawn_rover,
         rosgz_bridge,
-        diff_cont_node,
-        joint_broad_node,
-        joy,
-        teleop
+        controller_node
     ])
 
