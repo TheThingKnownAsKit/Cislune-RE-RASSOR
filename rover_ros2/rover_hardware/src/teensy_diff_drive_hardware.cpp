@@ -5,7 +5,6 @@
 #include <hardware_interface/handle.hpp>
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 #include <pluginlib/class_list_macros.hpp>
-// (Include any serial port library headers if used, e.g., <serial/serial.h> for the wjwwood serial library)
 
 // Namespace and class definition
 namespace rover_hardware
@@ -53,8 +52,10 @@ public:
       return hardware_interface::CallbackReturn::ERROR;
     }
     RCLCPP_INFO(rclcpp::get_logger("TeensyHardware"), "Serial port opened.");
+
     // Optionally, flush or synchronize initial encoder readings:
     flushSerialInput();
+
     // Read an initial encoder line to establish baseline (non-blocking)
     int init_left = 0, init_right = 0;
     if (readEncoderCounts(init_left, init_right)) {
@@ -78,7 +79,7 @@ public:
 
   hardware_interface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State & /*previous*/) override
   {
-    // On deactivate, maybe stop the motors and close serial
+    // On deactivate, stop the motors and close serial
     for (double &c : cmd_) { c = 0.0; }
     write(rclcpp::Time(0,0), rclcpp::Duration(0,0));  // try to send stop
     closeSerialPort();
