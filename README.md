@@ -47,7 +47,7 @@ This repository contains the codebase for Cislune's version of the Florida Space
 
 ## Introduction
 
-**This code was only ever intended to run on Ubuntu based Linux distributions. There is no support for macOS or Windows.** However, because most of this will run in Docker, it is possible to translate the Linux setup commands into the corresponding commands for Windows or macOS. There was no way for me to test this, so I did not include it in the instructions.
+**This code was only ever intended to run on Ubuntu based Linux distributions. There is no support for macOS or Windows.** However, because most of this will run in Docker, it is might be possible to translate the Linux setup commands into the corresponding commands for Windows or macOS. There was no way for me to test this, so I did not include it in the instructions.
 
 This project was designed to run primarily in a Docker instance to help with consistency and portability. If you would like to learn more about docker, you can do so at [Docker Overview](https://docs.docker.com/get-started/docker-overview/). Specifically, this project uses Docker Engine with buildx for multi-architecture support. Installation details are listed in Installation and Setup. This docker setup is designed to work on both ARM64,x86-64, Nvidia GPU's, and not Nvidia GPU's.
 
@@ -63,21 +63,49 @@ Lastly, if you're curious about the background of the project, my learning outco
 
 ## Installation and Setup
 
-Things that need to be installed manually:
-1. Git
-2. Docker and buildx
-3. The repository
-4. VSCode I guess
-5. Mosh probably
+### Prerequisites
+**Both the groundstation computer and the Jetson Orin Nano should be running Ubuntu 22.04 (Jammy Jellyfish) as their operating system.** While the Docker instance will be running Ubuntu 24.04 (Noble Numbat), there are compatibility issues between Nvidia's Jetpack SDK for Noble and Docker; the easiest solution is to downgrade the host computers.
 
-Things that need to be setup manually:
-1. The ghcr.io image for multiarch (involves setting up .env)
-2. need to do xhost +local:docker
-3. Setup specifc docker gpu script
+### Necessary Downloads
+
+Ensure that a recent version of [Git](https://git-scm.com/downloads/linux) and [VSCode](https://code.visualstudio.com/download) is downloaded.
+
+Install Docker Engine and Docker Buildx by following the [Install using the apt repository](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) tutorial from the official Docker documentation.
+
+### Cloning the Repository
+
+In the directory of your choice, either run the command `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via https or run `git clone git@github.com:TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via SSH.
+
+Open this repository in VSCode and download the recommended extensions by clicking 'yes' to the prompt.
+
+### Setting up Your Environment
+
+Your personal .env file (that should be included in the .gitignore) requires 3 things to enable multi-arch support for Docker:
+1. OWNER=your github username in plaintext
+2. IMAGE=ros2:jazzy-dev
+3. PAT=ghp_xxxxxxxxxxxx
+
+The .env requires a ghp key in order to create the multi-arch image during the initial build process. To make a ghp key, sign into github and go to Settings -> Developer Settings -> Personal access tokens -> Tokens (classic). You can either generate a new token with write:packages enabled, or reuse an old one. Copy the full string, "ghp_xxxxxxxxxxxx" into PAT=
+
+### Setup Scripts
+
+For convenience, bash scripts have been written to do most of the setup for you. All of these commands are intended to be ran from the root of the repository.
+
+To build the ghcr.io image that enables multi-arch support, run the command `./scripts/build_multiarch_ghcr.io_image.sh`. **You only need to do this once, ever, per GitHub user. Even if you rebuild the Docker image from the groundup you do not need to do this again.**
+
+After that, you can build the Docker image and attach it to your VSCode window. If your current host computer has an Nvidia graphics card, run the command `./scripts/open_docker_nvidia.sh`. If your current host computer does NOT have an Nvidia graphics card, run the command `./scripts/open_docker_not_nvidia.sh`.
+
+This is important because Docker needs specific access permissions to your GPU in order to run visualization tools like Rviz2 and Gazebo. The access permission setup for anything that isn't Nvidia is pretty standard and it should work on AMD and Intel. Nvidia has its own specific permissions setup that would cause errors if you tried to run it on a non-Nvidia computer. These differences are reflected in the different Docker compose yamls.
+
+**If you are using the Jetson setup, you should always compose Docker from the Jetson and running the Nvidia setup.** All the computation for the rover should be done using the Jetson's graphics card to help minimize the delay from remote connections.
 
 ## Rover Bringup
 
+Write about mosh and launch scripts here
+
 ## Editing Guide
+
+Explain in more detail the modularity here
 
 ## About the Project
 

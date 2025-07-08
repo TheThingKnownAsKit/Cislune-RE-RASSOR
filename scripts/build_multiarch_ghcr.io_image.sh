@@ -12,7 +12,7 @@ if [[ -f .env ]]; then
     source .env          # load PAT, OWNER, IMAGE, etc.
     set +a
 else
-    echo "❌ .env not found; aborting"; exit 1
+    echo ".env not found; aborting"; exit 1
 fi
 : "${PAT:?PAT missing in .env}"
 : "${OWNER:?OWNER missing}"
