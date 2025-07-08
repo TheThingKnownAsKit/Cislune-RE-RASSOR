@@ -54,7 +54,7 @@ def generate_launch_description():
 
     # Rviz launch here somewhere
 
-    # Need to send waypoint data here also. IncludesWaypointMissionand Waypoint Task Executor
+    # Need to send waypoint data here also. IncludesWaypointMission and Waypoint Task Executor
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),

@@ -9,19 +9,21 @@ public:
   void onActivate() override {}
   void onDeactivate() override {}
 
-  bool execute(const geometry_msgs::msg::PoseStamped & pose,
-               const uint32_t     waypoint_index) override
-  {
-    if (waypoint_index != 0) {            // we only dig at wp_0
-      return true;                        // immediately OK
-    }
+  bool execute( const geometry_msgs::msg::PoseStamped &,
+                             const uint32_t wp_idx )
+{
+  if (wp_idx != 0) return true;         // dig only at wp_0
 
-    RCLCPP_INFO(logger_, "Digging at wp_%u", waypoint_index);
-    // 1) call your digging action/service or publish to a dig controller
-    dig_for_seconds_(dig_duration_sec_);
-    // 2) return true when finished so Nav2 proceeds
-    return true;
-  }
+  auto client = node_->create_client<std_srvs::srv::Trigger>(
+                 "/digger_controller/activate");
+  client->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+  rclcpp::sleep_for(8s);                // dig for 8 s
+  client = node_->create_client<std_srvs::srv::Trigger>(
+                 "/digger_controller/deactivate");
+  client->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+  return true;                          // let Nav2 proceed to wp_1
+}
+
 
 private:
   rclcpp::Logger logger_ = rclcpp::get_logger("DigAtWaypoint");
