@@ -92,12 +92,12 @@ def generate_launch_description():
     )
 
     # Create controller manager nodes
-    joint_broad_node = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=[
-            'joint_state_broadcaster', '-c', '/controller_manager'
-    ])
+    # joint_broad_node = Node(
+    #     package='controller_manager',
+    #     executable='spawner',
+    #     arguments=[
+    #         'joint_state_broadcaster', '-c', '/controller_manager'
+    # ])
     diff_cont_node = Node(
         package='controller_manager',
         executable='spawner',
@@ -116,7 +116,6 @@ def generate_launch_description():
         gz_sim,
         spawn_rover,
         rosgz_bridge,
-        joint_broad_node,
         diff_cont_node,
         joy,
         teleop
