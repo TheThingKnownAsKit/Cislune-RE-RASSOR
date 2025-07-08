@@ -15,7 +15,6 @@ def generate_launch_description():
     pkg_sim = get_package_share_directory('rover_sim')
     pkg_control = get_package_share_directory('rover_control')
     pkg_rosgz = get_package_share_directory('ros_gz_sim')
-    pkg_bridge = get_package_share_directory('ros_gz_bridge')
     pkg_nav = get_package_share_directory('rover_navigation')
 
 
@@ -77,31 +76,30 @@ def generate_launch_description():
             }.items())
     
     # Smooth odometry using robot localization (ekf)
-    robot_localization_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_node',
-        output='screen',
-        parameters=[os.path.join(pkg_nav, 'config/ekf.yaml'), {'use_sim_time': 'true'}]
-    )
+    # robot_localization_node = Node(
+    #     package='robot_localization',
+    #     executable='ekf_node',
+    #     output='screen',
+    #     parameters=[os.path.join(pkg_nav, 'config', 'ekf.yaml'), {'use_sim_time': True}]
+    # )
 
     # Create controller manager nodes
-    # joint_broad_node = Node(
-    #     package='controller_manager',
-    #     executable='spawner',
-    #     arguments=[
-    #         'joint_state_broadcaster', '-c', '/controller_manager'
-    # ])
-    # diff_cont_node = Node(
-    #     package='controller_manager',
-    #     executable='spawner',
-    #     arguments=['diff_cont', '-c', '/controller_manager',
-    #         '--param-file', PathJoinSubstitution([
-    #             pkg_control, 'controllers', 'diff_cont.yaml'
-    #         ]),
-    #         '--ros-args', '-p', 'use_sim_time:=true'
-    #     ]
-    # )
+    joint_broad_node = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'joint_state_broadcaster', '-c', '/controller_manager'
+    ])
+    diff_cont_node = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_cont', '-c', '/controller_manager',
+            '--param-file', PathJoinSubstitution([
+                pkg_control, 'controllers', 'diff_cont.yaml'
+            ]),
+            '--ros-args', '-p', 'use_sim_time:=true'
+        ]
+    )
 
     return LaunchDescription([
         DeclareLaunchArgument('world', default_value='empty_plane'),
@@ -110,6 +108,7 @@ def generate_launch_description():
         gz_sim,
         spawn_rover,
         rosgz_bridge,
-        robot_localization_node
+        joint_broad_node,
+        diff_cont_node
     ])
 

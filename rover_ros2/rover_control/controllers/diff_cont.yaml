@@ -17,7 +17,7 @@ diff_cont:
     wheel_separation: 0.50
     wheel_radius: 0.115
 
-    publish_rate: 50.0
+    publish_rate: 30.0
     odom_frame_id: odom
     base_frame_id: chassis_link
 
