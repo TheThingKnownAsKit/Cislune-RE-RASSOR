@@ -10,6 +10,9 @@ def generate_launch_description():
     pkg_sim = get_package_share_directory('rover_sim')
     pkg_control = get_package_share_directory('rover_control')
 
+    # ----- Parameters
+    mode = LaunchConfiguration('mode') # Possible values: teleop, autonomy, or dual
+
     # ----- Nodes
 
     # Initialize Gazebo
@@ -24,10 +27,14 @@ def generate_launch_description():
             PathJoinSubstitution([pkg_control, 'launch', 'controller.launch.py'])
             ]),
             launch_arguments={
-                'use_sim_time': 'true'
+                'use_sim_time': 'true',
+                'use_teleop': PythonExpression(["'", mode, "' != 'autonomy'"])
             }.items())
 
     return LaunchDescription([
+        DeclareLaunchArgument('mode', default_value='teleop',
+                              description="Mode: teleop, autonomy, or dual (teleop and autonomy with toggle)"),
+
         gazebo_node,
         controller_node
     ])

@@ -4,6 +4,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+from launch.conditions import IfCondition
 
 def generate_launch_description():
 
@@ -12,11 +13,12 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
 
     # Create joy node for joystick input
-    joy = IncludeLaunchDescription(
+    teleop_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            PathJoinSubstitution([pkg_control, 'launch', 'joy.launch.py'])
+            PathJoinSubstitution([pkg_control, 'launch', 'teleop.launch.py'])
         ]),
-        launch_arguments={'use_sim_time': use_sim_time}.items()
+        launch_arguments={'use_sim_time': use_sim_time}.items(),
+        condition=IfCondition(LaunchConfiguration('use_teleop'))
     )
 
     # Create joint broadcaster node for /joint_states
@@ -41,8 +43,9 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
+        DeclareLaunchArgument('use_teleop', default_value='false'),
 
-        joy,
+        teleop_node,
         joint_broad_node,
         diff_cont_node
     ])
