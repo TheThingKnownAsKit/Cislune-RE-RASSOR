@@ -26,7 +26,7 @@ def generate_launch_description():
     # expand Xacro → URDF *once* and write to a temp file
     #   (literally the only reason we need to do this is because RosGzBridge is bugged)
     xacro_file = os.path.join(pkg_description, 'urdf', 'rerassor.xacro.urdf')
-    urdf_xml   = xacro.process_file(xacro_file).toxml()
+    urdf_xml   = xacro.process_file(xacro_file, mappings={'use_ros2_control': 'true', 'use_gazebo': 'true'}).toxml()
     tmp_urdf   = tempfile.NamedTemporaryFile(delete=False,
                                              suffix='.urdf',
                                              prefix='rerassor_')
