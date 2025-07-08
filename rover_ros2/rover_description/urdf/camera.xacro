@@ -19,7 +19,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://rover_description/meshes/camera.STL" />
+                <mesh filename="file://$(find rover_description)/meshes/camera.STL" />
             </geometry>
             <material name="">
                 <color
@@ -29,7 +29,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="package://rover_description/meshes/camera.STL" />
+                <mesh filename="file://$(find rover_description)/meshes/camera.STL" />
             </geometry>
         </collision>
     </link>
