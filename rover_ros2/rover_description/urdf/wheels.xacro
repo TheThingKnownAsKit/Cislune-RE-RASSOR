@@ -133,6 +133,7 @@
 
 
 
+    <!-- TODO: This wheel is dragging a lot and causing the robot to turn while driving straight -->
     <!-- FRONT RIGHT WHEEL -->
     <link name="front_right_wheel_link">
         <inertial>
