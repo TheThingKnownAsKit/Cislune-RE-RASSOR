@@ -42,7 +42,8 @@ def generate_launch_description():
             ]),
             launch_arguments={
                 'use_sim_time': 'true',
-                'use_ros2_control': 'true'
+                'use_ros2_control': 'true',
+                'use_gazebo': 'true'
             }.items())
 
     # # Use Gazebo's pre-built sim launching node
