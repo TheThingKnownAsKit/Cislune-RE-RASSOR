@@ -15,7 +15,6 @@ def generate_launch_description():
     pkg_sim = get_package_share_directory('rover_sim')
     pkg_control = get_package_share_directory('rover_control')
     pkg_rosgz = get_package_share_directory('ros_gz_sim')
-    pkg_bridge = get_package_share_directory('ros_gz_bridge')
 
 
     # ----- Files
@@ -92,12 +91,12 @@ def generate_launch_description():
     )
 
     # Create controller manager nodes
-    # joint_broad_node = Node(
-    #     package='controller_manager',
-    #     executable='spawner',
-    #     arguments=[
-    #         'joint_state_broadcaster', '-c', '/controller_manager'
-    # ])
+    joint_broad_node = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'joint_state_broadcaster', '-c', '/controller_manager'
+    ])
     diff_cont_node = Node(
         package='controller_manager',
         executable='spawner',
@@ -117,6 +116,7 @@ def generate_launch_description():
         spawn_rover,
         rosgz_bridge,
         diff_cont_node,
+        joint_broad_node,
         joy,
         teleop
     ])

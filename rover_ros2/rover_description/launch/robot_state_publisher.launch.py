@@ -50,14 +50,6 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_js_gui'))
     )
 
-    headless_js = Node(
-            package='joint_state_publisher',
-            executable='joint_state_publisher',
-            output='screen',
-            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')}],
-            condition=UnlessCondition(LaunchConfiguration('use_js_gui'))
-    )
-
 
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
@@ -66,6 +58,5 @@ def generate_launch_description():
         DeclareLaunchArgument('use_js_gui', default_value='false'),
 
         rs_pub,
-        gui_js,
-        headless_js
+        gui_js
     ])
