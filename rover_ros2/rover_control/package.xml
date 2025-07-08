@@ -14,6 +14,5 @@
 
   <export>
     <build_type>ament_cmake</build_type>
-    <hardware_interface plugin="${prefix}/plugin/rerassor_hardware_plugin.xml"/>
   </export>
 </package>
