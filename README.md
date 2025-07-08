@@ -99,9 +99,11 @@ This is important because Docker needs specific access permissions to your GPU i
 
 **If you are using the Jetson setup, you should always compose Docker from the Jetson and running the Nvidia setup.** All the computation for the rover should be done using the Jetson's graphics card to help minimize the delay from remote connections.
 
+TODO: Mosh and camera software
+
 ## Rover Bringup
 
-Write about mosh and launch scripts here
+Write about mosh and launch scripts here, including groundstation launch scripts vs Jetson vs Teensy firmware
 
 ## Editing Guide
 
