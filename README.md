@@ -30,6 +30,7 @@ This repository contains the codebase for Cislune's version of the Florida Space
     - Nav2
     - Docker (Ubuntu Noble image)
     - PlatformIO
+    - Mosh
 - Hardware
     - Jetson Orin Nano Developer Kit
     - Teensy 4.1
@@ -93,6 +94,15 @@ The .env requires a ghp key in order to create the multi-arch image during the i
 
 For convenience, bash scripts have been written to do most of the setup for you. All of these commands are intended to be ran from the root of the repository.
 
+Before anything else, <u>make sure your system is up to date</u> by running the following commands. Ensure that all packages are upgraded, though if you know for certain that a package will not interact with this repository's tech stack at all, you can ignore it.
+```Bash
+sudo apt update
+sudo apt upgrade
+sudo apt-get update
+sudo apt-get upgrade
+apt list --upgradable 
+```
+
 To build the ghcr.io image that enables multi-arch support, run the command `./scripts/build_multiarch_ghcr.io_image.sh`. **You only need to do this once, ever, per GitHub user. Even if you rebuild the Docker image from the groundup you do not need to do this again.**
 
 After that, you can build the Docker image and attach it to your VSCode window. If your current host computer has an Nvidia graphics card, run the command `./scripts/open_docker_nvidia.sh`. If your current host computer does NOT have an Nvidia graphics card, run the command `./scripts/open_docker_not_nvidia.sh`.
@@ -101,11 +111,15 @@ This is important because Docker needs specific access permissions to your GPU i
 
 **If you are using the Jetson setup, you should always compose Docker from the Jetson and running the Nvidia setup.** All the computation for the rover should be done using the Jetson's graphics card to help minimize the delay from remote connections.
 
-TODO: Mosh and camera software
+Instead of SSH, this project uses Mosh due to its increased speed. To install mosh, run the command `./scripts/mosh-server_setup.sh`
 
 ## Rover Bringup
 
 Write about mosh and launch scripts here, including groundstation launch scripts vs Jetson vs Teensy firmware
+
+To mosh into the Jetson, use the command `mosh username@ip` from the terminal of the groundstation computer. If you don't know what your ip address is, do `ip a |grep net` and look for the address that ends in /24.
+
+Note to self: might not have to use Mosh because of Docker. Unsure.
 
 ## Editing Guide
 
