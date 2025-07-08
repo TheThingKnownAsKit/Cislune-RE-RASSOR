@@ -14,6 +14,18 @@ def generate_launch_description():
     pkg_description = get_package_share_directory('rover_description')
     pkg_control = get_package_share_directory('rover_control')
 
+    # expand Xacro → URDF *once* and write to a temp file
+    #   (literally the only reason we need to do this is because RosGzBridge is bugged)
+    xacro_file = os.path.join(pkg_description, 'urdf', 'rerassor.xacro.urdf')
+    urdf_xml   = xacro.process_file(xacro_file, mappings={'use_ros2_control': 'true', 'use_gazebo': 'false'}).toxml()
+    tmp_urdf   = tempfile.NamedTemporaryFile(delete=False,
+                                             suffix='.urdf',
+                                             prefix='rerassor_')
+    tmp_urdf.write(urdf_xml.encode())
+    tmp_urdf.close()                       # keep the file on disk
+    urdf_path = tmp_urdf.name              # path we’ll hand to the spawner
+
+
     # ----- Create nodes
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
@@ -21,7 +33,8 @@ def generate_launch_description():
             ]),
             launch_arguments={
                 'use_sim_time': 'false',
-                'use_ros2_control': 'true'
+                'use_ros2_control': 'true',
+                'use_gazebo': 'false'
             }.items())
 
     # Create joy node for joystick input
@@ -58,18 +71,10 @@ def generate_launch_description():
         ]
     )
 
-    spawn_micro_ros_agent = ExecuteProcess(
-        cmd=[
-            'ros2', 'run', 'micro_ros_agent', 'micro_ros_agent', 'serial', '--dev', '/dev/ttyACM0'
-        ],
-        output='screen'
-    )
-
     return LaunchDescription([
         rsp,
         joint_broad_node,
         diff_cont_node,
         joy,
-        teleop,
-        spawn_micro_ros_agent
+        teleop
     ])
