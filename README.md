@@ -103,6 +103,8 @@ sudo apt-get upgrade
 apt list --upgradable 
 ```
 
+Now, you need to make all the scripts executable via chmod. Run the command `chmod +x scripts/*.sh` to make every bash script in the scripts/ folder executable.
+
 To build the ghcr.io image that enables multi-arch support, run the command `./scripts/build_multiarch_ghcr.io_image.sh`. **You only need to do this once, ever, per GitHub user. Even if you rebuild the Docker image from the groundup you do not need to do this again.**
 
 After that, you can build the Docker image and attach it to your VSCode window. If your current host computer has an Nvidia graphics card, run the command `./scripts/open_docker_nvidia.sh`. If your current host computer does NOT have an Nvidia graphics card, run the command `./scripts/open_docker_not_nvidia.sh`.
