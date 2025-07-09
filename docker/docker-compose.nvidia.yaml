@@ -7,3 +7,9 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+
+  docker_zed:
+    image: stereolabs/zed:4.2-py-runtime-jetson-jp6.0.0
+    container_name: rerassor_git
+    network_mode: host
+    entrypoint: "/bin/sh"

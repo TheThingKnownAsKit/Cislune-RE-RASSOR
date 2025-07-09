@@ -38,7 +38,7 @@ services:
 
   docker_git:
       image: alpine/git:latest      # Small image with git
-      container_name: articubot_git
+      container_name: rerassor_git
       volumes:
         - ~/.ssh:/root/.ssh:ro      # Mount host SSH keys (read-only)
         - ~/.gitconfig:/root/.gitconfig:ro  # Mount host Git config (read-only)
@@ -51,9 +51,3 @@ services:
 volumes:
   vscode_cache:
 
-# Commands for composing:
-# docker compose -f docker-compose.yaml -f docker-compose.nvidia.yaml up -d
-# docker compose -f docker-compose.yaml -f docker-compose.amd.yaml up -d
-#
-# Only do one of the above then run docker compose exec rosdev /bin/bash
-# Then use vscode containers->right click on ros2_dev->attach in current window
