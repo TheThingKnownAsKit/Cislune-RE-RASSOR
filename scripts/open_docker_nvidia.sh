@@ -1,5 +1,7 @@
 # Compose and start the AMD container
+cd docker/
 docker compose -f docker-compose.yaml -f docker-compose.nvidia.yaml up -d
+cd ..
 
 # Give the container access to computer
 xhost +local:docker
