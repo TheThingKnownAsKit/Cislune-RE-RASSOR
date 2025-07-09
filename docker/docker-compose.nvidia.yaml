@@ -1,5 +1,6 @@
 services:
   rosdev:
+    runtime: nvidia
     deploy:
       resources:
         reservations:
