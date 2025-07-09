@@ -75,6 +75,8 @@ Ensure that a recent version of [Git](https://git-scm.com/downloads/linux) and [
 
 Install Docker Engine and Docker Buildx by following the [Install using the apt repository](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) tutorial from the official Docker documentation.
 
+After that, run the command `sudo pip3 install docker-compose` to install Docker Compose, which is needed for this project.
+
 ### Cloning the Repository
 
 In the directory of your choice, either run the command `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via https or run `git clone git@github.com:TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via SSH.
@@ -103,7 +105,7 @@ sudo apt-get upgrade
 apt list --upgradable 
 ```
 
-Now, you need to make all the scripts executable via chmod. Run the command `chmod +x scripts/*.sh` to make every bash script in the scripts/ folder executable.
+NOTE: I dont think this is actually necessary if I do it first. TODO. Now, you need to make all the scripts executable via chmod. Run the command `chmod +x scripts/*.sh` to make every bash script in the scripts/ folder executable.
 
 To build the ghcr.io image that enables multi-arch support, run the command `./scripts/build_multiarch_ghcr.io_image.sh`. **You only need to do this once, ever, per GitHub user. Even if you rebuild the Docker image from the groundup you do not need to do this again.**
 
