@@ -73,28 +73,13 @@ If you're curious about the background of the project, my learning outcomes as a
 
 Ensure that a recent version of [Git](https://git-scm.com/downloads/linux) and [VSCode](https://code.visualstudio.com/download) are downloaded.
 
-Install Docker Engine and Docker Buildx by following the [Install using the apt repository](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) tutorial from the official Docker documentation.
-
-After that, run the command `sudo pip3 install docker-compose` to install Docker Compose, which is needed for this project.
-
 ### Cloning the Repository
 
 In the directory of your choice, either run the command `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via https or run `git clone git@github.com:TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via SSH.
 
-Open this repository in VSCode and download the recommended extensions by clicking 'yes' to the prompt.
-
-### Setting up Your Environment
-
-Your personal .env file (that should be included in the .gitignore) requires 3 things to enable multi-arch support for Docker:
-1. OWNER=your github username in plaintext
-2. IMAGE=ros2:jazzy-dev
-3. PAT=ghp_xxxxxxxxxxxx
-
-The .env requires a ghp key in order to create the multi-arch image during the initial build process. To make a ghp key, sign into github and go to Settings -> Developer Settings -> Personal access tokens -> Tokens (classic). You can either generate a new token with write:packages enabled, or reuse an old one. Copy the full string, "ghp_xxxxxxxxxxxx" into PAT=
-
 ### Setup Scripts
 
-For convenience, bash scripts have been written to do most of the setup for you. All of these commands are intended to be ran from the root of the repository.
+For convenience, bash scripts have been written to do most of the setup for you. **All of these scripts are intended to be ran from the root of the repository.**
 
 Before anything else, <u>make sure your system is up to date</u> by running the following commands. Ensure that all packages are upgraded, though if you know for certain that a package will not interact with this repository's tech stack at all, you can ignore it.
 ```Bash
@@ -105,17 +90,30 @@ sudo apt-get upgrade
 apt list --upgradable 
 ```
 
-NOTE: I dont think this is actually necessary if I do it first. TODO. Now, you need to make all the scripts executable via chmod. Run the command `chmod +x scripts/*.sh` to make every bash script in the scripts/ folder executable.
+To setup the host system, you have three options:
+1. `./scripts/development_setup.sh`
+    
+    The development script is intended to give you access to most of the repositories functionality on one non-Jetson computer; it has the intention of making development easier. You will have access to most functionality except actually moving the rover (Gazebo will work).
 
-To build the ghcr.io image that enables multi-arch support, run the command `./scripts/build_multiarch_ghcr.io_image.sh`. **You only need to do this once, ever, per GitHub user. Even if you rebuild the Docker image from the groundup you do not need to do this again.**
+2. `./scripts/groundstation_setup.sh`
 
-After that, you can build the Docker image and attach it to your VSCode window. If your current host computer has an Nvidia graphics card, run the command `./scripts/open_docker_nvidia.sh`. If your current host computer does NOT have an Nvidia graphics card, run the command `./scripts/open_docker_not_nvidia.sh`.
+    This is the setup script you should run on your groundstation computer.
 
-This is important because Docker needs specific access permissions to your GPU in order to run visualization tools like Rviz2 and Gazebo. The access permission setup for anything that isn't Nvidia is pretty standard and it should work on AMD and Intel. Nvidia has its own specific permissions setup that would cause errors if you tried to run it on a non-Nvidia computer. These differences are reflected in the different Docker compose yamls.
+3. `./scripts/jetson_setup.sh`
 
-**If you are using the Jetson setup, you should always compose Docker from the Jetson and running the Nvidia setup.** All the computation for the rover should be done using the Jetson's graphics card to help minimize the delay from remote connections.
+    This is the setup script you should run on your Jetson Orin Nano.
 
-Instead of SSH, this project uses Mosh due to its increased speed. To install mosh, run the command `./scripts/mosh-server_setup.sh`
+Please note that these scripts do not install basic dependencies like git or curl, but will install Docker dependencies and a few others.
+
+To build and compose the Docker container, run the script `./scripts/docket_setup.sh` with the optional argument flags of `-r -c -v`.
+- `-r` will build the image with no cache
+- `-c` will recreate the containers even if no changes have been made since last compose
+- `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers -> Right click on docker-rosdev -> Attach VSCode
+
+I recommend using the command `./scripts/docker_setup.sh -v` for convenience.
+
+TODO: PUT POST DOCKER SCRIPTS HERE
+
 
 ## Rover Bringup
 
