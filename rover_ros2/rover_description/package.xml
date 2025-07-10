@@ -2,25 +2,17 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>rover_description</name>
-  <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="moodyellam@gmail.com">moody</maintainer>
-  <license>TODO: License declaration</license>
+  <version>1.0.0</version>
+  <description>This ROS2 package contains all the URDF functionality of the project, including launch files.</description>
+  <maintainer email="moodyellam@gmail.com">Ella Moody</maintainer>
+  <author email="moodyellam@gmail.com">Ella Moody</maintainer>
+  <license>Apache License 2.0</license>
 
-  <!-- Build dependencies -->
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <!-- Mixed dependencies -->
   <depend>launch</depend>
   <depend>urdf</depend>
-  <depend>ros_gz_sim</depend>
-  <depend>ros_gz_bridge</depend>
-  <depend>ros_gz_image</depend>
-  <depend>gz_ros2_control</depend>
-  <depend>ros2_control</depend>
-  <depend>ros2_controllers</depend>
 
-  <!-- Runtime dependencies -->
   <exec_depend>rviz2</exec_depend>
   <exec_depend>xacro</exec_depend>
 

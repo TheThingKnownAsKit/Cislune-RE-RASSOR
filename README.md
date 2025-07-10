@@ -1,18 +1,3 @@
-TODO:
-4. Make subpackage readme's
-5. Add support for remotely uploading to Teensy
-6. Support all needed commands in rover_bringup
-7. Fix the weird wheel drift
-8. Write the xml for the control plugins
-9. Write the task execution for waypoints
-
-Lessons learned:
-1. Don't name every ros2 package prepended with rover_ because it makes autocomplete hate you
-2. I have no idea if it's best practice but I do really like separating the launch files into modules within
-    their respective ROS2 
-
-Okay actually pretty README starts now
-
 # Cislune RE-RASSOR
 ![](Cislune_Logo.png)
 
@@ -125,5 +110,10 @@ Explain in more detail the modularity here
 ## About the Project
 
 ## Learning Outcomes
+
+Lessons learned:
+1. Don't name every ros2 package prepended with rover_ because it makes autocomplete hate you
+2. I have no idea if it's best practice but I do really like separating the launch files into modules within
+    their respective ROS2 
 
 ## Credits

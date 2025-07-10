@@ -3,17 +3,15 @@
 <package format="3">
   <name>rover_bringup</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="moodyellam@gmail.com">moody</maintainer>
-  <license>TODO: License declaration</license>
+  <description>This ROS2 package contains all the main launch files for the project.</description>
+  <maintainer email="moodyellam@gmail.com">Ella Moody</maintainer>
+  <author email="moodyellam@gmail.com">Ella Moody</author>
+  <license>Apache License 2.0</license>
 
-  <!-- Build dependencies -->
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <!-- Mixed dependencies -->
   <depend>launch</depend>
 
-  <!-- Runtime dependencies -->
   <exec_depend>rviz2</exec_depend>
   <exec_depend>xacro</exec_depend>
 
