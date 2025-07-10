@@ -51,6 +51,7 @@ RUN apt-get update && apt-get install -y pipx \
     && pipx ensurepath
 
 # Install Nvidia specific dependencies (non-nvidia just uses mesa)
+# TODO: FIX THIS, need Cuda not container toolkit. thats host system
 RUN if [ "$RUNTIME" = "nvidia" ]; then \
         echo "Installing NVIDIA dependencies..." && \
         sudo apt-get update && \
