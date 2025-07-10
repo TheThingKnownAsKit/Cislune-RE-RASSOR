@@ -5,7 +5,7 @@
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
 # LAST EDITED:  07-10-2025
-# DESCRIPTION:  This script performs all of the host computer necessary setup to
+# DESCRIPTION:  This script performs all of the host computer setup necessary to
 #               enable full Docker functionality. It assumes you're only going
 #               to be using one computer for development reasons and are not
 #               looking for full functionality.
@@ -46,7 +46,7 @@ else
     has_docker_engine=0
 fi
 
-# Check that Docker Buildx is installed and multiarch is set
+# Check that Docker Buildx is installed
 if docker buildx version &>/dev/null; then
     log "Docker Buildx plugin is installed: $(docker buildx version)"
     has_docker_buildx=1
