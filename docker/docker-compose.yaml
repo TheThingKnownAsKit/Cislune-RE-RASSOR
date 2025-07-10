@@ -13,9 +13,8 @@ services:
       - XDG_RUNTIME_DIR=/tmp/runtime-ubuntu
     volumes:
       - type: bind
-        source: /dev/input
-        target: /dev/input
-        read_only: true
+        source: /dev
+        target: /dev
         bind:
           propagation: rshared     # lets hot-plugged jsX/eventX devices flow in
       - type: bind                 # udev database

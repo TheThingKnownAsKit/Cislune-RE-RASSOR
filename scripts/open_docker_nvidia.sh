@@ -1,6 +1,7 @@
 # Compose and start the AMD container
 cd docker/
-docker compose -f docker-compose.yaml -f docker-compose.nvidia.yaml up -d
+RUNTIME=nvidia
+docker compose -f docker-compose.yaml -f docker-compose.nvidia.yaml up --build -d
 cd ..
 
 # Give the container access to computer

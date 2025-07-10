@@ -1,6 +1,16 @@
 services:
   rosdev:
     runtime: nvidia
+    ipc: host
+    privileged: true
+    volumes:
+      - zed-sdk:/usr/local/zed:ro
+      - /usr/local/cuda:/usr/local/cuda:ro
+      - /tmp/argus_socket:/tmp/argus_socket # Jetson camera stack
+    environment:
+      ZED_DIR: "/usr/local/zed"
+      PATH: "/usr/local/cuda/bin:${PATH}"
+      LD_LIBRARY_PATH: "/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
     deploy:
       resources:
         reservations:
@@ -10,7 +20,14 @@ services:
               capabilities: [gpu]
 
   docker_zed:
-    image: stereolabs/zed:4.2-py-runtime-jetson-jp6.0.0
+    image: stereolabs/zed:5.0-py-runtime-jetson-jp6.0.0
     container_name: rerassor_zed
     network_mode: host
+    ipc: host
+    volumes:
+      - zed-sdk:/usr/local/zed
+      - /tmp/argus_socket:/tmp/argus_socket
     entrypoint: "/bin/sh"
+
+volumes:
+  zed-sdk: {}

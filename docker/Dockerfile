@@ -11,7 +11,7 @@ FROM --platform=${TARGETARCH} ros:${ROS_DISTRO}-ros-base
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-ARG RUNTIME=notnvidia
+ARG RUNTIME
 
 RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
@@ -54,8 +54,8 @@ RUN apt-get update && apt-get install -y pipx \
 RUN if [ "$RUNTIME" = "nvidia" ]; then \
         echo "Installing NVIDIA dependencies..." && \
         sudo apt-get update && \
-        sudo apt-get install -y nvidia-container-toolkit && \
-        sudo systemctl restart docker; \
+        sudo apt-get install nvidia-container-toolkit \
+        && systemctl restart docker; \
     else \
         echo "Not on jetson, skipping NVIDIA installations"; \
     fi
@@ -78,9 +78,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-nav2-bringup \
     ros-${ROS_DISTRO}-slam-toolbox
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libturbojpeg 
 
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
 # Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
