@@ -1,9 +1,4 @@
 TODO:
-1. Fix the launch files. All gazebo stuff should be in sim, all ROS2 Control in control, etc. Make it modular
-    Done
-
-2. Make groundstation and jetson setup scripts for things Docker can't do automatically
-3. Make full setup scripts that do literally everything from computer setup to docker setup to launching program
 4. Make subpackage readme's
 5. Add support for remotely uploading to Teensy
 6. Support all needed commands in rover_bringup
@@ -69,9 +64,9 @@ If you're curious about the background of the project, my learning outcomes as a
 ### Prerequisites
 **Both the groundstation computer and the Jetson Orin Nano should be running Ubuntu 22.04 (Jammy Jellyfish) as their operating system.** While the Docker instance will be running Ubuntu 24.04 (Noble Numbat), there are compatibility issues between Nvidia's Jetpack SDK for Noble and Docker; the easiest solution is to downgrade the host computers.
 
-### Necessary Downloads
-
 Ensure that a recent version of [Git](https://git-scm.com/downloads/linux) and [VSCode](https://code.visualstudio.com/download) are downloaded.
+
+Curl is also required for some of the scripts, ensure it is downloaded.
 
 ### Cloning the Repository
 
@@ -90,6 +85,8 @@ sudo apt-get upgrade
 apt list --upgradable 
 ```
 
+**Do not open VSCode before running the host system setup scripts.** This causes user permission issues with VSCode running Docker before the user is properly added to the usergroup. If you are running into permission issues when trying to start docker, first check to see if you are in the docker group by running `groups` in the host computer terminal. If you are and are still experiencing permission issues, close VSCode and run `killall code && newgrp docker` to end all VSCode services and refresh the docker group permissions. Reopen VSCode and it should work.
+
 To setup the host system, you have three options:
 1. `./scripts/development_setup.sh`
     
@@ -103,12 +100,10 @@ To setup the host system, you have three options:
 
     This is the setup script you should run on your Jetson Orin Nano.
 
-Please note that these scripts do not install basic dependencies like git or curl, but will install Docker dependencies and a few others.
-
 To build and compose the Docker container, run the script `./scripts/docket_setup.sh` with the optional argument flags of `-r -c -v`.
 - `-r` will build the image with no cache
 - `-c` will recreate the containers even if no changes have been made since last compose
-- `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers -> Right click on docker-rosdev -> Attach VSCode
+- `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers (note you need Container Tools extension installed for this) -> Right click on docker-rosdev -> Attach VSCode
 
 I recommend using the command `./scripts/docker_setup.sh -v` for convenience.
 
