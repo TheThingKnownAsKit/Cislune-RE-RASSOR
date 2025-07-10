@@ -59,6 +59,7 @@ fi
 # Check that Docker Compose is installed (v2)
 if docker compose version &>/dev/null; then
     log "Docker Compose (v2 plugin) is installed: $(docker compose version)"
+    has_docker_compose=1
 else
     warn "Docker Compose V2 not found."
     log "Setting install Docker Compose V2 flag to true."
