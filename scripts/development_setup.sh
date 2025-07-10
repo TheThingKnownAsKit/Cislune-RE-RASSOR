@@ -155,7 +155,13 @@ xhost +SI:localuser:"$(whoami)"
 
 # ----- NVIDIA SETUP -----
 
-gpu=$(lspci | grep -i 'vga' | grep -i 'nvidia')
+if lspci | grep -i 'vga' | grep -iq 'nvidia'; then
+  gpu="nvidia"
+  log "Nvidia GPU detected"
+else
+  gpu=""
+  log "No Nvidia GPU detected"
+fi
 
 if [[ -n "$gpu" ]]; then
     log "Nvidia GPU detected, checking for required software..."
@@ -181,7 +187,8 @@ if [[ -n "$gpu" ]]; then
             error "Cannot install Nvidia Container Toolkit. Aborting."
         fi
     fi
-
+else
+    log "No Nvidia GPU detected, skipping Nvidia setup..."
 fi
 
 
