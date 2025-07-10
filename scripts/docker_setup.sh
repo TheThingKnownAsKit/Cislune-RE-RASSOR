@@ -8,8 +8,16 @@
 # DESCRIPTION:  This script performs all of the necessary commands to build a
 #               docker container, compose it with the appropriate compose files,
 #               and attach the VSCode window to it.
+#
 # USAGE:        ./scripts/docker_setup.sh
-# DEPENDS:      bash
+#
+# OPTIONS:
+#   -r Rebuild docker images (no cache)
+#   -c Recreate containers (--force-recreate)
+#   -v Attach VS Code after setup
+#   -h Show this help message and exit
+#
+# DEPENDS:      bash, docker engine, docker engine cli, docker compose
 # LICENSE:      Apache 2.0
 # -----------------------------------------------------------------------------
 
@@ -20,7 +28,7 @@ warn() { echo "[WARN] $*" >&2; }
 error() { echo "[ERROR] $*" >&2; exit 1; }
 
 if ! command -v sudo &>/dev/null; then
-  error "sudo is required but not installed."
+    error "sudo is required but not installed."
 fi
 
 REBUILD_IMAGE=0

@@ -21,7 +21,7 @@ warn() { echo "[WARN] $*" >&2; }
 error() { echo "[ERROR] $*" >&2; exit 1; }
 
 if ! command -v sudo &>/dev/null; then
-  error "sudo is required but not installed."
+    error "sudo is required but not installed."
 fi
 
 

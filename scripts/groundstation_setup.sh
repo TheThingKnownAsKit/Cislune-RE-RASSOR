@@ -21,7 +21,7 @@ warn() { echo "[WARN] $*" >&2; }
 error() { echo "[ERROR] $*" >&2; exit 1; }
 
 if ! command -v sudo &>/dev/null; then
-  error "sudo is required but not installed."
+    error "sudo is required but not installed."
 fi
 
 
@@ -46,7 +46,7 @@ else
     has_docker_engine=0
 fi
 
-# Check that Docker Buildx is installed and multiarch is set
+# Check that Docker Buildx is installed
 if docker buildx version &>/dev/null; then
     log "Docker Buildx plugin is installed: $(docker buildx version)"
     has_docker_buildx=1
@@ -153,51 +153,21 @@ xhost +SI:localuser:"$(whoami)"
 
 
 
-# ----- NVIDIA SETUP -----
+# ----- MOSH SETUP -----
 
-if lspci | grep -i 'vga' | grep -iq 'nvidia'; then
-    gpu="nvidia"
-    log "Nvidia GPU detected"
+if command -v mosh &>/dev/null; then
+    log "Mosh client is installed: $(mosh --version)"
 else
-    gpu=""
-    log "No Nvidia GPU detected"
-fi
+    warn "Mosh client is not installed."
+    log "Installing mosh client..."
 
-if [[ -n "$gpu" ]]; then
-    log "Nvidia GPU detected, checking for required software..."
+    sudo apt update && sudo apt upgrade
+    sudo apt install openssh-server ufw mosh
 
-    # Make sure nvidia-smi is accessible (drivers) and container toolkit
-    if nvidia-smi &>/dev/null; then
-        log "Nvidia GPU drivers are installed."
+    if command -v mosh &>/dev/null; then
+        log "Successfully installed mosh client."
     else
-        error "Nvidia GPU drivers are not detected."
+        error "Could not install mosh client. Aborting."
     fi
 
-    if command -v nvidia-ctk &>/dev/null; then
-        log "Nvidia Container Toolkit is installed: $(nvidia-ctk --version)"
-    else
-        warn "Nvidia Container Toolkit is not installed. Installing..."
-        sudo apt-get install nvidia-container-toolkit
-        sudo nvidia-ctk runtime configure --runtime=docker
-        sudo systemctl restart docker
-
-        if command -v nvidia-ctk &>/dev/null; then
-            log "Nvidia Container Toolkit successfully installed."
-        else
-            error "Cannot install Nvidia Container Toolkit. Aborting."
-        fi
-    fi
-else
-    log "No Nvidia GPU detected, skipping Nvidia setup..."
 fi
-
-
-# ----- GIT SETUP -----
-
-# Ensure that a .gitconfig file exists even if it's empty (for git container)
-touch ~/.gitconfig
-
-
-
-# ----- CLOSING -----
-log "IMPORTANT: If your user was added to the docker group during this script, please log out/in or run 'newgrp docker' to apply Docker group membership."
