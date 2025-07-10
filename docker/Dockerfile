@@ -50,17 +50,6 @@ RUN apt-get update && apt-get install -y pipx \
     && pipx install platformio \
     && pipx ensurepath
 
-# Install Nvidia specific dependencies (non-nvidia just uses mesa)
-# TODO: FIX THIS, need Cuda not container toolkit. thats host system
-RUN if [ "$RUNTIME" = "nvidia" ]; then \
-        echo "Installing NVIDIA dependencies..." && \
-        sudo apt-get update && \
-        sudo apt-get install nvidia-container-toolkit \
-        && systemctl restart docker; \
-    else \
-        echo "Not on jetson, skipping NVIDIA installations"; \
-    fi
-
 # Install ROS 2 packagess
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # ROS 2 core packages

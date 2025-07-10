@@ -17,7 +17,7 @@
 #   -v Attach VS Code after setup
 #   -h Show this help message and exit
 #
-# DEPENDS:      bash, docker engine, docker engine cli, docker compose
+# DEPENDS:      bash, docker engine, docker engine cli, docker compose, vscode
 # LICENSE:      Apache 2.0
 # -----------------------------------------------------------------------------
 

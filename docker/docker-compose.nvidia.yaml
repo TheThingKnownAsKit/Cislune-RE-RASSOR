@@ -19,7 +19,7 @@ services:
               count: 1
               capabilities: [gpu]
 
-  docker_zed:
+  docker_zed: # Replace this with realsense
     image: stereolabs/zed:5.0-py-runtime-jetson-jp6.0.0
     container_name: rerassor_zed
     network_mode: host
