@@ -5,7 +5,7 @@
   <version>1.0.0</version>
   <description>This ROS2 package contains all the URDF functionality of the project, including launch files.</description>
   <maintainer email="moodyellam@gmail.com">Ella Moody</maintainer>
-  <author email="moodyellam@gmail.com">Ella Moody</maintainer>
+  <author email="moodyellam@gmail.com">Ella Moody</author>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
