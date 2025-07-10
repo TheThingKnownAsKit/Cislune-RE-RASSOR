@@ -110,32 +110,38 @@ fi
 
 # ----- CONTAINER CONSTRUCTION -----
 
-COMPOSE_FILES=""
+COMPOSE_FILES=()
 
 # Pick compose files based on GPU
 if lspci | grep -i 'vga' | grep -iq 'nvidia'; then
     log "Nvidia GPU detected, selecting Nvidia compose files"
-    COMPOSE_FILES="-f docker-compose.yaml -f docker-compose.nvidia.yaml"
+    COMPOSE_FILES=(-f docker-compose.yaml -f docker-compose.nvidia.yaml)
 else
     log "No Nvidia GPU detected, selecting Non-Nvidia compose files"
-    COMPOSE_FILES="-f docker-compose.yaml -f docker-compose.notnvidia.yaml"
+    COMPOSE_FILES=(-f docker-compose.yaml -f docker-compose.notnvidia.yaml)
 fi
+
+# Navigate to the docker/ directory
+pushd docker/ >/dev/null || error "Cislune-RE-RASSOR/docker/ directory does not exist. Are you in repository root? Aborting."
 
 if [ "$REBUILD_IMAGE" -eq 1 ]; then
     log "Running compose build with no cache..."
-    docker compose "$COMPOSE_FILES" build --no-cache
+    docker compose "${COMPOSE_FILES[@]}" build --no-cache
 else
     log "Running compose build with cache..."
-    docker compose "$COMPOSE_FILES" build
+    docker compose "${COMPOSE_FILES[@]}" build
 fi
 
 if [ "$RECREATE_CONTAINERs" -eq 1 ]; then
     log "Running compose up with --force-recreate..."
-    docker compose "$COMPOSE_FILES" up --force-recreate
+    docker compose "${COMPOSE_FILES[@]}" up --force-recreate --detach
 else
     log "Running compose up..."
-    docker compose "$COMPOSE_FILES" up
+    docker compose "${COMPOSE_FILES[@]}" up --detach
 fi
+
+# Navigate back to repository root
+popd >/dev/null
 
 
 

@@ -71,7 +71,7 @@ If you're curious about the background of the project, my learning outcomes as a
 
 ### Necessary Downloads
 
-Ensure that a recent version of [Git](https://git-scm.com/downloads/linux) and [VSCode](https://code.visualstudio.com/download) is downloaded.
+Ensure that a recent version of [Git](https://git-scm.com/downloads/linux) and [VSCode](https://code.visualstudio.com/download) are downloaded.
 
 Install Docker Engine and Docker Buildx by following the [Install using the apt repository](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) tutorial from the official Docker documentation.
 
