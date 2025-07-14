@@ -7,6 +7,10 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
+find_package(hardware_interface REQUIRED)
 
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
@@ -20,12 +24,12 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
 add_library(
   diffdrive_arduino
   SHARED
-  hardware/diffbot_system.cpp
+  src/rerassor_hardware.cpp
 )
 target_compile_features(diffdrive_arduino PUBLIC cxx_std_17)
 target_include_directories(diffdrive_arduino PUBLIC
-$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/hardware/include>
-$<INSTALL_INTERFACE:include/diffdrive_arduino>
+$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+$<INSTALL_INTERFACE:include>
 )
 ament_target_dependencies(
   diffdrive_arduino PUBLIC
@@ -36,13 +40,22 @@ target_link_libraries(diffdrive_arduino PUBLIC serial)
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
-target_compile_definitions(${PROJECT_NAME} PRIVATE "DIFFDRIVE_ARDUINO_BUILDING_DLL")
+# target_compile_definitions(${PROJECT_NAME} PRIVATE "DIFFDRIVE_ARDUINO_BUILDING_DLL")
 
 # Export hardware plugins
-pluginlib_export_plugin_description_file(hardware_interface diffdrive_arduino.xml)
+pluginlib_export_plugin_description_file(rover_hardware config/diffdrive_arduino.xml)
 
-install(DIRECTORY src config include
-  DESTINATION share/${PROJECT_NAME}
+install(
+  TARGETS diffdrive_arduino
+  EXPORT  export_diffdrive_arduino
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+install(
+  DIRECTORY include/
+  DESTINATION include
 )
 
 ## EXPORTS

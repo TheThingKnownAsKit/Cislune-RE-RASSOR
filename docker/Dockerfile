@@ -57,6 +57,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # ROS 2 control stack
     ros-${ROS_DISTRO}-ros2-control \
     ros-${ROS_DISTRO}-ros2-controllers \
+    libserial-dev \
     # ROS–Gazebo integration
     ros-${ROS_DISTRO}-ros-gz \
     ros-${ROS_DISTRO}-gz-ros2-control \
