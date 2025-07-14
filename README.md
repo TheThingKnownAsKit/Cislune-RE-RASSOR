@@ -8,6 +8,7 @@ This repository contains the codebase for Cislune's version of the Florida Space
     - ROS2 Control
     - Gazebo (Harmonic)
     - Nav2
+    - SLAM Toolbox
     - Docker (Ubuntu Noble image)
     - PlatformIO
     - Mosh
@@ -34,9 +35,7 @@ This project was designed to run primarily in a Docker instance to help with con
 
 Additionally, this project was designed with the assumption that the rover is using a Jetson Orin Nano as the onboard rover computer, a Teensy 4.1 as the microcontroller connected to the Jetson over USB, and a groundstation computer that remotely ssh's into the Jetson to run commands and view through Rviz2.
 
-Most of the downloads and installations for necessary libraries will be handled inside the Dockerfile and compose files. There are a few things that need to be downloaded directly on the Jetson and on the groundstation computer. All of this setup has been configured in bash scripts included in the scripts/ folder of the repository, and the Installation and Setup section will instruct you on what scripts to run on what device.
-
-After all the installation and setup is done, you should only need to compose and connect the Docker container to develop and run the program. Bringup instructions, including all the different startup options, are explained in Rover Bringup.
+Most of the downloads and installations for necessary libraries will be handled inside the Dockerfile and compose files. There are a few things that need to be downloaded directly on the Jetson and on the groundstation computer. All of this setup has been configured in bash scripts included in the scripts/ folder of the repository, and the Installation and Setup section will instruct you on what scripts to run on what device. After all the installation and setup is done, you should only need to compose and connect the Docker container to develop and run the program. Bringup instructions, including all the different startup options, are explained in Rover Bringup.
 
 This project was specifically designed to be modular. If you would like to edit this codebase for your own purposes and swap out some of the components, the guide to do so is in Editing Guide.
 
@@ -55,19 +54,16 @@ Curl is also required for some of the scripts, ensure it is downloaded.
 
 ### Cloning the Repository
 
-In the directory of your choice, either run the command `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via https or run `git clone git@github.com:TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via SSH.
+In the directory of your choice, either run the command `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via https.
 
 ### Setup Scripts
 
-For convenience, bash scripts have been written to do most of the setup for you. **All of these scripts are intended to be ran from the root of the repository.**
+For convenience, bash scripts have been written to do most of the setup for you. **All of these scripts are intended to be ran from the root of the repository,** so from the Cislune-RE-RASSOR folder level.
 
 Before anything else, <u>make sure your system is up to date</u> by running the following commands. Ensure that all packages are upgraded, though if you know for certain that a package will not interact with this repository's tech stack at all, you can ignore it.
 ```Bash
 sudo apt update
 sudo apt upgrade
-sudo apt-get update
-sudo apt-get upgrade
-apt list --upgradable 
 ```
 
 **Do not open VSCode before running the host system setup scripts.** This causes user permission issues with VSCode running Docker before the user is properly added to the usergroup. If you are running into permission issues when trying to start docker, first check to see if you are in the docker group by running `groups` in the host computer terminal. If you are and are still experiencing permission issues, close VSCode and run `killall code && newgrp docker` to end all VSCode services and refresh the docker group permissions. Reopen VSCode and it should work.
@@ -92,16 +88,32 @@ To build and compose the Docker container, run the script `./scripts/docket_setu
 
 I recommend using the command `./scripts/docker_setup.sh -v` for convenience.
 
-TODO: PUT POST DOCKER SCRIPTS HERE
-
-
 ## Rover Bringup
 
-Write about mosh and launch scripts here, including groundstation launch scripts vs Jetson vs Teensy firmware
+Note that these instructions should be done within Docker instances or colcon will not be able to build and ROS2 will not be installed.
 
-To mosh into the Jetson, use the command `mosh username@ip` from the terminal of the groundstation computer. If you don't know what your ip address is, do `ip a |grep net` and look for the address that ends in /24.
+To mosh into the Jetson, use the command `mosh username@ip` from the terminal of the groundstation computer. If you don't know what your ip address is, do `ip a |grep net` and look for the address that ends in /24. TODO
 
-Note to self: might not have to use Mosh because of Docker. Unsure.
+ON THE GROUNDSTATION, from the repository root, run the following commands:
+```Bash
+colcon build --symlink-install
+source install/setup.bash
+ros2 launch rover_bringup groundstation.launch.py
+```
+
+ON THE JETSON (via mosh), from the repository root, run the following commands:
+```Bash
+colcon build --symlink-install
+source install/setup.bash
+ros2 launch rover_bringup rover.launch.py
+```
+
+If you want to launch the Gazebo simulator, run the following commands:
+```Bash
+colcon build --symlink-install
+source install/setup.bash
+ros2 launch rover_sim gazebo.sim.py
+```
 
 ## Editing Guide
 
