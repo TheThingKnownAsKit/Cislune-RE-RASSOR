@@ -19,6 +19,7 @@ def generate_launch_description():
     world_file = PythonExpression(["'", LaunchConfiguration('world'), ".world'"])
     world_path = PathJoinSubstitution([pkg_sim, 'worlds', world_file])
     bridge_config_path = PathJoinSubstitution([pkg_sim, 'config', 'rosgz_bridge.yaml'])
+    twist_mux_params = os.path.join(pkg_control, 'config', 'twist_mux.yaml')
 
 
     # ----- Create nodes
@@ -48,6 +49,14 @@ def generate_launch_description():
         executable='parameter_bridge',
         parameters=[{'config_file': bridge_config_path}],
         output='screen'
+    )
+
+    # Twist mux helps manage the cmd_vel topic
+    twist_mux = Node(
+        package="twist_mux",
+        executable="twist_mux",
+        parameters=[twist_mux_params],
+        remappings=[('/cmd_vel_out', '/diff_cont/cmd_vel')]
     )
     
     # Use Gazebo's pre-built robot spawner
@@ -96,6 +105,7 @@ def generate_launch_description():
         spawn_rover,
         diff_drive,
         joint_broad,
-        teleop_node
+        teleop_node,
+        twist_mux
     ])
 

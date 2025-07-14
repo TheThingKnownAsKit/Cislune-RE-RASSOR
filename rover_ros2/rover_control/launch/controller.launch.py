@@ -20,7 +20,6 @@ def generate_launch_description():
 
     robot_description_content = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
     robot_description = ParameterValue(robot_description_content, value_type=str)
-    twist_mux_params = os.path.join(pkg_control, 'config', 'twist_mux.yaml')
 
     # Create joy node for joystick input
     teleop_node = IncludeLaunchDescription(
@@ -29,14 +28,6 @@ def generate_launch_description():
         ]),
         launch_arguments={'use_sim_time': use_sim_time}.items(),
         condition=IfCondition(LaunchConfiguration('use_teleop'))
-    )
-
-    # Twist mux helps manage the cmd_vel topic
-    twist_mux = Node(
-        package="twist_mux",
-        executable="twist_mux",
-        parameters=[twist_mux_params],
-        remappings=[('/cmd_vel_out', '/diff_cont/cmd_vel')]
     )
 
     controller_manager = Node(
