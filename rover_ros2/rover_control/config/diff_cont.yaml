@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 1000  # Hz
+    update_rate: 30  # Hz
 
     diff_cont:
       type: diff_drive_controller/DiffDriveController
@@ -25,7 +25,7 @@ diff_cont:
     enable_odom_tf: true
 
     cmd_vel_timeout: 0.5
-    use_stamped_vel: true
+    use_stamped_vel: false
 
     # Preserve turning radius when limiting speed/acceleration/jerk
     # preserve_turning_radius: true

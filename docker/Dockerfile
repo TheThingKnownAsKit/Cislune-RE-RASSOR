@@ -66,7 +66,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Navigation stack
     ros-${ROS_DISTRO}-navigation2 \
     ros-${ROS_DISTRO}-nav2-bringup \
-    ros-${ROS_DISTRO}-slam-toolbox
+    ros-${ROS_DISTRO}-slam-toolbox \
+    ros-${ROS_DISTRO}-twist-mux
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libturbojpeg 

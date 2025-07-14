@@ -11,7 +11,7 @@
             <param name="device">/dev/ttyACM0</param>
             <param name="baud_rate">115200</param>
             <param name="timeout_ms">1000</param>
-            <param name="enc_counts_per_rev">1440</param>
+            <param name="enc_counts_per_rev">1440</param> <!-- TODO FIX THIS -->
         </hardware>
         <!-- joint interface definitions: each wheel joint has velocity command and position/velocity state -->
         <joint name="front_left_wheel_joint">

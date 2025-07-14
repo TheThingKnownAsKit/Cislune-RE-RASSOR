@@ -7,7 +7,7 @@ joy_node:
 teleop_node:
   ros__parameters:
 
-    publish_stamped_twist: true
+    publish_stamped_twist: false
     
     axis_linear:  # Left thumb stick vertical
       x: 1

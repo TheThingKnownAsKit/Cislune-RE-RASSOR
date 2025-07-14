@@ -1,11 +1,12 @@
 amcl:
   ros__parameters:
-    base_frame_id: "base_link"         # or base_footprint
+    base_frame_id: "base_footprint"         # or base_footprint
     odom_frame_id: "odom"
     scan_topic: "camera/points"                # topic for laser scans
     min_particles: 500
     max_particles: 2000
     # ... (other AMCL parameters like odometry model, laser model, etc.)
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
 
 planner_server:
   ros__parameters:
