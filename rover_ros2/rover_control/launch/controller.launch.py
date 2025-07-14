@@ -73,7 +73,6 @@ def generate_launch_description():
         DeclareLaunchArgument('use_teleop', default_value='false'),
 
         teleop_node,
-        twist_mux,
         delayed_controller_manager,
         delayed_diff_drive_spawner,
         delayed_joint_broad
