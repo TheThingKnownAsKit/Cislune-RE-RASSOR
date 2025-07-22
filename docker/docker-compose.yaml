@@ -37,6 +37,9 @@ services:
     stdin_open: true
     group_add:
       - dialout
+    device_cgroup_rules:
+      - 'c 81:* rmw'
+      - 'c 189:* rmw'
 
 
   docker_git:

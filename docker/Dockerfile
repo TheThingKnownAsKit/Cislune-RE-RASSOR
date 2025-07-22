@@ -1,30 +1,74 @@
 ARG ROS_DISTRO=jazzy
 ARG UBUNTU_VER=24.04
-
-####################  BUILD STAGE  ####################
-
 ARG TARGETARCH
 
-FROM --platform=${TARGETARCH} ros:${ROS_DISTRO}-ros-base
+####################  REALSENSE SDK BUILD STAGE  ####################
 
-####################  RUNTIME STAGE ####################
-ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+FROM --platform=${TARGETARCH} ros:${ROS_DISTRO}-ros-base AS realsense_builder
+
+SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
-ARG RUNTIME
+# Install build dependencies for the Intel RealSense SDK (librealsense2)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential cmake git \
+    libssl-dev libusb-1.0-0-dev pkg-config \
+    libgtk-3-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev \
+    curl ca-certificates python3 python3-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# Download the latest Librealsense SDK source code and build it from source
+WORKDIR /usr/src
+RUN export LIBRS_GIT_TAG=$(git -c 'versionsort.suffix=-' \
+                       ls-remote --refs --sort='version:refname' \
+                       --tags https://github.com/IntelRealSense/librealsense '*.*.*' | \
+                       tail -n1 | cut -d'/' -f3) && \
+    export LIBRS_VERSION=${LIBRS_VERSION:-${LIBRS_GIT_TAG#"v"}} && \
+    echo "Building librealsense version $LIBRS_VERSION" && \
+    curl -L "https://github.com/IntelRealSense/librealsense/archive/refs/tags/v${LIBRS_VERSION}.tar.gz" \
+         -o librealsense.tar.gz && \
+    tar -xzf librealsense.tar.gz && rm librealsense.tar.gz && \
+    ln -s "librealsense-${LIBRS_VERSION}" librealsense
+
+RUN cd /usr/src/librealsense && mkdir build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release \
+             -DCMAKE_INSTALL_PREFIX=/opt/librealsense \
+             -DCMAKE_C_FLAGS_RELEASE="${CMAKE_C_FLAGS_RELEASE} -s" \
+             -DCMAKE_CXX_FLAGS_RELEASE="${CMAKE_CXX_FLAGS_RELEASE} -s" \
+             -DBUILD_GRAPHICAL_EXAMPLES=OFF \
+             -DBUILD_EXAMPLES=OFF \
+             -DBUILD_PYTHON_BINDINGS=TRUE && \
+    make -j$(nproc) && make install
+
+ENV DEBIAN_FRONTEND=dialog
+
+####################  RUNTIME STAGE ####################
+FROM --platform=${TARGETARCH} ros:${ROS_DISTRO}-ros-base
+
+# Copy the RealSense SDK binaries and assets from the builder stage
+COPY --from=realsense_builder /opt/librealsense /usr/local/
+COPY --from=realsense_builder /opt/librealsense /opt/librealsense
+COPY --from=realsense_builder /usr/src/librealsense/config/99-realsense-libusb.rules /etc/udev/rules.d/
+
+# Environment settings
+ENV PYTHONPATH="${PYTHONPATH}:/usr/local/lib"
+ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
 # ----- install dependencies -----
-# Install Python and Python interpreter
-RUN apt-get install python3
+# Install runtime dependencies for librealsense and general tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libusb-1.0-0 udev \
+    apt-transport-https ca-certificates curl software-properties-common \
+ && rm -rf /var/lib/apt/lists/*
 
 # Install common programs
 RUN apt-get update && apt-get install -y --no-install-recommends \
         gnupg \
         gnupg2 \
         lsb-release \
-        software-properties-common \
         wget \
         curl \
         python3-pip \
@@ -70,9 +114,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-slam-toolbox \
     ros-${ROS_DISTRO}-twist-mux
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libturbojpeg 
-
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -95,4 +136,3 @@ RUN apt-get update && \
 # Switch from root to user
 USER $USERNAME
 
-WORKDIR /workspaces/Cislune-RE-RASSOR/
