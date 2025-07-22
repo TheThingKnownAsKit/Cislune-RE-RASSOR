@@ -23,7 +23,11 @@ services:
         read_only: true
         bind:
           propagation: rshared
-      - ../..:/workspaces:rw        # Current workspace read/write
+      - type: bind
+        source: ..
+        target: /workspaces/Nostromo
+        bind:
+          propagation: rshared
       - "/dev:/dev"                 # All devices
     cap_add:
       - SYS_NICE               # For real-time scheduling

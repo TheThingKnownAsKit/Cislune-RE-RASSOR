@@ -3,6 +3,8 @@
 
 This repository contains the codebase for Cislune's version of the Florida Space Institute's RE-RASSOR project. The codebase is custom, as well as some of the 3D parts. Full credits will be listed in the credits section.
 
+This codebase was developed by a Cislune intern working over the summer of 2025. It was meant to be practice for programming the larger rover, Nostromo, as well as the rover potentially being useful in contracts the company had. A complete list of learning outcomes that will be applied to Nostromo and future projects is listed at the end of the document.
+
 - Software Stack
     - ROS2 (Jazzy)
     - ROS2 Control
@@ -15,7 +17,7 @@ This repository contains the codebase for Cislune's version of the Florida Space
 - Hardware
     - Jetson Orin Nano Developer Kit
     - Teensy 4.1
-    - Zed Mini
+    - Intel Realsense D435i
 
 []()
 
@@ -117,15 +119,28 @@ ros2 launch rover_sim gazebo.sim.py
 
 ## Editing Guide
 
-Explain in more detail the modularity here
+For the most part, the only thing that you would need to edit to make this work for your own rover is edit some of the config files and replace the URDF. There may be some functionality missing that you would have to add in yourself, but otherwise the libraries handle most of the code.
 
-## About the Project
+This repository is split into ROS2 packages that are subfolders of rover_ros2. Any folder that begins with rover_ is a ROS2 package with its own package.xml and CMakeLists.txt. 
 
 ## Learning Outcomes
 
+Skills learned:
+1. Advanced ROS2
+2. ROS2 Control
+3. Gazebo
+4. Nav2
+5. SLAM Toolbox
+6. Micro ROS (not currently used in project)
+7. URDF and Xacro
+
 Lessons learned:
-1. Don't name every ros2 package prepended with rover_ because it makes autocomplete hate you
-2. I have no idea if it's best practice but I do really like separating the launch files into modules within
-    their respective ROS2 
+1. 
 
 ## Credits
+
+The original concept for the RE-RASSOR was developed by the Florida Space Institute as a modular and accessible solution for lunar rovers. The main page for this project can be found [here](https://floridaspacegrant.org/program/re-rassor/), which will include links to the GitHub Repository and 3D models.
+
+A custom chassis and camera mount were modeled by Cislune for this project, but the rest of the models are from the RE-RASSOR team.
+
+Reference files for the codebase were taken from the ROS2 Control team (credits given at the beginning of those files), and Articulated Robotics was an extremely helpful resource in learning all of these concepts.

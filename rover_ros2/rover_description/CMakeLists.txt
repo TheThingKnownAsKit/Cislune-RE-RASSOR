@@ -10,7 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(xacro REQUIRED)
 find_program(GZ_EXECUTABLE gz)
 
-install(DIRECTORY urdf launch meshes rviz
+install(DIRECTORY urdf launch meshes rviz test_urdf
   DESTINATION share/${PROJECT_NAME}
 )
 
