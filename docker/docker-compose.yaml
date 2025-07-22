@@ -1,10 +1,10 @@
 # This is the base compose file. GPU specifications will be overriden by others
 services:
-  rosdev:
+  rerassor_dev:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: ros2_dev
+    container_name: rerassor_dev
     network_mode: host
     privileged: true
     environment:
@@ -25,7 +25,7 @@ services:
           propagation: rshared
       - type: bind
         source: ..
-        target: /workspaces/Nostromo
+        target: /workspaces/Cislune-RE-RASSOR
         bind:
           propagation: rshared
       - "/dev:/dev"                 # All devices

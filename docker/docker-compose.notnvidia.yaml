@@ -1,5 +1,5 @@
 services:
-  rosdev:
+  rerassor_dev:
     devices:
       - /dev/dri/renderD128:/dev/dri/renderD128
     environment:

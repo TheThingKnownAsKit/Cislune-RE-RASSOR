@@ -86,7 +86,7 @@ To setup the host system, you have three options:
 To build and compose the Docker container, run the script `./scripts/docket_setup.sh` with the optional argument flags of `-r -c -v`.
 - `-r` will build the image with no cache
 - `-c` will recreate the containers even if no changes have been made since last compose
-- `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers (note you need Container Tools extension installed for this) -> Right click on docker-rosdev -> Attach VSCode
+- `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers (note you need Container Tools extension installed for this) -> Right click on docker-rerassor_dev -> Attach VSCode
 
 I recommend using the command `./scripts/docker_setup.sh -v` for convenience.
 
