@@ -1,0 +1,8 @@
+[submodule "src/realsense_ros"]
+	path = src/realsense_ros
+	url = https://github.com/IntelRealSense/realsense-ros.git
+	branch = ros2-development
+[submodule "realsense_ros"]
+	path = realsense_ros
+	url = https://github.com/IntelRealSense/realsense-ros.git
+	branch = ros2-development
