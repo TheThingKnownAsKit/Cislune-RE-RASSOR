@@ -28,7 +28,6 @@ services:
         target: /workspaces/Cislune-RE-RASSOR
         bind:
           propagation: rshared
-      - "/dev:/dev"                 # All devices
     cap_add:
       - SYS_NICE               # For real-time scheduling
     devices:
@@ -40,6 +39,14 @@ services:
     device_cgroup_rules:
       - 'c 81:* rmw'
       - 'c 189:* rmw'
+    command: > # TODO fix hardcoded jazzy
+      bash -c "
+        source /opt/ros/jazzy/setup.bash &&
+        rosdep update &&
+        rosdep install --from-paths /workspaces/Cislune-RE-RASSOR/realsense_ros \
+                      --rosdistro jazzy -y \ &&
+        colcon build --merge-install --base-paths /workspaces/Cislune-RE-RASSOR &&
+        exec bash"
 
 
   docker_git:
