@@ -88,7 +88,7 @@
             <frame_id>camera_link</frame_id>
             <topic>camera</topic> 
             <point_cloud>true</point_cloud>
-            <camera name="zed_camera">
+            <depth_camera name="zed_camera">
                 <camera_info_topic>camera/camera_info</camera_info_topic>
                 <optical_frame_id>camera_link_optical</optical_frame_id>
                 <horizontal_fov>1.50</horizontal_fov>
@@ -101,7 +101,7 @@
                     <near>0.1</near>
                     <far>6.5</far>
                 </clip>
-            </camera>
+            </depth_camera>
         </sensor>
     </gazebo>
 
@@ -111,6 +111,20 @@
             <update_rate>100</update_rate>
             <visualize>true</visualize>
             <topic>imu</topic>
+            <imu>
+                <angular_velocity>
+                    <noise type="gaussian">
+                        <mean>0</mean>
+                        <stddev>0.00175</stddev>
+                    </noise>
+                </angular_velocity>
+                <linear_acceleration>
+                    <noise type="gaussian">
+                    <mean>0</mean>
+                    <stddev>0.001</stddev>
+                    </noise>
+                </linear_acceleration>
+            </imu>
         </sensor>
     </gazebo>
 
