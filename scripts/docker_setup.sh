@@ -149,6 +149,6 @@ popd >/dev/null
 
 if [ "$ATTACH_VSCODE" -eq 1 ]; then
     # Open the folder via VS Code CLI
-    CID=$(docker ps -qf name=ros2_dev)
-    code --folder-uri="vscode-remote://attached-container+$(printf '%s' "$CID" | xxd -p)/workspaces/Cislune-RE-RASSOR"
+    CID=$(docker ps -qf name=rerassor_dev) # Note that this name needs to change if you rename the container
+    code -r --folder-uri="vscode-remote://attached-container+$(printf '%s' "$CID" | xxd -p)/workspaces/Cislune-RE-RASSOR"
 fi
