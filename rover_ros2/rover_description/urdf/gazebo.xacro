@@ -82,8 +82,8 @@
     <gazebo reference="camera_link">            <!-- Specifically a D455 specs -->
         <sensor name="camera" type="rgbd_camera">
             <always_on>true</always_on>
-            <visualize>true</visualize>        <!-- Enable camera view in Gazebo client -->
-            <update_rate>90</update_rate>
+            <visualize>true</visualize> 
+            <update_rate>30</update_rate>
             <gz_frame_id>camera_link</gz_frame_id>
             <frame_id>camera_link</frame_id>
             <topic>camera</topic> 
@@ -105,10 +105,10 @@
         </sensor>
     </gazebo>
 
-    <gazebo reference="camera_link">
+    <gazebo reference="camera_link">            <!-- IMU built into the camera -->
         <sensor name="imu" type="imu">
             <always_on>true</always_on>
-            <update_rate>100</update_rate>
+            <update_rate>30</update_rate>
             <visualize>true</visualize>
             <topic>imu</topic>
             <imu>
