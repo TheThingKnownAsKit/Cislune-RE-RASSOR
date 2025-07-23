@@ -110,6 +110,9 @@ fi
 
 # ----- CONTAINER CONSTRUCTION -----
 
+export RENDER_GID=$(stat -c '%g' /dev/dri/renderD128)
+export INPUT_GID=$(stat -c '%g' /dev/input/js0)
+
 COMPOSE_FILES=()
 
 # Pick compose files based on GPU

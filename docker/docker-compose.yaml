@@ -26,13 +26,18 @@ services:
     cap_add:
       - SYS_NICE               # For real-time scheduling
     devices:
-      - /dev/input:/dev/input:ro # All input devices read only
+      - /dev/dri:/dev/dri
+      - /dev/input:/dev/input
+      - /dev/bus/usb:/dev/bus/usb
     tty: true
     stdin_open: true
     group_add:
       - dialout
       - video
       - plugdev
+      - render
+      - "${RENDER_GID}"
+      - "${INPUT_GID}"
 
   docker_git:
       image: alpine/git:latest      # Small image with git
