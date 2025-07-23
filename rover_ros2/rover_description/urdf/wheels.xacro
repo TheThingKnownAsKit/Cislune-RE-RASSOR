@@ -41,6 +41,8 @@
         <parent link="chassis_link" />
         <child link="front_left_wheel_link" />
         <axis xyz="0 0 -1" />
+        <limit effort="100" velocity="100"/>
+        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 
@@ -85,6 +87,8 @@
         <parent link="chassis_link" />
         <child link="rear_left_wheel_link" />
         <axis xyz="0 0 -1" />
+        <limit effort="100" velocity="100"/>
+        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 
@@ -129,6 +133,8 @@
         <parent link="chassis_link" />
         <child link="rear_right_wheel_link" />
         <axis xyz="0 0 1" />
+        <limit effort="100" velocity="100"/>
+        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 
@@ -173,6 +179,8 @@
         <parent link="chassis_link" />
         <child link="front_right_wheel_link" />
         <axis xyz="0 0 1" />
+        <limit effort="100" velocity="100"/>
+        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 </robot>
