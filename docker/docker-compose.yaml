@@ -1,10 +1,10 @@
 # This is the base compose file. GPU specifications will be overriden by others
+name: rerassor
 services:
   rerassor_dev:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: rerassor_dev
     network_mode: host
     privileged: true
     environment:
@@ -34,14 +34,11 @@ services:
     group_add:
       - dialout
       - video
-      - plugdev
-      - render
       - "${RENDER_GID}"
       - "${INPUT_GID}"
 
   docker_git:
       image: alpine/git:latest      # Small image with git
-      container_name: rerassor_git
       volumes:
         - ~/.ssh:/root/.ssh:ro      # Mount host SSH keys (read-only)
         - ~/.gitconfig:/root/.gitconfig:ro  # Mount host Git config (read-only)
