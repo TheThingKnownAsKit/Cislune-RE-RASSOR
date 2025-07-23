@@ -4,7 +4,7 @@
 # FILE:         development_setup.sh
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
-# LAST EDITED:  07-10-2025
+# LAST EDITED:  07-23-2025
 # DESCRIPTION:  This script performs all of the host computer setup necessary to
 #               enable full Docker functionality. It assumes you're only going
 #               to be using one computer for development reasons and are not
@@ -196,6 +196,47 @@ fi
 
 # Ensure that a .gitconfig file exists even if it's empty (for git container)
 touch ~/.gitconfig
+
+
+
+# ----- CAMERA SETUP -----
+# Note that this ONLY works for Intel Realsense D4xx series (i.e. D455, D435, D435i)
+
+has_realsense_udev_rules=-1
+
+for d in /etc/udev/rules.d /lib/udev/rules.d; do
+    if [[ -e "$d/99-realsense-libusb.rules" ]]; then
+        has_realsense_udev_rules=1
+        break
+    fi
+done
+
+if (( has_realsense_udev_rules != 1)); then
+    log "Intel Realsense udev rules not installed. Installing..."
+
+    wget -O 99-realsense-libusb.rules \
+        https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules
+    
+    sudo cp 99-realsense-libusb.rules /etc/udev/rules.d
+    rm 99-realsense-libusb.rules
+
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+
+    has_realsense_udev_rules=-1
+    for d in /etc/udev/rules.d /lib/udev/rules.d; do
+        if [[ -e "$d/99-realsense-libusb.rules" ]]; then
+            has_realsense_udev_rules=1
+            break
+        fi
+    done
+
+    if (( has_realsense_udev_rules != 1)); then
+        error "Could not install Realsense udev rules. Aborting."
+    else
+        log "Realsense udev rules installed successfully."
+    fi
+fi
 
 
 

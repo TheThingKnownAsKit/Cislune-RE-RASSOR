@@ -1,7 +1,6 @@
 ARG ROS_DISTRO=jazzy
 ARG UBUNTU_VER=24.04
 ARG TARGETARCH
-
 ####################  REALSENSE SDK BUILD STAGE  ####################
 
 FROM --platform=${TARGETARCH} ros:${ROS_DISTRO}-ros-base AS realsense_builder
@@ -10,25 +9,20 @@ SHELL ["/bin/bash", "-c"]
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install build dependencies for the Intel RealSense SDK (librealsense2)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake git \
-    libssl-dev libusb-1.0-0-dev pkg-config \
-    libgtk-3-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev \
-    curl ca-certificates python3 python3-dev \
- && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \  
+    build-essential cmake git libssl-dev libusb-1.0-0-dev pkg-config \  
+    libgtk-3-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev \  
+    curl python3-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Download the latest Librealsense SDK source code and build it from source
 WORKDIR /usr/src
 RUN export LIBRS_GIT_TAG=$(git -c 'versionsort.suffix=-' \
-                       ls-remote --refs --sort='version:refname' \
-                       --tags https://github.com/IntelRealSense/librealsense '*.*.*' | \
-                       tail -n1 | cut -d'/' -f3) && \
-    export LIBRS_VERSION=${LIBRS_VERSION:-${LIBRS_GIT_TAG#"v"}} && \
-    echo "Building librealsense version $LIBRS_VERSION" && \
-    curl -L "https://github.com/IntelRealSense/librealsense/archive/refs/tags/v${LIBRS_VERSION}.tar.gz" \
-         -o librealsense.tar.gz && \
+        ls-remote --refs --sort="version:refname" --tags https://github.com/IntelRealSense/librealsense "*.*.*" | \
+        tail -n1 | cut -d'/' -f3) && \
+    export LIBRS_VERSION=${LIBRS_GIT_TAG#"v"} && \
+    curl -L https://github.com/IntelRealSense/librealsense/archive/refs/tags/v${LIBRS_VERSION}.tar.gz -o librealsense.tar.gz && \
     tar -xzf librealsense.tar.gz && rm librealsense.tar.gz && \
-    ln -s "librealsense-${LIBRS_VERSION}" librealsense
+    ln -s /usr/src/librealsense-${LIBRS_VERSION} /usr/src/librealsense
 
 RUN cd /usr/src/librealsense && mkdir build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release \
@@ -45,24 +39,19 @@ ENV DEBIAN_FRONTEND=dialog
 ####################  RUNTIME STAGE ####################
 FROM --platform=${TARGETARCH} ros:${ROS_DISTRO}-ros-base
 
-# Copy the RealSense SDK binaries and assets from the builder stage
-COPY --from=realsense_builder /opt/librealsense /usr/local/
-COPY --from=realsense_builder /opt/librealsense /opt/librealsense
-COPY --from=realsense_builder /usr/src/librealsense/config/99-realsense-libusb.rules /etc/udev/rules.d/
+ARG USERNAME=ubuntu
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 
 # Environment settings
 ENV PYTHONPATH="${PYTHONPATH}:/usr/local/lib"
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && rm -rf /var/lib/apt/lists/*
-
 # ----- install dependencies -----
 # Install runtime dependencies for librealsense and general tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libusb-1.0-0 udev \
-    apt-transport-https ca-certificates curl software-properties-common \
- && rm -rf /var/lib/apt/lists/*
+    libusb-1.0-0 udev apt-transport-https ca-certificates curl
 
 # Install common programs
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -78,9 +67,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libxtst6
 
 # Install needed elements from Ubuntu Universe
-RUN  add-apt-repository -y universe && \
-     apt-get update && \
-     apt-get install -y --no-install-recommends usbutils joystick evtest
+# RUN apt-get update && add-apt-repository -y universe && \
+#      apt-get update && \
+#      apt-get install -y --no-install-recommends usbutils joystick evtest
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends usbutils joystick evtest
 
 # Install core python tools
 RUN apt-get update && apt install -y build-essential \ 
@@ -116,13 +107,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh
 
+# Copy the RealSense SDK binaries and assets from the builder stage
+COPY --from=realsense_builder /opt/librealsense /usr/local/
+COPY --from=realsense_builder /opt/librealsense /opt/librealsense
+COPY --from=realsense_builder /usr/src/librealsense/config/99-realsense-libusb.rules /etc/udev/rules.d/
+COPY --chown=${USER_UID}:${USER_GID} realsense_ros /workspaces/Cislune-RE-RASSOR/realsense-ros
+
+RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && rosdep init && rosdep update
+RUN rosdep install -i --from-path /workspaces/Cislune-RE-RASSOR/realsense-ros \
+    --rosdistro ${ROS_DISTRO} --skip-keys="launch_pytest" -y
+
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Add ubuntu user with same UID and GID as your host system, if it doesn't already exist
 # Since Ubuntu 24.04, a non-root user is created by default with the name vscode and UID=1000
-ARG USERNAME=ubuntu
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
 RUN if ! id -u $USER_UID >/dev/null 2>&1; then \
         groupadd --gid $USER_GID $USERNAME && \
         useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME; \
@@ -135,4 +133,4 @@ RUN apt-get update && \
 
 # Switch from root to user
 USER $USERNAME
-
+WORKDIR /workspaces/Cislune-RE-RASSOR/

@@ -12,11 +12,6 @@ services:
       - QT_X11_NO_MITSHM=1        # (optional, avoids some shared memory issues)
       - XDG_RUNTIME_DIR=/tmp/runtime-ubuntu
     volumes:
-      - type: bind
-        source: /dev
-        target: /dev
-        bind:
-          propagation: rshared     # lets hot-plugged jsX/eventX devices flow in
       - type: bind                 # udev database
         source: /run/udev
         target: /run/udev
@@ -36,18 +31,8 @@ services:
     stdin_open: true
     group_add:
       - dialout
-    device_cgroup_rules:
-      - 'c 81:* rmw'
-      - 'c 189:* rmw'
-    command: > # TODO fix hardcoded jazzy
-      bash -c "
-        source /opt/ros/jazzy/setup.bash &&
-        rosdep update &&
-        rosdep install --from-paths /workspaces/Cislune-RE-RASSOR/realsense_ros \
-                      --rosdistro jazzy -y \ &&
-        colcon build --merge-install --base-paths /workspaces/Cislune-RE-RASSOR &&
-        exec bash"
-
+      - video
+      - plugdev
 
   docker_git:
       image: alpine/git:latest      # Small image with git
