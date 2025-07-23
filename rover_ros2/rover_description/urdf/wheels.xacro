@@ -37,12 +37,11 @@
     <joint name="front_left_wheel_joint" type="continuous">
         <origin
             xyz="0.2863 0 0.11332"
-            rpy="0 ${pi/2} -${pi/2}" />
+            rpy="${pi/2} 0 0" />
         <parent link="chassis_link" />
         <child link="front_left_wheel_link" />
         <axis xyz="0 0 -1" />
         <limit effort="100" velocity="100"/>
-        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 
@@ -83,12 +82,11 @@
     <joint name="rear_left_wheel_joint" type="continuous">
         <origin
             xyz="-0.0058772 0 0.11332"
-            rpy="0 ${pi/2} -${pi/2}" />
+            rpy="${pi/2} 0 0" />
         <parent link="chassis_link" />
         <child link="rear_left_wheel_link" />
         <axis xyz="0 0 -1" />
         <limit effort="100" velocity="100"/>
-        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 
@@ -129,12 +127,11 @@
     <joint name="rear_right_wheel_joint" type="continuous">
         <origin
             xyz="-0.0058772 -0.30031 0.11332"
-            rpy="-${pi/2} -${pi/2} 0" />
+            rpy="-${pi/2} 0 0" />
         <parent link="chassis_link" />
         <child link="rear_right_wheel_link" />
         <axis xyz="0 0 1" />
         <limit effort="100" velocity="100"/>
-        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 
@@ -175,12 +172,11 @@
     <joint name="front_right_wheel_joint" type="continuous">
         <origin
             xyz="0.2863 -0.30031 0.11332"
-            rpy="-${pi/2} -${pi/2} 0" />
+            rpy="-${pi/2} 0 0" />
         <parent link="chassis_link" />
         <child link="front_right_wheel_link" />
         <axis xyz="0 0 1" />
         <limit effort="100" velocity="100"/>
-        <dynamics damping="0.0" friction="0.5"/>
     </joint>
 
 </robot>

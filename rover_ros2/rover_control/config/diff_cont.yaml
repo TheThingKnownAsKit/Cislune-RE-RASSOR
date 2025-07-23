@@ -13,8 +13,6 @@ diff_cont:
     left_wheel_names: [ "front_left_wheel_joint", "rear_left_wheel_joint" ]
     right_wheel_names: [ "front_right_wheel_joint", "rear_right_wheel_joint" ]
 
-    left_wheel_reverse: true
-
     # Separation between a left and right wheels in meters
     wheel_separation: 0.60062
     wheel_radius: 0.115

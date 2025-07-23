@@ -11,6 +11,8 @@
     <!-- WHEELS -->
     <gazebo reference="front_left_wheel_link">
         <material>Gazebo/Gray</material>
+        <mu1>0.55</mu1>
+        <mu2>0.4</mu2>
     </gazebo>
 
     <transmission name="front_left_wheel_transmission">
@@ -27,6 +29,8 @@
 
     <gazebo reference="front_right_wheel_link">
         <material>Gazebo/Gray</material>
+        <mu1>0.55</mu1>
+        <mu2>0.4</mu2>
     </gazebo>
 
     <transmission name="front_right_wheel_transmission">
@@ -43,6 +47,8 @@
 
     <gazebo reference="rear_left_wheel_link">
         <material>Gazebo/Gray</material>
+        <mu1>0.55</mu1>
+        <mu2>0.4</mu2>
     </gazebo>
 
     <transmission name="rear_left_wheel_transmission">
@@ -59,6 +65,8 @@
 
     <gazebo reference="rear_right_wheel_link">
         <material>Gazebo/Gray</material>
+        <mu1>0.55</mu1>
+        <mu2>0.4</mu2>
     </gazebo>
 
     <transmission name="rear_right_wheel_transmission">
