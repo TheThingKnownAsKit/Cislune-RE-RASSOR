@@ -126,7 +126,7 @@ if docker buildx inspect multiarch &>/dev/null; then
 else
     warn "Docker does not have multiarch enabled. Enabling..."
     sudo docker run --privileged --rm tonistiigi/binfmt --install all
-    sudo docker buildx create --name multiarch --driver docker-container --bootstrap --use
+    docker buildx create --name multiarch --driver docker-container --bootstrap --use
 fi
 
 
