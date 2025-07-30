@@ -69,15 +69,8 @@ fi
 if ! id -nG "$USER" | grep -qw docker; then
     warn "User has not been added to the docker group."
     sudo usermod -aG docker "$USER"
-    newgrp docker
-
-    if id -nG "$USER" | grep -qw docker; then
-        log "User successfully added to docker group."
-        log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership.\nAfter that, rerun the script."
-        exit 1
-    else
-        error "User could not be added to docker group. Aborting."
-    fi
+    log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership.\nAfter that, rerun the script."
+    exit 0
 else
     log "User is in the docker permissions group."
 fi
