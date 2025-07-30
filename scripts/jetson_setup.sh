@@ -182,10 +182,10 @@ fi
 has_turbojpeg=0
 
 # Accept both runtime and -dev packages
-if dpkg -s libturbojpeg0 >/dev/null 2>&1 || dpkg -s libjpeg-turbo* >/dev/null 2>&1; then
+if dpkg -s libturbojpeg >/dev/null 2>&1 || dpkg -s libjpeg-turbo* >/dev/null 2>&1; then
     # Look for the .so on any architecture directory (x86_64, aarch64, armhf ...)
     if find /usr/lib -maxdepth 2 -name 'libturbojpeg.so*' | grep -q . ; then
-        log "libturbojpeg detected: $(dpkg -s libturbojpeg0 | grep Version)"
+        log "libturbojpeg detected: $(dpkg -s libturbojpeg | grep Version)"
         has_turbojpeg=1
     fi
 fi
@@ -195,7 +195,7 @@ if (( has_turbojpeg == 1 )); then
 else
     warn "libturbojpeg shared library NOT found."
     sudo apt-get update
-    sudo apt-get install libturbojpeg0 libturbojpeg0-dev
+    sudo apt-get install libturbojpeg libturbojpeg0-dev
 
     if find /usr/lib -maxdepth 2 -name 'libturbojpeg.so*' | grep -q . ; then
         log "libturbojpeg successfully installed."
