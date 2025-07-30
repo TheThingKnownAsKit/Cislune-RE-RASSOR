@@ -131,12 +131,7 @@ fi
 
 
 # Ensure that there is a Docker permission group and that the user is in it
-if ! getent group docker >/dev/null; then
-    warn "There is no docker permission group. Creating docker usergroup."
-    sudo groupadd docker
-fi
-
-if ! groups | grep docker; then
+if ! id -nG "$USER" | grep -qw docker; then
     warn "User has not been added to the docker group."
     sudo usermod -aG docker "$USER"
 
