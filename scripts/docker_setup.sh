@@ -4,7 +4,7 @@
 # FILE:         docker_setup.sh
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
-# LAST EDITED:  07-10-2025
+# LAST EDITED:  07-30-2025
 # DESCRIPTION:  This script performs all of the necessary commands to build a
 #               docker container, compose it with the appropriate compose files,
 #               and attach the VSCode window to it.
@@ -115,8 +115,21 @@ export INPUT_GID=$(stat -c '%g' /dev/input/js0)
 
 COMPOSE_FILES=()
 
+gpu=""
+
+# Detect Nvidia GPU
+if grep -qi 'nvidia' /proc/device-tree/compatible 2>/dev/null; then
+    gpu="nvidia"
+elif [ -c /dev/nvhost-ctrl ]; then
+    gpu="nvidia"
+elif [ -f /etc/nv_tegra_release ]; then
+    gpu="nvidia"
+elif command -v nvidia-smi &>/dev/null; then
+    gpu="nvidia"
+fi
+
 # Pick compose files based on GPU
-if lspci | grep -i 'vga' | grep -iq 'nvidia'; then
+if [[ -n "$gpu" ]]; then
     log "Nvidia GPU detected, selecting Nvidia compose files"
     COMPOSE_FILES=(-f docker-compose.yaml -f docker-compose.nvidia.yaml)
 else

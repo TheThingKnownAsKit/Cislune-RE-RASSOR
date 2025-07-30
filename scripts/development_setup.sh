@@ -161,12 +161,17 @@ xhost +SI:localuser:"$(whoami)"
 
 # ----- NVIDIA SETUP -----
 
-if lspci | grep -i 'vga' | grep -iq 'nvidia'; then
-  gpu="nvidia"
-  log "Nvidia GPU detected"
-else
-  gpu=""
-  log "No Nvidia GPU detected"
+gpu=""
+
+# Detect Nvidia GPU
+if grep -qi 'nvidia' /proc/device-tree/compatible 2>/dev/null; then
+    gpu="nvidia"
+elif [ -c /dev/nvhost-ctrl ]; then
+    gpu="nvidia"
+elif [ -f /etc/nv_tegra_release ]; then
+    gpu="nvidia"
+elif command -v nvidia-smi &>/dev/null; then
+    gpu="nvidia"
 fi
 
 if [[ -n "$gpu" ]]; then
