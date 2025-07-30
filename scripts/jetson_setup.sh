@@ -69,6 +69,7 @@ fi
 if ! id -nG "$USER" | grep -qw docker; then
     warn "User has not been added to the docker group."
     sudo usermod -aG docker "$USER"
+    newgrp docker
 
     if id -nG "$USER" | grep -qw docker; then
         log "User successfully added to docker group."
