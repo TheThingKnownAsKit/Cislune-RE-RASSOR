@@ -78,7 +78,8 @@ if ! id -nG "$USER" | grep -qw docker; then
     else
         error "User could not be added to docker group. Aborting."
     fi
-
+else
+    log "User is in the docker permissions group."
 fi
 
 # Install any missing Docker services
