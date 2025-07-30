@@ -72,7 +72,8 @@ if ! id -nG "$USER" | grep -qw docker; then
 
     if id -nG "$USER" | grep -qw docker; then
         log "User successfully added to docker group."
-        log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership."
+        log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership.\nAfter that, rerun the script."
+        exit 1
     else
         error "User could not be added to docker group. Aborting."
     fi
@@ -211,8 +212,3 @@ touch ~/.gitconfig
 
 # ----- MOSH SETUP -----
 ./scripts/mosh_server_setup.sh
-
-
-
-# ----- CLOSING -----
-log "IMPORTANT: If your user was added to the docker group during this script, please log out/in or run 'newgrp docker' to apply Docker group membership."
