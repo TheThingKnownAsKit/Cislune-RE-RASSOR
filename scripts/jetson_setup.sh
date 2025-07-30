@@ -65,6 +65,20 @@ else
     has_docker_compose=0
 fi
 
+# Ensure that there is a Docker permission group and that the user is in it
+if ! id -nG "$USER" | grep -qw docker; then
+    warn "User has not been added to the docker group."
+    sudo usermod -aG docker "$USER"
+
+    if id -nG "$USER" | grep -qw docker; then
+        log "User successfully added to docker group."
+        log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership."
+    else
+        error "User could not be added to docker group. Aborting."
+    fi
+
+fi
+
 # Install any missing Docker services
 if (( has_docker_engine != 1 || has_docker_buildx != 1 || has_docker_compose != 1)); then
     log "Missing Docker installation detected. Installing using apt..."
@@ -127,21 +141,6 @@ else
     warn "Docker does not have multiarch enabled. Enabling..."
     sudo docker run --privileged --rm tonistiigi/binfmt --install all
     docker buildx create --name multiarch --driver docker-container --bootstrap --use
-fi
-
-
-# Ensure that there is a Docker permission group and that the user is in it
-if ! id -nG "$USER" | grep -qw docker; then
-    warn "User has not been added to the docker group."
-    sudo usermod -aG docker "$USER"
-
-    if id -nG "$USER" | grep -qw docker; then
-        log "User successfully added to docker group."
-        log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership."
-    else
-        error "User could not be added to docker group. Aborting."
-    fi
-
 fi
 
 log "Giving Docker local xhost access only for this user."
