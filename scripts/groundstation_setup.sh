@@ -135,11 +135,11 @@ if ! getent group docker >/dev/null; then
     sudo groupadd docker
 fi
 
-if ! groups | grep docker; then
+if ! id -nG "$USER" | grep -qw docker; then
     warn "User has not been added to the docker group."
     sudo usermod -aG docker "$USER"
 
-    if groups | grep docker; then
+    if id -nG "$USER" | grep -qw docker; then
         log "User successfully added to docker group."
         log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership."
     else
