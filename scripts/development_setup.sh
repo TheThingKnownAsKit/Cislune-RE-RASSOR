@@ -4,7 +4,7 @@
 # FILE:         development_setup.sh
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
-# LAST EDITED:  07-23-2025
+# LAST EDITED:  07-30-2025
 # DESCRIPTION:  This script performs all of the host computer setup necessary to
 #               enable full Docker functionality. It assumes you're only going
 #               to be using one computer for development reasons and are not
@@ -122,6 +122,12 @@ if (( has_docker_engine != 1 || has_docker_buildx != 1 || has_docker_compose != 
 fi
 
 # Buildx must have multiarch enabled
+if ! docker buildx ls | grep -q 'multiarch'; then
+    log "Creating Buildx builder 'multiarch' with multi‑platform support..."
+    docker run --privileged --rm tonistiigi/binfmt --install all
+    docker buildx create --name multiarch --driver docker-container --bootstrap --use
+fi
+
 if docker buildx inspect multiarch &>/dev/null; then
     log "Docker Buildx multiarch enabled."
 else
