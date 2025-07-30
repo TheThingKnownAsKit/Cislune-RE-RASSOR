@@ -45,7 +45,7 @@ else
     has_docker_engine=0
 fi
 
-# Check that Docker Buildx is installed and multiarch is set
+# Check that Docker Buildx is installed
 if docker buildx version &>/dev/null; then
     log "Docker Buildx plugin is installed: $(docker buildx version)"
     has_docker_buildx=1
@@ -124,7 +124,9 @@ fi
 if docker buildx inspect multiarch &>/dev/null; then
     log "Docker Buildx multiarch enabled."
 else
-    error "Docker does not have multiarch enabled. Aborting."
+    warn "Docker does not have multiarch enabled. Enabling..."
+    docker run --privileged --rm tonistiigi/binfmt --install all
+    docker buildx create --name multiarch --driver docker-container --boostrap --use
 fi
 
 
