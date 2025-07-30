@@ -4,7 +4,7 @@
 # FILE:         jetson_setup.sh
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
-# LAST EDITED:  07-10-2025
+# LAST EDITED:  07-30-2025
 # DESCRIPTION:  This script performs all of the rover computer necessary setup to
 #               enable full teleop and autonomy functionality. It assumes you're
 #               going to be using the full groundstation + Jetson Orin Nano setup.
@@ -154,51 +154,50 @@ xhost +SI:localuser:"$(whoami)"
 
 # ----- NVIDIA SETUP -----
 
-if lspci | grep -i 'vga' | grep -iq 'nvidia'; then
-  gpu="nvidia"
-  log "Nvidia GPU detected"
+# Make sure nvidia-smi is accessible (drivers) and container toolkit
+if nvidia-smi &>/dev/null; then
+    log "Nvidia GPU drivers are installed."
 else
-  gpu=""
-  error "No Nvidia GPU detected, which is impossible on Jetson Orin Nano. Aborting."
+    error "Nvidia GPU drivers are not detected."
 fi
 
-if [[ -n "$gpu" ]]; then
-    log "Nvidia GPU detected, checking for required software..."
-
-    # Make sure nvidia-smi is accessible (drivers) and container toolkit
-    if nvidia-smi &>/dev/null; then
-        log "Nvidia GPU drivers are installed."
-    else
-        error "Nvidia GPU drivers are not detected."
-    fi
+if command -v nvidia-ctk &>/dev/null; then
+    log "Nvidia Container Toolkit is installed: $(nvidia-ctk --version)"
+else
+    warn "Nvidia Container Toolkit is not installed. Installing..."
+    sudo apt-get install nvidia-container-toolkit
+    sudo nvidia-ctk runtime configure --runtime=docker
+    sudo systemctl restart docker
 
     if command -v nvidia-ctk &>/dev/null; then
-        log "Nvidia Container Toolkit is installed: $(nvidia-ctk --version)"
+        log "Nvidia Container Toolkit successfully installed."
     else
-        warn "Nvidia Container Toolkit is not installed. Installing..."
-        sudo apt-get install nvidia-container-toolkit
-        sudo nvidia-ctk runtime configure --runtime=docker
-        sudo systemctl restart docker
-
-        if command -v nvidia-ctk &>/dev/null; then
-            log "Nvidia Container Toolkit successfully installed."
-        else
-            error "Cannot install Nvidia Container Toolkit. Aborting."
-        fi
+        error "Cannot install Nvidia Container Toolkit. Aborting."
     fi
 fi
 
 
 
 # ----- CAMERA SETUP -----
+has_turbojpeg=0
 
-if ldconfig -p 2>/dev/null | grep -q libturbojpeg; then
+# Accept both runtime and -dev packages
+if dpkg -s libturbojpeg0 >/dev/null 2>&1 || dpkg -s libjpeg-turbo* >/dev/null 2>&1; then
+    # Look for the .so on any architecture directory (x86_64, aarch64, armhf ...)
+    if find /usr/lib -maxdepth 2 -name 'libturbojpeg.so*' | grep -q . ; then
+        log "libturbojpeg detected: $(dpkg -s libturbojpeg0 | grep Version)"
+        has_turbojpeg=1
+    fi
+fi
+
+if (( has_turbojpeg == 1 )); then
     log "libturbojpeg shared library found."
 else
     warn "libturbojpeg shared library NOT found."
-    sudo apt-get install libturbojpeg
+    sudo apt-get update
+    sudo apt-get install libturbojpeg0 libturbojpeg0-dev
 
-    if ldconfig -p 2>/dev/null | grep -q libturbojpeg; then
+    if find /usr/lib -maxdepth 2 -name 'libturbojpeg.so*' | grep -q . ; then
         log "libturbojpeg successfully installed."
     else
         error "libturbojpeg could not be installed. Aborting."
