@@ -110,8 +110,18 @@ fi
 
 # ----- CONTAINER CONSTRUCTION -----
 
-export RENDER_GID=$(stat -c '%g' /dev/dri/renderD128)
-export INPUT_GID=$(stat -c '%g' /dev/input/js0)
+if [ -e /dev/dri/renderD128 ]; then 
+    export RENDER_GID=$(stat -c '%g' /dev/dri/renderD128)
+else
+    export RENDER_GID=0
+fi
+
+if [ -e /dev/input/js0 ]; then 
+    export INPUT_GID=$(stat -c '%g' /dev/input/js0)
+else
+    export INPUT_GID=0
+fi
+
 
 COMPOSE_FILES=()
 
