@@ -54,68 +54,38 @@ Ensure that a recent version of [Git](https://git-scm.com/downloads/linux) and [
 
 Curl is also required for some of the scripts, ensure it is downloaded.
 
-### Cloning the Repository
-
-In the directory of your choice, either run the command `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git` to clone via https.
-
-### Setup Scripts
-
-For convenience, bash scripts have been written to do most of the setup for you. **All of these scripts are intended to be ran from the root of the repository,** so from the Cislune-RE-RASSOR folder level.
-
-Before anything else, <u>make sure your system is up to date</u> by running the following commands. Ensure that all packages are upgraded, though if you know for certain that a package will not interact with this repository's tech stack at all, you can ignore it.
-```Bash
-sudo apt update
-sudo apt upgrade
-```
+### First Time Setup
 
 **Do not open VSCode before running the host system setup scripts.** This causes user permission issues with VSCode running Docker before the user is properly added to the usergroup. If you are running into permission issues when trying to start docker, first check to see if you are in the docker group by running `groups` in the host computer terminal. If you are and are still experiencing permission issues, close VSCode and run `killall code && newgrp docker` to end all VSCode services and refresh the docker group permissions. Reopen VSCode and it should work.
 
-To setup the host system, you have three options:
-1. `./scripts/development_setup.sh`
-    
-    The development script is intended to give you access to most of the repositories functionality on one non-Jetson computer; it has the intention of making development easier. You will have access to most functionality except actually moving the rover (Gazebo will work).
+For a brand new Jetson Orin Nano, you must setup the Jetson with a mouse, keyboard, and external monitor. After it is flashed and running with Ubuntu 22.04, clone this GitHub repository by running `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git`. Navigate into the repository and run the command `./scripts/jetson_setup.sh`. This should set up everything you need installed and configured locally, including the mosh server. After this, you can disconnect the mouse, keyboard, and external monitor and should be able to access the Jetson remotely for any other development needed.
 
-2. `./scripts/groundstation_setup.sh`
+For a groundstation laptop that has never run this repository before, first ensure that the laptop is running Ubuntu 22.04. After that, clone this GitHub repository by running `git clone https://github.com/TheThingKnownAsKit/Cislune-RE-RASSOR.git`. Navigate into the repository and run the command `./scripts/groundstation_setup.sh` which will download everything you need locally, configure settings, and set up the mosh client.
 
-    This is the setup script you should run on your groundstation computer.
+For a computer that you plan on developing on, you can install some additional features to allow more functionality by running `./scripts/development_setup.sh` instead. This just downloads and configures a few extra things usually only downloaded onto the Jetson so that you can use more of the codebase from one computer. This does not setup any mosh services.
 
-3. `./scripts/jetson_setup.sh`
+Unless you make changes to the scripts or reset a device, you should never need to run these scripts again.
 
-    This is the setup script you should run on your Jetson Orin Nano.
+### Launch Procedure
 
-To build and compose the Docker container, run the script `./scripts/docket_setup.sh` with the optional argument flags of `-r -c -v`.
-- `-r` will build the image with no cache
-- `-c` will recreate the containers even if no changes have been made since last compose
-- `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers (note you need Container Tools extension installed for this) -> Right click on docker-rerassor_dev -> Attach VSCode
+This section assumes that you have already ran the appropriate setup scripts for each device.
 
-I recommend using the command `./scripts/docker_setup.sh -v` for convenience.
+1. On the groundstation computer, open a terminal and run the command `mosh nostromo@ubuntu.local`
+2. In this mosh connection, ensure you are in the Cislune-RE-RASSOR repository, and run `./scripts/docker_setup.sh`
+3. In this mosh connection, run the command `docker exec -it rerassor-rerassor_dev-1 bash` to open an interactive bash terminal inside the container
+4. Inside this container terminal, make sure you are in the Cislune-RE-RASSOR repository level and run `colcon build --symlink-install` and then `source install/setup.bash`
+5. Run the command `ros2 launch rover_bringup rerassor.launch.py`
+6. On the groundstation computer, open a new terminal and navigate into the Cislune-RE-RASSOR repository
+7. Run the command `./scripts/docker_setup.sh` with the optional argument flags of `-r -c -v`.
+    - `-r` will build the image with no cache
+    - `-c` will recreate the containers even if no changes have been made since last compose
+    - `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers (note you need Container Tools extension installed for this) -> Right click on docker-rerassor_dev -> Attach VSCode. You do not need to have VSCode open to do any of this setup, but in case you prefer to, you can execute this via the integrated terminal (you might need to run the one time setup script again to give VSCode proper permissions)
+8. Run the command `docker exec -it rerassor-rerassor_dev-1 bash` to open an interactive bash terminal inside the container
+9. From the Cislune-RE-RASSOR repository level, run the commands `colcon build --symlink-install` and then `source install/setup.bash`
+10. Back inside the first terminal inside a docker container on the groundstation computer, run the launch command `ros2 launch rover_bringup groundstation.launch.py`
 
-## Rover Bringup
-
-Note that these instructions should be done within Docker instances or colcon will not be able to build and ROS2 will not be installed.
-
-To mosh into the Jetson, use the command `mosh username@ip` from the terminal of the groundstation computer. If you don't know what your ip address is, do `ip a |grep net` and look for the address that ends in /24. TODO
-
-ON THE GROUNDSTATION, from the repository root, run the following commands:
-```Bash
-colcon build --symlink-install
-source install/setup.bash
-ros2 launch rover_bringup groundstation.launch.py
-```
-
-ON THE JETSON (via mosh), from the repository root, run the following commands:
-```Bash
-colcon build --symlink-install
-source install/setup.bash
-ros2 launch rover_bringup rover.launch.py
-```
-
-If you want to launch the Gazebo simulator, run the following commands:
-```Bash
-colcon build --symlink-install
-source install/setup.bash
-ros2 launch rover_sim gazebo.sim.py
-```
+A visual diagram of this procedure is included below to help make sense of all the containers and connections going on.
+![](doc/RERASSOR_Launch.jpg)
 
 ## Editing Guide
 
