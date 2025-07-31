@@ -4,7 +4,7 @@
 # FILE:         development_setup.sh
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
-# LAST EDITED:  07-30-2025
+# LAST EDITED:  07-31-2025
 # DESCRIPTION:  This script performs all of the host computer setup necessary to
 #               enable full Docker functionality. It assumes you're only going
 #               to be using one computer for development reasons and are not
@@ -121,6 +121,16 @@ if (( has_docker_engine != 1 || has_docker_buildx != 1 || has_docker_compose != 
     fi
 fi
 
+# Ensure that there is a Docker permission group and that the user is in it
+if ! id -nG | grep -qw docker; then
+    warn "User has not been added to the docker group."
+    sudo usermod -aG docker "$USER"
+    log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership.\nAfter that, rerun the script."
+    exit 0
+else
+    log "User is in the docker permissions group."
+fi
+
 # Buildx must have multiarch enabled
 if ! docker buildx ls | grep -q 'multiarch'; then
     log "Creating Buildx builder 'multiarch' with multi‑platform support..."
@@ -134,25 +144,6 @@ else
     error "Docker does not have multiarch enabled. Aborting."
 fi
 
-
-# Ensure that there is a Docker permission group and that the user is in it
-if ! getent group docker >/dev/null; then
-    warn "There is no docker permission group. Creating docker usergroup."
-    sudo groupadd docker
-fi
-
-if ! id -nG "$USER" | grep -qw docker; then
-    warn "User has not been added to the docker group."
-    sudo usermod -aG docker "$USER"
-
-    if id -nG "$USER" | grep -qw docker; then
-        log "User successfully added to docker group."
-        log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership."
-    else
-        error "User could not be added to docker group. Aborting."
-    fi
-
-fi
 
 log "Giving Docker local xhost access only for this user."
 xhost +SI:localuser:"$(whoami)"
@@ -248,8 +239,3 @@ if (( has_realsense_udev_rules != 1)); then
         log "Realsense udev rules installed successfully."
     fi
 fi
-
-
-
-# ----- CLOSING -----
-log "IMPORTANT: If your user was added to the docker group during this script, please log out/in or run 'newgrp docker' to apply Docker group membership."

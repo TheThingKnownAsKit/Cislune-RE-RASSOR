@@ -4,7 +4,7 @@
 # FILE:         groundstation_setup.sh
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
-# LAST EDITED:  07-10-2025
+# LAST EDITED:  07-31-2025
 # DESCRIPTION:  This script performs all of the groundstaion computer setup
 #               necessary to enable full Docker functionality with the camera,
 #               joystick, and mosh. It assumes you're going to be using the
@@ -121,31 +121,22 @@ if (( has_docker_engine != 1 || has_docker_buildx != 1 || has_docker_compose != 
     fi
 fi
 
+# Ensure that there is a Docker permission group and that the user is in it
+if ! id -nG | grep -qw docker; then
+    warn "User has not been added to the docker group."
+    sudo usermod -aG docker "$USER"
+    log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership.\nAfter that, rerun the script."
+    exit 0
+else
+    log "User is in the docker permissions group."
+fi
+
+
 # Buildx must have multiarch enabled
 if docker buildx inspect multiarch &>/dev/null; then
     log "Docker Buildx multiarch enabled."
 else
     error "Docker does not have multiarch enabled. Aborting."
-fi
-
-
-# Ensure that there is a Docker permission group and that the user is in it
-if ! getent group docker >/dev/null; then
-    warn "There is no docker permission group. Creating docker usergroup."
-    sudo groupadd docker
-fi
-
-if ! id -nG "$USER" | grep -qw docker; then
-    warn "User has not been added to the docker group."
-    sudo usermod -aG docker "$USER"
-
-    if id -nG "$USER" | grep -qw docker; then
-        log "User successfully added to docker group."
-        log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership."
-    else
-        error "User could not be added to docker group. Aborting."
-    fi
-
 fi
 
 log "Giving Docker local xhost access only for this user."

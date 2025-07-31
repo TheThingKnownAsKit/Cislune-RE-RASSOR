@@ -4,7 +4,7 @@
 # FILE:         jetson_setup.sh
 # AUTHOR:       Ella Moody <moodyellam@gmail.com>
 # CREATED:      07-10-2025
-# LAST EDITED:  07-30-2025
+# LAST EDITED:  07-31-2025
 # DESCRIPTION:  This script performs all of the rover computer necessary setup to
 #               enable full teleop and autonomy functionality. It assumes you're
 #               going to be using the full groundstation + Jetson Orin Nano setup.
@@ -65,16 +65,6 @@ else
     has_docker_compose=0
 fi
 
-# Ensure that there is a Docker permission group and that the user is in it
-if ! id -nG | grep -qw docker; then
-    warn "User has not been added to the docker group."
-    sudo usermod -aG docker "$USER"
-    log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership.\nAfter that, rerun the script."
-    exit 0
-else
-    log "User is in the docker permissions group."
-fi
-
 # Install any missing Docker services
 if (( has_docker_engine != 1 || has_docker_buildx != 1 || has_docker_compose != 1)); then
     log "Missing Docker installation detected. Installing using apt..."
@@ -130,12 +120,22 @@ if (( has_docker_engine != 1 || has_docker_buildx != 1 || has_docker_compose != 
     fi
 fi
 
+# Ensure that there is a Docker permission group and that the user is in it
+if ! id -nG | grep -qw docker; then
+    warn "User has not been added to the docker group."
+    sudo usermod -aG docker "$USER"
+    log "IMPORTANT: Please log out/in or run 'newgrp docker' to apply Docker group membership.\nAfter that, rerun the script."
+    exit 0
+else
+    log "User is in the docker permissions group."
+fi
+
 # Buildx must have multiarch enabled
 if docker buildx inspect multiarch &>/dev/null; then
     log "Docker Buildx multiarch enabled."
 else
     warn "Docker does not have multiarch enabled. Enabling..."
-    sudo docker run --privileged --rm tonistiigi/binfmt --install all
+    docker run --privileged --rm tonistiigi/binfmt --install all
     docker buildx create --name multiarch --driver docker-container --bootstrap --use
 fi
 
@@ -193,6 +193,44 @@ else
         log "libturbojpeg successfully installed."
     else
         error "libturbojpeg could not be installed. Aborting."
+    fi
+fi
+
+# Note that this ONLY works for Intel Realsense D4xx series (i.e. D455, D435, D435i)
+
+has_realsense_udev_rules=-1
+
+for d in /etc/udev/rules.d /lib/udev/rules.d; do
+    if [[ -e "$d/99-realsense-libusb.rules" ]]; then
+        has_realsense_udev_rules=1
+        break
+    fi
+done
+
+if (( has_realsense_udev_rules != 1)); then
+    log "Intel Realsense udev rules not installed. Installing..."
+
+    wget -O 99-realsense-libusb.rules \
+        https://raw.githubusercontent.com/IntelRealSense/librealsense/master/config/99-realsense-libusb.rules
+    
+    sudo cp 99-realsense-libusb.rules /etc/udev/rules.d
+    rm 99-realsense-libusb.rules
+
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+
+    has_realsense_udev_rules=-1
+    for d in /etc/udev/rules.d /lib/udev/rules.d; do
+        if [[ -e "$d/99-realsense-libusb.rules" ]]; then
+            has_realsense_udev_rules=1
+            break
+        fi
+    done
+
+    if (( has_realsense_udev_rules != 1)); then
+        error "Could not install Realsense udev rules. Aborting."
+    else
+        log "Realsense udev rules installed successfully."
     fi
 fi
 
