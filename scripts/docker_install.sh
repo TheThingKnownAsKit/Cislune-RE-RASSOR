@@ -12,6 +12,16 @@
 # LICENSE:      Apache 2.0
 # -----------------------------------------------------------------------------
 
+set -euo pipefail
+
+log() { echo "[INFO] $*"; }
+warn() { echo "[WARN] $*" >&2; }
+error() { echo "[ERROR] $*" >&2; exit 1; }
+
+if ! command -v sudo &>/dev/null; then
+    error "sudo is required but not installed."
+fi
+
 has_docker_engine=-1
 has_docker_buildx=-1
 has_docker_compose=-1
