@@ -37,19 +37,4 @@ xhost +SI:localuser:"$(whoami)"
 
 # ----- MOSH SETUP -----
 
-if command -v mosh &>/dev/null; then
-    log "Mosh client is installed: $(mosh --version)"
-else
-    warn "Mosh client is not installed."
-    log "Installing mosh client..."
-
-    sudo apt update && sudo apt upgrade
-    sudo apt install openssh-server ufw mosh
-
-    if command -v mosh &>/dev/null; then
-        log "Successfully installed mosh client."
-    else
-        error "Could not install mosh client. Aborting."
-    fi
-
-fi
+./scripts/mosh_setup -c

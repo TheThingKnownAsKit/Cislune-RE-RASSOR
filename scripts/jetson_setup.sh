@@ -134,4 +134,4 @@ touch ~/.gitconfig
 
 
 # ----- MOSH SETUP -----
-./scripts/mosh_server_setup.sh
+./scripts/mosh_server_setup.sh -s

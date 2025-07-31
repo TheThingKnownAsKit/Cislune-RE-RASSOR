@@ -32,7 +32,7 @@ if ! command -v sudo &>/dev/null; then
 fi
 
 REBUILD_IMAGE=0
-RECREATE_CONTAINERs=0
+RECREATE_CONTAINERS=0
 ATTACH_VSCODE=0
 
 usage() {
@@ -50,7 +50,7 @@ EOF
 while getopts ":rcvh" opt; do
   case "$opt" in
     r) REBUILD_IMAGE=1 ;;
-    c) RECREATE_CONTAINERs=1 ;;
+    c) RECREATE_CONTAINERS=1 ;;
     v) ATTACH_VSCODE=1 ;;
     h) usage ;;
     \?) echo "Invalid option: -$OPTARG"; usage ;;
@@ -158,7 +158,7 @@ else
     docker compose "${COMPOSE_FILES[@]}" build
 fi
 
-if [ "$RECREATE_CONTAINERs" -eq 1 ]; then
+if [ "$RECREATE_CONTAINERS" -eq 1 ]; then
     log "Running compose up with --force-recreate..."
     docker compose "${COMPOSE_FILES[@]}" up --force-recreate --detach
 else

@@ -9,7 +9,6 @@
 #               enable full Docker functionality. It assumes you're only going
 #               to be using one computer for development reasons and are not
 #               looking for full functionality.
-# USAGE:        ./scripts/development_setup.sh
 # DEPENDS:      bash
 # LICENSE:      Apache 2.0
 # -----------------------------------------------------------------------------
