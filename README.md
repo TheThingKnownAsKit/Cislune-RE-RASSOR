@@ -17,7 +17,7 @@ This codebase was developed by a Cislune intern working over the summer of 2025.
 - Hardware
     - Jetson Orin Nano Developer Kit
     - Teensy 4.1
-    - Intel Realsense D435i
+    - Intel Realsense D455
 
 []()
 
@@ -70,7 +70,7 @@ Unless you make changes to the scripts or reset a device, you should never need 
 
 This section assumes that you have already ran the appropriate setup scripts for each device. It also assumes that the
 
-1. On the groundstation computer, open a terminal and run the command `mosh @ubuntu.local`
+1. On the groundstation computer, open a terminal and run the command `mosh rerassor@ubuntu.local`
 2. In this mosh connection, ensure you are in the Cislune-RE-RASSOR repository, and run `./scripts/docker_setup.sh`
 3. In this mosh connection, run the command `docker exec -it rerassor-rerassor_dev-1 bash` to open an interactive bash terminal inside the container
 4. Inside this container terminal, make sure you are in the Cislune-RE-RASSOR repository level and run `colcon build --symlink-install` and then `source install/setup.bash`
