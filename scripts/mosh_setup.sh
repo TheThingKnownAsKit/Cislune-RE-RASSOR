@@ -2,12 +2,12 @@
 #
 # -----------------------------------------------------------------------------
 # FILE:         mosh_setup.sh
-# AUTHOR:       Ella Moody <moodyellam@gmail.com>
+# AUTHOR:       Ella Moody <moodyellam@gmail.com> and Raegan Scheet <cscheet2@unl.edu>
 # CREATED:      07-31-2025
 # LAST EDITED:  07-31-2025
 # DESCRIPTION:  This script sets up a mosh server that allows ssh connections from
 #               another computer on the same network. You can connect via the command
-#               mosh nostromo@ubuntu.local
+#               mosh rerassor@ubuntu.local
 #
 # USAGE:        sudo ./scripts/mosh_setup.sh
 #
