@@ -9,7 +9,7 @@
 #               another computer on the same network. You can connect via the command
 #               mosh nostromo@ubuntu
 #
-# USAGE:        ./scripts/mosh_setup.sh
+# USAGE:        sudo ./scripts/mosh_setup.sh
 #
 # OPTIONS:
 #   -s Setup the mosh server
@@ -58,8 +58,8 @@ shift $((OPTIND - 1))
 
 if [ "$USER_OPTION" = "server" ]; then
     # Download required packages
-    sudo apt-get update
-    sudo apt-get install -y --no-install-recommends \
+    apt-get update
+    apt-get install -y --no-install-recommends \
         openssh-server mosh ufw avahi-daemon avahi-utils libnss-mdns
 
     # Enable and start services
@@ -80,8 +80,8 @@ fi
 
 if [ "$USER_OPTION" = "client" ]; then
     # Download required packages
-    sudo apt-get update
-    sudo apt-get install -y libnss-mdns mosh
+    apt-get update
+    apt-get install -y libnss-mdns mosh
 
     ping nostromo@ubuntu
 fi

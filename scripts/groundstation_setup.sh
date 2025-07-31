@@ -37,4 +37,4 @@ xhost +SI:localuser:"$(whoami)"
 
 # ----- MOSH SETUP -----
 
-./scripts/mosh_setup -c
+sudo ./scripts/mosh_setup -c
