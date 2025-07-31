@@ -65,7 +65,7 @@ if [ "$USER_OPTION" = "server" ]; then
     # Enable and start services
     systemctl enable --now ssh
     systemctl enable --now avahi-daemon
-    hostnamectl set-hostname nostromo
+    hostnamectl set-hostname rerassor
 
     # Set up UFW rules
     ufw --force enable
@@ -83,5 +83,5 @@ if [ "$USER_OPTION" = "client" ]; then
     apt-get update
     apt-get install -y libnss-mdns mosh
 
-    ping nostromo@ubuntu
+    ping rerassor@ubuntu
 fi
