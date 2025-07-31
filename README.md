@@ -23,9 +23,8 @@ This codebase was developed by a Cislune intern working over the summer of 2025.
 
 - [Introduction](#introduction)
 - [Installation and Setup](#installation-and-setup)
-- [Rover Bringup](#rover-bringup)
+- [Launch Procedure](#launch-procedure)
 - [Editing Guide](#editing-guide)
-- [About the Project](#about-the-project)
 - [Learning Outcomes](#learning-outcomes)
 - [Credits](#credits)
 
@@ -33,7 +32,7 @@ This codebase was developed by a Cislune intern working over the summer of 2025.
 
 **This code was only ever intended to run on Ubuntu based Linux distributions. There is no support for macOS or Windows.** However, because most of this will run in Docker, it is might be possible to translate the Linux setup commands into the corresponding commands for Windows or macOS. There was no way for me to test this, so I did not include it in the instructions.
 
-This project was designed to run primarily in a Docker instance to help with consistency and portability. If you would like to learn more about docker, you can do so at [Docker Overview](https://docs.docker.com/get-started/docker-overview/). Specifically, this project uses Docker Engine with buildx for multi-architecture support. Installation details are listed in Installation and Setup. This docker setup is designed to work on both ARM64,x86-64, Nvidia GPU's, and not Nvidia GPU's.
+This project was designed to run primarily in a Docker instance to help with consistency and portability. If you would like to learn more about docker, you can do so at [Docker Overview](https://docs.docker.com/get-started/docker-overview/). Specifically, this project uses Docker Engine with buildx for multi-architecture support. Installation details are listed in Installation and Setup. This docker setup is designed to work on both ARM64, x86-64, Nvidia GPU's, and not Nvidia GPU's.
 
 Additionally, this project was designed with the assumption that the rover is using a Jetson Orin Nano as the onboard rover computer, a Teensy 4.1 as the microcontroller connected to the Jetson over USB, and a groundstation computer that remotely ssh's into the Jetson to run commands and view through Rviz2.
 
@@ -64,7 +63,7 @@ For a computer that you plan on developing on, you can install some additional f
 
 Unless you make changes to the scripts or reset a device, you should never need to run these scripts again.
 
-### Launch Procedure
+## Launch Procedure
 
 This section assumes that you have already ran the appropriate setup scripts for each device. It also assumes that the
 
@@ -89,7 +88,9 @@ A visual diagram of this procedure is included below to help make sense of all t
 
 For the most part, the only thing that you would need to edit to make this work for your own rover is edit some of the config files and replace the URDF. There may be some functionality missing that you would have to add in yourself, but otherwise the libraries handle most of the code.
 
-This repository is split into ROS2 packages that are subfolders of rover_ros2. Any folder that begins with rover_ is a ROS2 package with its own package.xml and CMakeLists.txt. 
+This repository is split into ROS2 packages that are subfolders of rover_ros2. Any folder that begins with rover_ is a ROS2 package with its own package.xml and CMakeLists.txt. Each one is responsible for its own part of the ROS2 system and has launch files that can make its functionality available to other packages without needing to import dependencies. For example, rover_hardware contains the ROS2 Control hardware component files. Relevant config files are also located in each rover_ subfolder, such as the differential control YAML in rover_control.
+
+This modular design should make it easier to edit the launch files and processes.
 
 ## Learning Outcomes
 
@@ -99,11 +100,21 @@ Skills learned:
 3. Gazebo
 4. Nav2
 5. SLAM Toolbox
-6. Micro ROS (not currently used in project)
+6. Micro ROS (formerly used but not currently used in project)
 7. URDF and Xacro
+8. Mosh
+9. Bash scripts
+10. Docker, Docker Compose, and Docker Buildx
+    - Specifically I learned how to create a Docker container that works on Nvidia GPU's, not Nvidia GPU's, ARM64, and x86-64
+11. Twist Mux
 
 Lessons learned:
-1. 
+- Don't prepend rover_ to every ROS2 package or autocomplete will hate you
+- I like the modular design I went with. It helps separate dependencies, failure points, and make the code more reusable
+- Docker with Gazebo is really difficult, especially when trying to make it cross architecture compatible and work with any GPU
+- A lot of the codebase revolves around the management of the cmd_vel topic. Keeping track of it by using process specific names (like cmd_vel_joy) and then using Twist Mux to manage them makes everything significantly easier
+- The hardest part was just figuring out the correct syntax for things because almost every library had bad documentation (except ROS2), but the Nav2 fire time robot setup basically teaches you everything you need to know with the updated formatting. This should be the reference going forward
+- Devcontainers are really easy to set up at first but for the functionality that I wanted, I needed something more. I switched to compose instead and it has made things easier
 
 ## Credits
 
