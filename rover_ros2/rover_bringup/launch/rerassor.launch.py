@@ -4,12 +4,16 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.actions import Node
+import os
 
 def generate_launch_description():
 
     # ----- Directories
     pkg_control = get_package_share_directory('rover_control')
     pkg_description = get_package_share_directory('rover_description')
+
+    twist_mux_params = os.path.join(pkg_control, 'config', 'twist_mux.yaml')
 
     # ----- Nodes
 
@@ -67,6 +71,14 @@ def generate_launch_description():
 
             # pass through launch arg controlling whether camera should start
         }.items()
+    )
+
+    # Twist mux helps manage the cmd_vel topic
+    twist_mux = Node(
+        package="twist_mux",
+        executable="twist_mux",
+        parameters=[twist_mux_params],
+        remappings=[('/cmd_vel_out', '/diff_cont/cmd_vel')]
     )
     
 

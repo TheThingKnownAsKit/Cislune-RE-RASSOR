@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "diffdrive_arduino/rerassor_hardware.hpp"
+#include "diffdrive_arduino/diffdrive_arduino.hpp"
 
 #include <chrono>
 #include <cmath>

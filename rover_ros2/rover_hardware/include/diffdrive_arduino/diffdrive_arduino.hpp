@@ -41,8 +41,10 @@ class DiffDriveArduinoHardware : public hardware_interface::SystemInterface
 
 struct Config
 {
-  std::string left_wheel_name = "";
-  std::string right_wheel_name = "";
+  std::string left_front_wheel_name;
+  std::string left_rear_wheel_name;
+  std::string right_front_wheel_name;
+  std::string right_rear_wheel_name;
   float loop_rate = 0.0;
   std::string device = "";
   int baud_rate = 0;

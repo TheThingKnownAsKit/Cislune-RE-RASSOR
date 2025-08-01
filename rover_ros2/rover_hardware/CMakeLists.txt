@@ -24,7 +24,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
 add_library(
   diffdrive_arduino
   SHARED
-  src/rerassor_hardware.cpp
+  src/diffdrive_arduino.cpp
 )
 target_compile_features(diffdrive_arduino PUBLIC cxx_std_17)
 target_include_directories(diffdrive_arduino PUBLIC

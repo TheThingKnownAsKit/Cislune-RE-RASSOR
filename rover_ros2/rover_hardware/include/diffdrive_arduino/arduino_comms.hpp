@@ -84,20 +84,37 @@ public:
     std::string response = send_msg("\r");
   }
 
-  void read_encoder_values(int &val_1, int &val_2, int &val_3, int &val_4)
+  bool read_encoder_values(int & fl, int & rl, int & fr, int & rr)
   {
-    std::string response = send_msg("e\r");
+    if (!serial_conn_.IsOpen()) return false;
 
-    std::string delimiter = " ";
-    size_t del_pos = response.find(delimiter);
-    std::string token_1 = response.substr(0, del_pos);
-    std::string token_2 = response.substr(del_pos + delimiter.length());
+    serial_conn_.FlushIOBuffers();
+    serial_conn_.Write("e\r");
 
-    val_1 = std::atoi(token_1.c_str());
-    val_2 = std::atoi(token_2.c_str());
-    val_3 = std::atoi(token_3.c_str());
-    val_4 = std::atoi(token_4.c_str());
+    std::string rx;
+    try {
+      serial_conn_.ReadLine(rx, '\n', timeout_ms_);
+    } catch (const LibSerial::ReadTimeout &) {
+      RCLCPP_WARN(rclcpp::get_logger("ArduinoComms"), "Encoder read timeout");
+      return false;
+    }
+
+    if (rx.empty() || rx.front() != 'e')
+      return false;
+
+    /* strip 'e' and any CR */
+    rx.erase(rx.begin());
+    rx.erase(std::remove(rx.begin(), rx.end(), '\r'), rx.end());
+
+    std::istringstream iss(rx);
+    if (iss >> fl >> rl >> fr >> rr)
+      return true;
+
+    RCLCPP_WARN(rclcpp::get_logger("ArduinoComms"),
+                "Malformed encoder line: '%s'", rx.c_str());
+    return false;
   }
+
   void set_motor_values(int val_1, int val_2, int val_3, int val_4)
   {
     std::stringstream ss;
