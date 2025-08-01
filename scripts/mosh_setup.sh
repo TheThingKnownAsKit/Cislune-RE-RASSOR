@@ -63,9 +63,11 @@ if [ "$USER_OPTION" = "server" ]; then
         openssh-server mosh ufw avahi-daemon avahi-utils libnss-mdns
 
     # Enable and start services
+    nmcli connection modify Cislune connection.autoconnect yes
+    systemctl enable NetworkManager-wait-online.service
+    hostnamectl set-hostname rerassor
     systemctl enable --now ssh
     systemctl enable --now avahi-daemon
-    hostnamectl set-hostname rerassor
 
     # Set up UFW rules
     ufw --force enable
