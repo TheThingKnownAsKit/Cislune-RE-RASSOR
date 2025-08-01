@@ -3,7 +3,7 @@
 
     <ros2_control name="DiffDriveSystem" type="system">
         <hardware>
-            <plugin>teensy_diff_drive_hardware/TeensyDiffDriveHardware</plugin> <!-- TODO FIX THIS -->
+            <plugin>diffdrive_arduino/DiffDriveArduinoHardware</plugin> <!-- TODO FIX THIS -->
             <param name="left_front_wheel_name">front_left_wheel_joint</param>
             <param name="left_rear_wheel_name">rear_left_wheel_joint</param>
             <param name="right_front_wheel_name">front_right_wheel_joint</param>
@@ -12,6 +12,7 @@
             <param name="baud_rate">115200</param>
             <param name="timeout_ms">1000</param>
             <param name="enc_counts_per_rev">1440</param> <!-- TODO FIX THIS -->
+            <param name="loop_rate">30</param>
         </hardware>
         <!-- joint interface definitions: each wheel joint has velocity command and position/velocity state -->
         <joint name="front_left_wheel_joint">

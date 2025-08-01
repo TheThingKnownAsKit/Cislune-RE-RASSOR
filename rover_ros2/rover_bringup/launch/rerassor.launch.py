@@ -3,16 +3,13 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
     # ----- Directories
     pkg_control = get_package_share_directory('rover_control')
-    pkg_nav = get_package_share_directory('rover_navigation')
     pkg_description = get_package_share_directory('rover_description')
-
-    # ----- Parameters
-    mode = LaunchConfiguration('mode') # Possible values: teleop, autonomy, or dual
 
     # ----- Nodes
 
@@ -28,8 +25,6 @@ def generate_launch_description():
                 'use_js_gui': 'false'
             }.items())
 
-    # Initialize Navigation
-
     # Initialize controls
     controller_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
@@ -37,14 +32,47 @@ def generate_launch_description():
             ]),
             launch_arguments={
                 'use_sim_time': 'false',
-                'use_teleop': PythonExpression(["'", mode, "' != 'autonomy'"])
+                'use_teleop': 'false'
             }.items())
+    
+    # Camera node for RealSense D455 launch with ROS2 wrapper
+    camera_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([FindPackageShare('realsense2_camera'), 'launch', 'rs_launch.py'])
+        ),
+        launch_arguments={
+            # ---- core ----
+            'camera_name':            'd455',            # TF prefix
+            # If you run multiple cameras, set serial_no:=<camera SN>
+            'enable_sync':            'true',            # sync all enabled streams
+            'initial_reset':          'true',            # HW reset at start-up
+
+            # ---- video profiles ----
+            'depth_module.profile':   '640x480x30',
+            'color_module.profile':   '640x480x30',
+
+            # ---- IMU (D455 has gyro+accel) ----
+            'enable_gyro':            'true',
+            'enable_accel':           'true',
+            # imu fusion method 2 – linear interpolation between frames
+            'unite_imu_method':       '2',               # see README
+
+            # ---- point cloud & alignment ----
+            'pointcloud.enable':      'true',
+            'align_depth.enable':     'true',
+
+            # ---- frame rate / performance tweaks ----
+            # 'wait_for_device_timeout': '10.0',         # s, optional
+            'publish_odom_tf':        'true',
+
+            # pass through launch arg controlling whether camera should start
+        }.items()
+    )
+    
 
     return LaunchDescription([
-        DeclareLaunchArgument('mode', default_value='teleop',
-                              description="Mode: teleop, autonomy, or dual (teleop and autonomy with toggle)"),
-
         robot_state_node,
-        controller_node
+        controller_node,
+        camera_node
     ])
 

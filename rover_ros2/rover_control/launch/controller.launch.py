@@ -46,10 +46,10 @@ def generate_launch_description():
         arguments=["diff_cont"]
     )
 
-    joint_broad = Node(
+    joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_broad"]
+        arguments=["joint_state_broadcaster"]
     )
 
     delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
@@ -64,7 +64,7 @@ def generate_launch_description():
     delayed_joint_broad = RegisterEventHandler(
         event_handler=OnProcessStart(
             target_action=controller_manager,
-            on_start=[joint_broad]
+            on_start=[joint_state_broadcaster_spawner]
         )
     )
 
