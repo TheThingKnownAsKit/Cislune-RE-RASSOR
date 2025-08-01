@@ -63,7 +63,10 @@ if [ "$USER_OPTION" = "server" ]; then
         openssh-server mosh ufw avahi-daemon avahi-utils libnss-mdns
 
     # Enable and start services
-    nmcli connection modify Cislune connection.autoconnect yes
+    nmcli connection modify "Cislune" \
+      connection.permissions "" \          # make it available to all users
+      connection.autoconnect yes \
+      connection.autoconnect-priority 10
     systemctl enable NetworkManager-wait-online.service
     hostnamectl set-hostname rerassor
     systemctl enable --now ssh
