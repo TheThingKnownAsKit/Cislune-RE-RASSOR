@@ -85,6 +85,7 @@ def generate_launch_description():
     return LaunchDescription([
         robot_state_node,
         controller_node,
-        camera_node
+        camera_node,
+        twist_mux
     ])
 
