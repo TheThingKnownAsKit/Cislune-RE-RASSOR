@@ -64,7 +64,7 @@ if [ "$USER_OPTION" = "server" ]; then
 
     # Enable and start services
     nmcli connection modify "Cislune" \
-      connection.permissions "" \          # make it available to all users
+      connection.permissions "" \
       connection.autoconnect yes \
       connection.autoconnect-priority 10
     systemctl enable NetworkManager-wait-online.service
