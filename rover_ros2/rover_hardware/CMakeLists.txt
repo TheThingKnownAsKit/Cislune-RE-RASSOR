@@ -43,7 +43,7 @@ target_link_libraries(diffdrive_arduino PUBLIC serial)
 # target_compile_definitions(${PROJECT_NAME} PRIVATE "DIFFDRIVE_ARDUINO_BUILDING_DLL")
 
 # Export hardware plugins
-pluginlib_export_plugin_description_file(rover_hardware config/diffdrive_arduino.xml)
+pluginlib_export_plugin_description_file(hardware_interface config/diffdrive_arduino.xml)
 
 install(
   TARGETS diffdrive_arduino

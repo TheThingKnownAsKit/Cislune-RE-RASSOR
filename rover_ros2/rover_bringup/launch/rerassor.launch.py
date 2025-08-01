@@ -52,8 +52,8 @@ def generate_launch_description():
             'initial_reset':          'true',            # HW reset at start-up
 
             # ---- video profiles ----
-            'depth_module.profile':   '640x480x30',
-            'color_module.profile':   '640x480x30',
+            'depth_module.depth_profile':   '640x480x30',
+            'color_module.color_profile':   '640x480x30',
 
             # ---- IMU (D455 has gyro+accel) ----
             'enable_gyro':            'true',
@@ -67,7 +67,6 @@ def generate_launch_description():
 
             # ---- frame rate / performance tweaks ----
             # 'wait_for_device_timeout': '10.0',         # s, optional
-            'publish_odom_tf':        'true',
 
             # pass through launch arg controlling whether camera should start
         }.items()
