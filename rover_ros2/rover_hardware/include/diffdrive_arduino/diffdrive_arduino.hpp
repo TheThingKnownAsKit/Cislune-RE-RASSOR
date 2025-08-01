@@ -97,8 +97,10 @@ private:
 
   ArduinoComms comms_;
   Config cfg_;
-  Wheel wheel_l_;
-  Wheel wheel_r_;
+  Wheel wheel_lf_;
+  Wheel wheel_lr_;
+  Wheel wheel_rf_;
+  Wheel wheel_rr_;
 };
 
 }  // namespace diffdrive_arduino
