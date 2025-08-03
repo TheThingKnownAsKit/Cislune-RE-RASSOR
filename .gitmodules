@@ -2,3 +2,6 @@
 	path = realsense_ros
 	url = https://github.com/IntelRealSense/realsense-ros.git
 	branch = ros2-development
+[submodule "jetson-orin-librealsense"]
+	path = jetson-orin-librealsense
+	url = https://github.com/jetsonhacks/jetson-orin-librealsense.git
