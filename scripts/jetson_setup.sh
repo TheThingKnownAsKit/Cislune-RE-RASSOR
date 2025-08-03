@@ -146,9 +146,12 @@ else
     sha256sum -c install-modules.tar.gz.sha256
     tar -xzf install-modules.tar.gz
 
-    sudo ./install-modules/install-realsense-modules.sh
+    pushd jetson-orin-librealsense/install-modules/ >/dev/null || error "Cislune-RE-RASSOR/jetson-orin-librealsense/install-modules/ directory does not exist. Are you in repository root? Aborting."
+
+    sudo ./install-realsense-modules.sh
 
     # Navigate back to repository root
+    popd >/dev/null
     popd >/dev/null
 fi
 
