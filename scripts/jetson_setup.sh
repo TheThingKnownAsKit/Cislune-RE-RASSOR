@@ -124,6 +124,40 @@ if (( has_realsense_udev_rules != 1)); then
     fi
 fi
 
+# Make sure that the kernel scripts are available
+if [[ -d "/jetson-orin-librealsense/install_modules" && \
+      -f "/jetson-orin-librealsense/install_modules/install-realsense-modules.sh" && \
+      -f "/jetson-orin-librealsense/install_modules/checksum/sha256sum.txt" ]]; then
+
+    log "Jetson Hacks librealsense repository has already been untarred."
+else
+
+    warn "Setting up the Jetson Hacks librealsense kernel repository..."
+
+    # Navigate to the jetson-orin-librealsense/ directory
+    pushd jetson-orin-librealsense/ >/dev/null || error "Cislune-RE-RASSOR/jetson-orin-librealsense/ directory does not exist. Are you in repository root? Aborting."
+    
+    sha256sum -c install-modules.tar.gz.sha256
+    tar -xzf install-modules.tar.gz
+
+    sudo ./jetson-orin-librealsense/install-modules/install-realsense-modules.sh
+
+    # Navigate back to repository root
+    popd >/dev/null
+fi
+
+# Install the camera SDK
+if ! dpkg -s librealsense2-utils &>/dev/null; then
+
+    log "Librealsense SDK not installed via apt repositories. Installing..."
+
+    # Install camera software
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+    sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
+    sudo apt-get install librealsense2-utils
+    sudo apt-get install librealsense2-dev
+fi
+
 
 
 # ----- GIT SETUP -----
