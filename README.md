@@ -61,6 +61,8 @@ For a groundstation laptop that has never run this repository before, first ensu
 
 For a computer that you plan on developing on, you can install some additional features to allow more functionality by running `./scripts/development_setup.sh` instead. This just downloads and configures a few extra things usually only downloaded onto the Jetson so that you can use more of the codebase from one computer. This does not setup any mosh services.
 
+**No matter which setup script you run, you have to initialize the submodule for the camera wrapper.** Run `git submodule --init` and `git submodule update` from the root of the repository.
+
 Unless you make changes to the scripts or reset a device, you should never need to run these scripts again.
 
 ## Launch Procedure
