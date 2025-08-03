@@ -29,8 +29,14 @@ fi
 
 ./scripts/docker_install.sh
 
-log "Giving Docker local xhost access only for this user."
-xhost +SI:localuser:"$(whoami)"
+if command -v xhost &>/dev/null && \
+   [[ -n "${DISPLAY:-}" ]] && \
+   xhost >&/dev/null; then
+  log "Detected live X11 display on \$DISPLAY=${DISPLAY}. Granting local X access."
+  xhost +SI:localuser:"$(whoami)"
+else
+  log "No X display detected (e.g. headless or SSH-only). Skipping xhost registration."
+fi
 
 
 
