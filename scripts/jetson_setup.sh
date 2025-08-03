@@ -131,9 +131,9 @@ if (( has_realsense_udev_rules != 1)); then
 fi
 
 # Make sure that the kernel scripts are available
-if [[ -d "/jetson-orin-librealsense/install_modules" && \
-      -f "/jetson-orin-librealsense/install_modules/install-realsense-modules.sh" && \
-      -f "/jetson-orin-librealsense/install_modules/checksum/sha256sum.txt" ]]; then
+if [[ -d "jetson-orin-librealsense/install-modules" && \
+      -f "jetson-orin-librealsense/install-modules/install-realsense-modules.sh" && \
+      -f "jetson-orin-librealsense/install-modules/checksum/sha256sum.txt" ]]; then
 
     log "Jetson Hacks librealsense repository has already been untarred."
 else
