@@ -16,6 +16,9 @@ services:
         source: /run/udev
         target: /run/udev
         read_only: true
+      - type: bind
+        source: /dev
+        target: /dev
         bind:
           propagation: rshared
       - type: bind
