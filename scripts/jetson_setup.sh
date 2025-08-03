@@ -146,7 +146,7 @@ else
     sha256sum -c install-modules.tar.gz.sha256
     tar -xzf install-modules.tar.gz
 
-    sudo ./jetson-orin-librealsense/install-modules/install-realsense-modules.sh
+    sudo ./install-modules/install-realsense-modules.sh
 
     # Navigate back to repository root
     popd >/dev/null
