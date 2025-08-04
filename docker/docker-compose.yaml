@@ -17,21 +17,12 @@ services:
         target: /run/udev
         read_only: true
       - type: bind
-        source: /dev
-        target: /dev
-        bind:
-          propagation: rshared
-      - type: bind
         source: ..
         target: /workspaces/Cislune-RE-RASSOR
         bind:
           propagation: rshared
     cap_add:
       - SYS_NICE               # For real-time scheduling
-    devices:
-      - /dev/dri:/dev/dri
-      - /dev/input:/dev/input
-      - /dev/bus/usb:/dev/bus/usb
     tty: true
     stdin_open: true
     group_add:
