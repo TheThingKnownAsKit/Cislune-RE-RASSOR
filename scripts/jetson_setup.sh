@@ -176,5 +176,15 @@ touch ~/.gitconfig
 
 
 
+# ----- TEENSY SETUP -----
+log "Curling 49-teensy.rules."
+curl -sSL https://www.pjrc.com/teensy/49-teensy.rules \
+| sudo tee /etc/udev/rules.d/49-teensy.rules >/dev/null
+
+log "Reloading triggers."
+sudo udevadm control --reload-rules && sudo udevadm trigger
+
+
+
 # ----- MOSH SETUP -----
 sudo ./scripts/mosh_setup.sh -s
