@@ -22,6 +22,16 @@ services:
         target: /workspaces/Cislune-RE-RASSOR
         bind:
           propagation: rshared
+      - type: bind
+        source: /dev/input
+        target: /dev/input
+        bind:
+          propagation: rshared
+      - type: bind
+        source: /dev/ttyACM0
+        target: /dev/ttyACM0
+        bind:
+          propagation: rshared
     cap_add:
       - SYS_NICE               # For real-time scheduling
     tty: true
