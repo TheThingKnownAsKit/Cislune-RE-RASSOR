@@ -28,8 +28,8 @@ services:
         bind:
           propagation: rshared
       - type: bind
-        source: /dev/ttyACM0
-        target: /dev/ttyACM0
+        source: /dev/bus/usb
+        target: /dev/bus/usb
         bind:
           propagation: rshared
     cap_add:
@@ -41,6 +41,8 @@ services:
       - video
       - "${RENDER_GID}"
       - "${INPUT_GID}"
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
 
   docker_git:
       image: alpine/git:latest      # Small image with git

@@ -52,11 +52,31 @@ while getopts ":sch" opt; do
 done
 shift $((OPTIND - 1))
 
+log "Configuring ufw to allow UDP and DDS in/out..."
+NET=$(ip -4 -o addr show scope global | awk '!/ lo / && !/ docker/ {print $4; exit}')
+# 1. Multicast IP traffic
+sudo ufw allow in proto udp from $NET to 224.0.0.0/4                comment 'ROS2 UDP multicast in'
+sudo ufw allow out proto udp to 224.0.0.0/4                         comment 'ROS2 UDP multicast out'
+
+# 2. RTPS discovery/data ports
+sudo ufw allow in proto udp from $NET to any port 7400:7500         comment 'ROS2 DDS peer discovery/data in'
+sudo ufw allow out proto udp to   $NET port 7400:7500               comment 'ROS2 DDS peer discovery/data out'
+
+# 3. IGMP (so OS will reply to IGMP queries and properly join groups)
+# No port; datagram is IGMP protocol (IP protocol 2)
+# Note: 'proto igmp' works on Ubuntu Focal+, aligns with kernel modules
+sudo ufw allow in proto igmp to 224.0.0.0/4                         comment 'Enable IGMP for multicast group membership'
+
+log "Reloading ufw rules"
+sudo ufw reload
+
 
 
 # ----- SERVER SETUP -----
 
 if [ "$USER_OPTION" = "server" ]; then
+    log "Setting up mosh server..."
+
     # Download required packages
     apt-get update
     apt-get install -y --no-install-recommends \
@@ -84,9 +104,9 @@ fi
 # ----- CLIENT SETUP -----
 
 if [ "$USER_OPTION" = "client" ]; then
+    log "Setting up mosh client..."
+
     # Download required packages
     apt-get update
     apt-get install -y libnss-mdns mosh
-
-    ping rerassor@ubuntu
 fi
