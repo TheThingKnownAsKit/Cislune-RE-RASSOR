@@ -5,8 +5,8 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    network_mode: host
-    ipc: host
+    network_mode: host              # Share the same network stack as the host
+    ipc: host                       # Prevents Fast DDS error with memory sharing
     privileged: true
     environment:
       - DISPLAY=${DISPLAY}
