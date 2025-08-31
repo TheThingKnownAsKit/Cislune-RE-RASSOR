@@ -25,37 +25,36 @@ namespace diffdrive_arduino {
 Read parameters, check joint interfaces, and initialize wheel models.
 */
 hardware_interface::CallbackReturn DiffDriveArduinoHardware::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
-
-  if (hardware_interface::SystemInterface::on_init(info) !=
+  if (hardware_interface::SystemInterface::on_init(params) !=
       hardware_interface::CallbackReturn::SUCCESS)
   {
     return hardware_interface::CallbackReturn::ERROR;
   }
 
+  const auto & hw = params.hardware_info;
+  const auto & p  = hw.hardware_parameters;   // const unordered_map<string,string>
+
   // Required parameters
-  cfg_.left_front_wheel_name  = info_.hardware_parameters["left_front_wheel_name"];
-  cfg_.left_rear_wheel_name   = info_.hardware_parameters["left_rear_wheel_name"];
-  cfg_.right_front_wheel_name = info_.hardware_parameters["right_front_wheel_name"];
-  cfg_.right_rear_wheel_name  = info_.hardware_parameters["right_rear_wheel_name"];
+  cfg_.left_front_wheel_name  = p.at("left_front_wheel_name");
+  cfg_.left_rear_wheel_name   = p.at("left_rear_wheel_name");
+  cfg_.right_front_wheel_name = p.at("right_front_wheel_name");
+  cfg_.right_rear_wheel_name  = p.at("right_rear_wheel_name");
 
-  cfg_.loop_rate          = std::stof(info_.hardware_parameters["loop_rate"]);        // Hz
-  cfg_.device             = info_.hardware_parameters["device"];                      // /dev/ttyACM*
-  cfg_.baud_rate          = std::stoi(info_.hardware_parameters["baud_rate"]);        // 115200
-  cfg_.timeout_ms         = std::stoi(info_.hardware_parameters["timeout_ms"]);       // read timeout
-  cfg_.enc_counts_per_rev = std::stoi(info_.hardware_parameters["enc_counts_per_rev"]);
+  cfg_.loop_rate          = std::stof(p.at("loop_rate"));          // Hz
+  cfg_.device             = p.at("device");                        // /dev/ttyACM*
+  cfg_.baud_rate          = std::stoi(p.at("baud_rate"));          // 115200
+  cfg_.timeout_ms         = std::stoi(p.at("timeout_ms"));         // read timeout
+  cfg_.enc_counts_per_rev = std::stoi(p.at("enc_counts_per_rev"));
 
-  // Optional PID parameters (will be forwarded to Teensy)
-  if (info_.hardware_parameters.count("pid_p") > 0)
-  {
-    cfg_.pid_p = std::stoi(info_.hardware_parameters["pid_p"]);
-    cfg_.pid_d = std::stoi(info_.hardware_parameters["pid_d"]);
-    cfg_.pid_i = std::stoi(info_.hardware_parameters["pid_i"]);
-    cfg_.pid_o = std::stoi(info_.hardware_parameters["pid_o"]);
-  }
-  else
-  {
+  // Optional PID parameters (still simple: gate on presence, then .at)
+  if (p.count("pid_p") > 0) {
+    cfg_.pid_p = std::stoi(p.at("pid_p"));
+    cfg_.pid_d = std::stoi(p.at("pid_d"));
+    cfg_.pid_i = std::stoi(p.at("pid_i"));
+    cfg_.pid_o = std::stoi(p.at("pid_o"));
+  } else {
     RCLCPP_INFO(rclcpp::get_logger("DiffDriveArduinoHardware"),
                 "PID values not supplied, using defaults.");
   }
@@ -67,9 +66,8 @@ hardware_interface::CallbackReturn DiffDriveArduinoHardware::on_init(
   wheel_rr_.setup(cfg_.right_rear_wheel_name,  cfg_.enc_counts_per_rev);
 
   // Validate command/state interfaces for each joint
-  for (const hardware_interface::ComponentInfo & joint : info_.joints)
+  for (const hardware_interface::ComponentInfo & joint : hw.joints)
   {
-    // one command interface (velocity)
     if (joint.command_interfaces.size() != 1 ||
         joint.command_interfaces[0].name != hardware_interface::HW_IF_VELOCITY)
     {
@@ -79,7 +77,6 @@ hardware_interface::CallbackReturn DiffDriveArduinoHardware::on_init(
       return hardware_interface::CallbackReturn::ERROR;
     }
 
-    // two state interfaces (position, velocity)
     if (joint.state_interfaces.size() != 2 ||
         joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION ||
         joint.state_interfaces[1].name != hardware_interface::HW_IF_VELOCITY)
@@ -228,21 +225,21 @@ DiffDriveArduinoHardware::read(const rclcpp::Time &, const rclcpp::Duration & pe
     return hardware_interface::return_type::ERROR;
   }
 
-  // Teensy returns change in counts since last E, averaged per side
-  int dLeft_counts  = 0;
-  int dRight_counts = 0;
-  comms_.read_encoder_deltas_lr(dLeft_counts, dRight_counts);
+  // Firmware returns absolute encoder counts for each wheel: fl, rl, fr, rr
+  int fl = 0, rl = 0, fr = 0, rr = 0;
+  if (!comms_.read_encoder_values(fl, rl, fr, rr)) {
+    return hardware_interface::return_type::ERROR;
+  }
 
-  // Accumulate into per-wheel cumulative counts (assign the side delta to each wheel)
-  wheel_lf_.enc += dLeft_counts;
-  wheel_lr_.enc += dLeft_counts;
-  wheel_rf_.enc += dRight_counts;
-  wheel_rr_.enc += dRight_counts;
+  // Update cumulative counts per wheel directly from absolute readings
+  wheel_lf_.enc = fl;
+  wheel_lr_.enc = rl;
+  wheel_rf_.enc = fr;
+  wheel_rr_.enc = rr;
 
   const double dt = period.seconds();
 
-  // Update positions (rad) and velocities (rad/s)
-  // calc_enc_angle() converts cumulative encoder counts -> wheel angle (rad)
+  // Positions (rad) and velocities (rad/s)
   double pos_prev = wheel_lf_.pos;
   wheel_lf_.pos = wheel_lf_.calc_enc_angle();
   wheel_lf_.vel = (wheel_lf_.pos - pos_prev) / dt;
@@ -299,7 +296,7 @@ DiffDriveArduinoHardware::write(const rclcpp::Time &, const rclcpp::Duration &)
   const int right_cpl = static_cast<int>(std::lround((rf_cpl + rr_cpl) / 2.0));
 
   // Send 2-channel command to Teensy: M <left> <right>
-  comms_.set_motor_values_lr(left_cpl, right_cpl);
+  comms_.set_motor_values(left_cpl, left_cpl, right_cpl, right_cpl);
 
   return hardware_interface::return_type::OK;
 }
