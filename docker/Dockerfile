@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \  
     build-essential cmake git libssl-dev libusb-1.0-0-dev pkg-config \  
     libgtk-3-dev libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev \  
-    curl python3-dev ca-certificates && rm -rf /var/lib/apt/lists/*
+    curl python3-dev ca-certificates
 
 # Download the latest Librealsense SDK source code and build it from source
 WORKDIR /usr/src
@@ -66,10 +66,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libxv1 \
         libxtst6
 
-# Install needed elements from Ubuntu Universe
-# RUN apt-get update && add-apt-repository -y universe && \
-#      apt-get update && \
-#      apt-get install -y --no-install-recommends usbutils joystick evtest
 RUN apt-get update && \
     apt-get install -y --no-install-recommends usbutils joystick evtest
 
