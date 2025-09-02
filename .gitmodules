@@ -1,3 +1,7 @@
 [submodule "jetson-orin-librealsense"]
 	path = jetson-orin-librealsense
 	url = https://github.com/jetsonhacks/jetson-orin-librealsense.git
+[submodule "realsense-ros"]
+	path = realsense-ros
+	url = https://github.com/IntelRealSense/realsense-ros.git
+	branch = r/4.56.4
