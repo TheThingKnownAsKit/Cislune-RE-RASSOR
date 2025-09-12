@@ -80,7 +80,7 @@ This section assumes that you have already ran the appropriate setup scripts for
     - `-c` will recreate the containers even if no changes have been made since last compose
     - `-v` will open a VSCode instance attached to the container for you, but you can also just do this through the GUI by navigating to Containers (note you need Container Tools extension installed for this) -> Right click on docker-rerassor_dev -> Attach VSCode. You do not need to have VSCode open to do any of this setup, but in case you prefer to, you can execute this via the integrated terminal (you might need to run the one time setup script again to give VSCode proper permissions)
 8. Run the command `docker exec -it rerassor-rerassor_dev-1 bash` to open an interactive bash terminal inside the container
-9. From the Cislune-RE-RASSOR repository level, run the commands `colcon build --symlink-install` and then `source install/setup.bash`
+9. From the Cislune-RE-RASSOR repository level, run the commands `source /opt/ros/jazzy/setup.bash` and then `colcon build --symlink-install` and then `source install/setup.bash`
 10. Back inside the first terminal inside a docker container on the groundstation computer, run the launch command `ros2 launch rover_bringup groundstation.launch.py`
 
 A visual diagram of this procedure is included below to help make sense of all the containers and connections going on.
