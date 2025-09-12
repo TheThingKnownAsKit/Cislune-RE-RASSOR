@@ -34,10 +34,11 @@ def generate_launch_description():
         package='controller_manager',
         executable='ros2_control_node', # Changed
         parameters=[{
-            'use_sim_time': use_sim_time,
-            'robot_description': robot_description
+            'use_sim_time': use_sim_time
             }, diff_cont_file
-        ]
+        ],
+        remappings=[("~/robot_description", "/robot_description")],
+        output='screen'
     )
     
     diff_drive = Node(
