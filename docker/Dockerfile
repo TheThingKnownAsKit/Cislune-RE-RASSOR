@@ -107,7 +107,7 @@ RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/profile.d/ros2.sh
 COPY --from=realsense_builder /opt/librealsense /usr/local/
 COPY --from=realsense_builder /opt/librealsense /opt/librealsense
 COPY --from=realsense_builder /usr/src/librealsense/config/99-realsense-libusb.rules /etc/udev/rules.d/
-COPY --chown=${USER_UID}:${USER_GID} realsense_ros /workspaces/Cislune-RE-RASSOR/realsense-ros
+COPY --chown=${USER_UID}:${USER_GID} realsense-ros /workspaces/Cislune-RE-RASSOR/realsense-ros
 
 RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && rosdep init && rosdep update
 RUN rosdep install -i --from-path /workspaces/Cislune-RE-RASSOR/realsense-ros \
