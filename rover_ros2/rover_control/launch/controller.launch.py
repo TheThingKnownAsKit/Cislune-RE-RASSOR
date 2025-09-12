@@ -18,8 +18,8 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     diff_cont_file = os.path.join(pkg_control,'config','diff_cont.yaml')
 
-    robot_description_content = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
-    robot_description = ParameterValue(robot_description_content, value_type=str)
+    # robot_description_content = Command(['ros2 param get --hide-type /robot_state_publisher robot_description'])
+    # robot_description = ParameterValue(robot_description_content, value_type=str)
 
     # Create joy node for joystick input
     teleop_node = IncludeLaunchDescription(
@@ -37,7 +37,7 @@ def generate_launch_description():
             'use_sim_time': use_sim_time
             }, diff_cont_file
         ],
-        remappings=[("~/robot_description", "/robot_description")],
+        remappings=[("robot_description", "/robot_description")],
         output='screen'
     )
     
