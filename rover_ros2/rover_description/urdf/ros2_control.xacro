@@ -1,40 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="ros2_control" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-    <ros2_control name="DiffDriveSystem" type="system">
+    <ros2_control name="rover_base" type="system">
         <hardware>
-            <plugin>diffdrive_arduino/DiffDriveArduinoHardware</plugin>
-            <param name="left_front_wheel_name">front_left_wheel_joint</param>
-            <param name="left_rear_wheel_name">rear_left_wheel_joint</param>
-            <param name="right_front_wheel_name">front_right_wheel_joint</param>
-            <param name="right_rear_wheel_name">rear_right_wheel_joint</param>
-            <param name="device">/dev/ttyACM0</param>
-            <param name="baud_rate">115200</param>
-            <param name="timeout_ms">1000</param>
-            <param name="enc_counts_per_rev">4000</param>
-            <param name="loop_rate">30</param>
+            <plugin>rover_control/CanVescHardwareInterface</plugin>
+            <param name="can_interface" type="string" value="can0"/>
+            <param name="wheel_radius" type="double" value="0.115"/>
+            <param name="gear_ratio" type="double" value="56.0"/>
+            <param name="motor_pole_pairs" type="int" value="7"/>
         </hardware>
-        <!-- joint interface definitions: each wheel joint has velocity command and position/velocity state -->
         <joint name="front_left_wheel_joint">
             <command_interface name="velocity"/>
-            <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
         <joint name="rear_left_wheel_joint">
             <command_interface name="velocity"/>
-            <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
         <joint name="front_right_wheel_joint">
             <command_interface name="velocity"/>
-            <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
         <joint name="rear_right_wheel_joint">
             <command_interface name="velocity"/>
-            <state_interface name="position"/>
             <state_interface name="velocity"/>
         </joint>
     </ros2_control>
+
     
 </robot>
